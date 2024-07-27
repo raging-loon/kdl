@@ -1,0 +1,12 @@
+
+rule CVE_2017_0145_Test : Net
+{
+
+content:
+	$ipcrgx = /\\\\<ipregex>\\IPC$/
+	$setup = | de ad be ef |
+	$trans = "\\PIPE\\\0x00"
+	
+condition:
+	 3 of them and (filesize > 10MB or( x == 1 )) or (3 == 1)
+}

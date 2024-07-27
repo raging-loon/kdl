@@ -1,0 +1,37 @@
+
+
+variable := VAR NAME EQUALS (REGEX | BYTESEARCH | STRING)
+
+condition-literal := (INTEGER | SIZE | ALL | ANY | VARIABLE)
+
+operator := "of them" | > | <= | < | <= | == | !=
+combinator := "and" | "or"
+
+conditional = condition_literal operator condition_literal
+
+grouping := ( condition )
+
+condition := conditional_literal 
+			| condition
+			| grouping
+
+
+
+s
+
+condition -> Rule | Variable | Integers | External Variables
+
+value -> rule | variable | integer | external variables
+
+operator -> ">=" | ">" | "==" | "<" | "<=" | "any" | "all" | "of"
+
+
+
+condition -> value | unary | binary | grouping
+
+grouping -> "(" condition ")"
+
+unary -> ("!") expression
+
+binary -> condition operator condition
+
