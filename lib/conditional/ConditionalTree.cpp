@@ -22,6 +22,7 @@ ConditionalTree::ConditionalTree(std::vector<CNode*>* sharedNodes, int pLevel)
 }
 ConditionalTree::~ConditionalTree()
 {
+	// only clean up nodes if we are plevel 0 i.e we are the top of the tree list
 	if (m_p_level == 0)
 	{
 		for (int i = 0; i < m_nodes->size(); i++)
@@ -32,9 +33,7 @@ ConditionalTree::~ConditionalTree()
 	}
 
 	if (m_subTree)
-	{
 		delete m_subTree;
-	}
 }
 
 bool ConditionalTree::addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel)

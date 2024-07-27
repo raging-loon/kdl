@@ -1,5 +1,5 @@
 #include "conditional/ConditionalParser.h"
-
+#include "parser/ErrorPrinter.h"
 using kdl::ConditionalParser;
 using kdl::ConditionalTree;
 using kdl::Token;
@@ -33,18 +33,26 @@ ConditionalParser::ConditionalParser(ConditionalTree& ctree, CTokenMapView& ctmv
 bool kdl::ConditionalParser::parse()
 {
 	CTokenPtr start = advance();
-	if (m_cursor == 0 || isAtEnd())
+	
+	if (m_cursor == 1 && isJunctionOperator(start->t))
 	{
-		if (isJunctionOperator(start->t))
-			return false;
+		ErrorPrinter::printViaToken(
+			ErrorPrinter::SYNTAX_ERROR,
+			"Condition cannot start with 'and' or 'or'",
+			start
+		);
+		return false;
 	}
 
-	if (isAtEnd())
+
+	if (isAtEnd()) 
 		return true;
 
 	
 	// TODO: move these branches into another function
 	CTokenPtr next = peek();
+
+	// test for a subcondition
 	if (isComparisonOperator(next->t))
 	{
 
@@ -62,6 +70,18 @@ bool kdl::ConditionalParser::parse()
 
 	else if (isJunctionOperator(next->t))
 	{
+		// If this is a junction the last token
+		// throw an error
+		if (m_cursor + 1 == m_numTokens)
+		{
+			ErrorPrinter::printViaToken(
+				ErrorPrinter::SYNTAX_ERROR,
+				"Condition cannot end with 'and' or 'or'",
+				previous()
+			);
+			return false;
+		}
+
 		printf("Junction Found: %s\n", kdl::getTokenName(next->t));
 		if (!m_ctree.addJunction(next, pLevel))
 			return false;
@@ -86,6 +106,11 @@ bool kdl::ConditionalParser::parse()
 		return parse();
 	}
 	
+	else if (pLevel != 0)
+	{
+
+	}
+
 	return true;
 }
 

@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include <filesystem>
+#include "parser/ErrorPrinter.h"
 int main()
 {
 	std::ifstream in("../../../tests/test.kdl");
@@ -18,7 +19,8 @@ int main()
 
 	std::string buf(sz, 0);
 	in.read((char*)buf.c_str(), sz);
-
+	
+	kdl::ErrorPrinter::setCurrentSource("tests/test.kdl", buf.c_str(), buf.length());
 
 	kdl::Lexer lex("tests/test.kdl", buf.c_str(), buf.length());
 

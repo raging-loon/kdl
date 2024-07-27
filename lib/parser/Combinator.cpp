@@ -1,6 +1,6 @@
 #include <cstdarg>
 #include <span>
-
+#include "parser/ErrorPrinter.h"
 #include "parser/parser.h"
 #include "parser/tokens.h"
 
@@ -99,10 +99,14 @@ bool Combinator::nextBlock()
 	//							rule TestRule : Net {
 		matchInOrder( { token_t::SI_RULES, token_t::IDENTIFIER, token_t::COLON, token_t::IDENTIFIER, token_t::OPEN_BRACE } ) )
 	{
+
+		// Used for error handling
+		CTokenPtr braceToken = previous();
+
 		int sectionEnd = getBlockEndIndex();
 		if (sectionEnd == -1)
 		{
-			printf("No end found (replace me with an actal error)\n");
+			ErrorPrinter::printViaToken(ErrorPrinter::SYNTAX_ERROR, "No closing brace", braceToken);
 			return false;
 
 		}

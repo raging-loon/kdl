@@ -1,5 +1,8 @@
 #include "parser/lex.h"
 #include "utils.h"
+
+#include "parser/ErrorPrinter.h"
+
 using namespace kdl;
 
 KeywordMap Lexer::m_keywords =
@@ -124,7 +127,9 @@ void Lexer::addToken(token_t tok)
 	m_tokens.push_back({
 		.t = tok, 
 		.startPos = m_start,
-		.lineStart = m_lineStart
+		.lineStart = m_lineStart,
+		.lineNumber = m_curLine
+
 	});
 }
 
@@ -134,7 +139,8 @@ void Lexer::addToken(token_t tok, std::string& val)
 		.t = tok, 
 		.val = val,
 		.startPos = m_start,
-		.lineStart = m_lineStart
+		.lineStart = m_lineStart,
+		.lineNumber = m_curLine
 	});
 }
 
@@ -144,7 +150,10 @@ void Lexer::addToken(token_t tok, int startPos, int endPos)
 		.t = tok,
 		.val = std::string(m_source + startPos, m_source + endPos),
 		.startPos = m_start,
-		.lineStart = m_lineStart
+		.lineStart = m_lineStart,
+		.lineNumber = m_curLine
+
+
 	});
 }
 
@@ -278,25 +287,12 @@ void Lexer::showError(const char* message)
 {
 	m_wasError = true;
 
-	printf("Unknown token/operator/identifier at %s:%d:%d:\n%s:\n", m_filename, m_curLine, m_start, message);
-	printf("\t %d|\t", m_curLine);
-	for (int i = m_lineStart; i < m_srcLen; i++)
-	{
-		if (m_source[i] == '\0' || m_source[i] == '\n')
-			break;
-		putchar(m_source[i]);
-	}
-	putchar('\n');
-	printf("\t  |\t ");
-
-	for (int i = m_lineStart; i <= m_start; i++)
-	{
-		putchar('\x20');
-	}
-
-	putchar('^');
-	putchar('\n');
-
+	ErrorPrinter::print(
+		ErrorPrinter::UNKNOWN_TOKEN,
+		"Unknown token/operator/identifier",
+		m_curLine, m_lineStart, m_start
+	);
+	
 }
 
 bool Lexer::validateRegex()

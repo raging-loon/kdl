@@ -86,8 +86,12 @@ struct Token
 	/// Position in the source of the start of 
 	/// the associated character/string 
 	int startPos;
+
 	/// the position of the line this token is 
 	int lineStart;
+
+	/// what line is this token on?
+	int lineNumber;
 };
 
 

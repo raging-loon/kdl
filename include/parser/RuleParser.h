@@ -54,7 +54,7 @@ private:
 	///		Scan for modifications after the TI_* token has been found
 	///		Will OR them together based on flags present in 'channels/type.h'
 	///
-	uint8_t scanVariableMods();
+	int8_t scanVariableMods();
 
 
 	///

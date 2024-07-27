@@ -1,4 +1,5 @@
 #include "parser/RuleParser.h"
+#include "parser/ErrorPrinter.h"
 #include "conditional/ConditionalParser.h"
 #include "conditional/ConditionalTree.h"
 
@@ -78,7 +79,7 @@ bool RuleParser::parseHeader()
 			advance();
 			if (peek()->t != token_t::IDENTIFIER)
 			{
-				printf("error\n");
+				ErrorPrinter::printViaToken(ErrorPrinter::SYNTAX_ERROR, "Expected identifier here.", peek());
 				return false;
 			}
 			else
@@ -112,7 +113,7 @@ bool RuleParser::parseSection()
 		advance();
 		if (peek()->t != token_t::COLON)
 		{
-			printf("error\n");
+			ErrorPrinter::printViaToken(ErrorPrinter::SYNTAX_ERROR, "Expected ':' after section name", previous());
 			return false;
 		}
 
@@ -129,7 +130,7 @@ bool RuleParser::parseSection()
 		}
 	}
 
-	return false;
+	return true;
 
 }
 
@@ -141,7 +142,7 @@ bool RuleParser::parseVariables()
 	{
 		if ( !( matchInOrder( { token_t::TI_VARIABLE, token_t::IDENTIFIER, token_t::ASSIGNMENT } ) ) )
 		{
-			printf("invalid\n");
+			ErrorPrinter::printViaToken(ErrorPrinter::SYNTAX_ERROR, "Invalid variable. Expected '$<name> = <value>'", peek());
 			return false;
 		}
 		Variable::Type tType;
@@ -159,7 +160,11 @@ bool RuleParser::parseVariables()
 				tType = Variable::BYTE_SEQUENCE;
 				break;
 			default:
-				printf("Invalid expression\n");
+				ErrorPrinter::printViaToken(
+					ErrorPrinter::SYNTAX_ERROR, 
+					"Invalid type. Expected one of (String, Regex, Byte Sequence)", 
+					peek()
+				);
 				return false;
 		}
 
@@ -172,9 +177,13 @@ bool RuleParser::parseVariables()
 
 		auto flags = scanVariableMods();
 
+		if (flags == -1)
+		{
+			
+			return false;
+		}
+
 		m_rule.addRule(name, value, tType, flags);
-		
-		
 		
 		printf("Found variable: %s with '%s' as value\n", 
 			name.c_str(), 
@@ -185,7 +194,7 @@ bool RuleParser::parseVariables()
 	return true;
 }
 
-uint8_t RuleParser::scanVariableMods()
+int8_t RuleParser::scanVariableMods()
 {
 	CTokenPtr next = nullptr;
 	uint8_t flags = 0;
@@ -201,7 +210,20 @@ uint8_t RuleParser::scanVariableMods()
 			advance();
 		}
 		else
-			break;
+		{
+			// if we have reached the start of a variable or section
+			if (next->t == token_t::TI_VARIABLE || nextTokenIsSection(next->t))
+				break;
+			else
+			{
+				ErrorPrinter::printViaToken(
+					ErrorPrinter::SYNTAX_ERROR,
+					"Invalid modifier. Expected any of (wide, ascii, nocase)",
+					next
+				);
+				return -1;
+			}
+		};
 	}
 	
 	return flags;
