@@ -1,6 +1,7 @@
 #include "parser/tokens.h"
 
-using namespace kdl;
+namespace kdl 
+{
 
 static std::unordered_map<token_t, const char*> tokenNames = {
 	{token_t::OPEN_PARENTHESIS, "OPEN_PARENTHESIS"},
@@ -47,10 +48,12 @@ static std::unordered_map<token_t, const char*> tokenNames = {
 	{token_t::TEOF, "TEOF"}
 };
 
-const char* kdl::getTokenName(token_t t)
+const char* getTokenName(token_t t)
 {
 	auto f = tokenNames.find(t);
 	if (f != tokenNames.end())
 		return f->second;
 	return "UNKNOWN_TOKEN";
+}
+
 }

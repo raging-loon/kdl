@@ -30,7 +30,7 @@ using TokenList  = std::vector<Token>;
 class Lexer
 {
 public:
-	Lexer(const char* filename, const char* src, int len);
+	Lexer(const char* src, int len);
 
 
 	int scan();
@@ -41,7 +41,6 @@ public:
 
 private:
 	const char* m_source{ nullptr };
-	const char* m_filename;
 	int			m_srcLen{ -1 };
 
 	TokenList m_tokens;

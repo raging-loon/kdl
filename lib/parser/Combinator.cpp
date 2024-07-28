@@ -1,6 +1,6 @@
 #include <cstdarg>
 #include <span>
-#include "parser/ErrorPrinter.h"
+#include "parser/CompilerMessage.h"
 #include "parser/parser.h"
 #include "parser/tokens.h"
 
@@ -25,6 +25,7 @@ bool Combinator::parse()
 		if (!nextBlock()) 
 			return false;
 	}
+	printf("Found %d rules\n", m_ruleBlocks.size());
 	return true;
 }
 
@@ -77,7 +78,6 @@ int Combinator::getBlockEndIndex()
 		{
 			int index = m_cursor;
 
-			m_cursor = startCursorLocation + 1;
 
 			return index + 1;
 		}
@@ -106,16 +106,21 @@ bool Combinator::nextBlock()
 		int sectionEnd = getBlockEndIndex();
 		if (sectionEnd == -1)
 		{
-			ErrorPrinter::printViaToken(ErrorPrinter::SYNTAX_ERROR, "No closing brace", braceToken);
+			CompilerMessage::error(message_class_t::INVALID_SYNTAX, "No closing brace", braceToken);
 			return false;
 
 		}
-		CTokenMapView s(m_tokenList.data() + ruleStart, (sectionEnd - ruleStart));
+	/*	CTokenMapView s(m_tokenList.data() + ruleStart, (sectionEnd - ruleStart));
 		Rule r;
 		RuleParser p(s, r);
 
-		p.parse();
+		p.parse();*/
 
+		m_ruleBlocks.push_back( CTokenMapView( m_tokenList.data() + ruleStart, (sectionEnd - ruleStart) ));
+
+		m_cursor = sectionEnd ;
+		return true;
 	}
 	return false;
+
 }

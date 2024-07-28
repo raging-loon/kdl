@@ -1,5 +1,5 @@
 #include "parser/RuleParser.h"
-#include "parser/ErrorPrinter.h"
+#include "parser/CompilerMessage.h"
 #include "conditional/ConditionalParser.h"
 #include "conditional/ConditionalTree.h"
 
@@ -79,7 +79,7 @@ bool RuleParser::parseHeader()
 			advance();
 			if (peek()->t != token_t::IDENTIFIER)
 			{
-				ErrorPrinter::printViaToken(ErrorPrinter::SYNTAX_ERROR, "Expected identifier here.", peek());
+				CompilerMessage::error(message_class_t::INVALID_SYNTAX, "Expected identifier here.", peek());
 				return false;
 			}
 			else
@@ -113,7 +113,7 @@ bool RuleParser::parseSection()
 		advance();
 		if (peek()->t != token_t::COLON)
 		{
-			ErrorPrinter::printViaToken(ErrorPrinter::SYNTAX_ERROR, "Expected ':' after section name", previous());
+			CompilerMessage::error(message_class_t::INVALID_SYNTAX, "Expected ':' after section name", previous());
 			return false;
 		}
 
@@ -137,12 +137,12 @@ bool RuleParser::parseSection()
 bool RuleParser::parseVariables()
 {
 	printf("Parsing variables\n");
-
+	int variablesAdded = 0;
 	while (!(nextTokenIsSection(peek()->t)))
 	{
 		if ( !( matchInOrder( { token_t::TI_VARIABLE, token_t::IDENTIFIER, token_t::ASSIGNMENT } ) ) )
 		{
-			ErrorPrinter::printViaToken(ErrorPrinter::SYNTAX_ERROR, "Invalid variable. Expected '$<name> = <value>'", peek());
+			CompilerMessage::error(message_class_t::INVALID_SYNTAX, "Invalid variable. Expected '$<name> = <value>'", peek());
 			return false;
 		}
 		Variable::Type tType;
@@ -160,8 +160,8 @@ bool RuleParser::parseVariables()
 				tType = Variable::BYTE_SEQUENCE;
 				break;
 			default:
-				ErrorPrinter::printViaToken(
-					ErrorPrinter::SYNTAX_ERROR, 
+				CompilerMessage::error(
+					message_class_t::INVALID_SYNTAX,
 					"Invalid type. Expected one of (String, Regex, Byte Sequence)", 
 					peek()
 				);
@@ -184,12 +184,15 @@ bool RuleParser::parseVariables()
 		}
 
 		m_rule.addRule(name, value, tType, flags);
-		
+		variablesAdded++;
 		printf("Found variable: %s with '%s' as value\n", 
 			name.c_str(), 
 			value.c_str());
 	
 	}
+
+	if (variablesAdded == 0)
+		CompilerMessage::warning("No variables found for this rule.", previous());
 
 	return true;
 }
@@ -216,8 +219,8 @@ int8_t RuleParser::scanVariableMods()
 				break;
 			else
 			{
-				ErrorPrinter::printViaToken(
-					ErrorPrinter::SYNTAX_ERROR,
+				CompilerMessage::error(
+					message_class_t::INVALID_SYNTAX,
 					"Invalid modifier. Expected any of (wide, ascii, nocase)",
 					next
 				);

@@ -97,11 +97,8 @@ struct Token
 };
 
 
-#ifdef _DEBUG
 
 const char* getTokenName(token_t t);
-
-#endif // _DEBUG
 
 } // kdl
 

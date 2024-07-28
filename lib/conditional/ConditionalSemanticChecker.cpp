@@ -1,10 +1,12 @@
 #include "conditional/ConditionalSemanticChecker.h"
-#include "parser/ErrorPrinter.h"
+#include "parser/CompilerMessage.h"
 #include "parser/tokens.h"
 using kdl::ConditionalSemanticChecker;
 using kdl::CTokenPtr;
 using kdl::Token;
 using kdl::token_t;
+
+
 bool ConditionalSemanticChecker::isValidSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right)
 {
 	switch (op->t)
@@ -40,6 +42,11 @@ bool ConditionalSemanticChecker::isValid_CND_OF_Operation(CTokenPtr left, CToken
 		return error(left, "Expected 'all', 'any' or integer.");
 	}
 
+	if (left->t == token_t::INTEGER && std::stoi(left->val) == 0)
+		CompilerMessage::warning(
+			"Left side of conditional is zero.\nThis could result in unnecessary branching or code generation.",
+			left
+		);
 
 
 	return true;
@@ -53,15 +60,18 @@ bool ConditionalSemanticChecker::isValidRelationalOperation(CTokenPtr left, CTok
 	if (right->t != token_t::INTEGER)
 		return error(right, "Expected an integer");
 
+	
+
 	return true;
 }
 
 bool kdl::ConditionalSemanticChecker::error(CTokenPtr bad, const char* message)
 {
-	ErrorPrinter::printViaToken(
-		ErrorPrinter::SYNTAX_ERROR,
+	CompilerMessage::error(
+		message_class_t::INVALID_SEMANTICS,
 		message,
 		bad
 	);
+
 	return false;
 }

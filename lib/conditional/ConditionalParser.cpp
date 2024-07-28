@@ -1,5 +1,5 @@
 #include "conditional/ConditionalParser.h"
-#include "parser/ErrorPrinter.h"
+#include "parser/CompilerMessage.h"
 using kdl::ConditionalParser;
 using kdl::ConditionalTree;
 using kdl::Token;
@@ -56,8 +56,8 @@ bool kdl::ConditionalParser::parse()
 
 	if (isJunctionOperator(m_tokens[0].t))
 	{
-		ErrorPrinter::printViaToken(
-			ErrorPrinter::SYNTAX_ERROR,
+		CompilerMessage::error(
+			message_class_t::INVALID_SYNTAX,
 			"Condition cannot start with 'and' or 'or'",
 			&m_tokens[0]
 		);
@@ -66,8 +66,8 @@ bool kdl::ConditionalParser::parse()
 
 	if (isJunctionOperator(m_tokens.back().t))
 	{
-		ErrorPrinter::printViaToken(
-			ErrorPrinter::SYNTAX_ERROR,
+		CompilerMessage::error(
+			message_class_t::INVALID_SYNTAX,
 			"Condition cannot end with 'and' or 'or'",
 			&m_tokens.back()
 		);
@@ -88,8 +88,8 @@ bool kdl::ConditionalParser::parse()
 		auto* unclosedParenth = findMissingParenthesis();
 		if (unclosedParenth)
 		{
-			ErrorPrinter::printViaToken(
-				ErrorPrinter::SYNTAX_ERROR,
+			CompilerMessage::error(
+			message_class_t::INVALID_SYNTAX,
 				"No closing parenthesis found",
 				unclosedParenth
 			);
@@ -190,8 +190,8 @@ bool ConditionalParser::handleJunction(CTokenPtr op)
 
 	if (isJunctionOperator(op->t))
 	{
-		ErrorPrinter::printViaToken(
-			ErrorPrinter::SYNTAX_ERROR,
+		CompilerMessage::error(
+			message_class_t::INVALID_SYNTAX,
 			"Expected subcondition, got junction",
 			op
 		);

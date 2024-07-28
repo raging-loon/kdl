@@ -32,6 +32,9 @@ private:
 	const TokenList& m_tokenList;
 
 	int m_numTokens;
+	// TODO: see if DI would work better here
+	std::vector< CTokenMapView > m_ruleBlocks;
+	// CTokenMapView m_policyBlocks;
 
 	/// Parser-overriden functions
 	inline bool isAtEnd() override;

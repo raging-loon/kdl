@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include "type.h"
+#include "conditional/ConditionalTree.h"
 
 namespace kdl
 {
@@ -61,7 +62,7 @@ private:
 	RuleParameters m_params;
 
 	std::unordered_map<std::string, Variable> m_variables;
-
+	ConditionalTree m_conditions;
 };
 
 

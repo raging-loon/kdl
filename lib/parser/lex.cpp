@@ -1,8 +1,7 @@
 #include "parser/lex.h"
 #include "utils.h"
 
-#include "parser/ErrorPrinter.h"
-
+#include "parser/CompilerMessage.h"
 using namespace kdl;
 
 KeywordMap Lexer::m_keywords =
@@ -24,8 +23,8 @@ KeywordMap Lexer::m_keywords =
 };
 
 
-Lexer::Lexer(const char* filename, const char* source, int len)
-	: m_filename(filename), m_source(source), m_srcLen(len), m_tokens({})
+Lexer::Lexer(const char* source, int len)
+	: m_source(source), m_srcLen(len), m_tokens({})
 {
 }
 
@@ -89,6 +88,7 @@ void Lexer::scanToken()
 		case ' ':
 		case '\t':
 		case '\0':
+		case '\r':
 			break;
 		case '\n': 
 			m_curLine++; 
@@ -313,10 +313,9 @@ void Lexer::showError(const char* message)
 {
 	m_wasError = true;
 
-	ErrorPrinter::print(
-		ErrorPrinter::UNKNOWN_TOKEN,
+	CompilerMessage::print(
 		"Unknown token/operator/identifier",
-		m_curLine, m_lineStart, m_start
+		m_curLine, m_lineStart, m_start,m_current
 	);
 	
 }
