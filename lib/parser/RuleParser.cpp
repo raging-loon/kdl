@@ -256,8 +256,9 @@ bool RuleParser::parseConditionals()
 	if (!p.parse())
 	{
 		printf("There was an error\n");
+		return false;
 	}
-	ctree.dumpTree();
+	ctree.dumpTree2();
 
 	return false;
 }

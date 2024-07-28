@@ -68,7 +68,7 @@ public:
 	/// 
 	///		Otherwise, the subcondition becomes the head's right node
 	/// 
-	bool addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel);
+	bool addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel, bool leftIsMV = false, bool rightIsMv = false);
 
 
 	/// 
@@ -91,9 +91,18 @@ public:
 	///		right leaf to it's sub-tree's head.
 	///		It will also copy the contents of it's node list.	
 	/// 
-	bool merge(int pLevel);
+	bool merge(int &pLevel);
+
+
+	bool addVariableReference(CTokenPtr var, int pLevel, bool isMultiVar);
+
+
+	bool addExternalRuleReference();
+
+
 
 	void dumpTree();
+	void dumpTree2();
 
 private:
 	/// Private constructor to pass plevel 0's nodes to
@@ -102,7 +111,14 @@ private:
 	bool forwardSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel);
 	bool forwardJunction(CTokenPtr cmpOP, int pLevel);
 
+	bool forwardVariableReference(CTokenPtr var, int pLevel, bool isMultiVar);
+	
 	void _int_dumpTree(const CNode* head);
+	void _int_dumpTree2(const CNode* head, bool isLeftNode, const std::string& prefix);
+
+
+	constexpr void createSubTree();
+
 private:
 
 

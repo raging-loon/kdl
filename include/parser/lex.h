@@ -13,6 +13,20 @@ namespace kdl
 
 using KeywordMap = std::unordered_map<std::string, token_t>;
 using TokenList  = std::vector<Token>;
+
+///
+/// PURPOSE
+///		Given a string, pick out tokens and store them in a vector.
+/// 
+///		Data Transformations:
+///			1. Any byte sequence (.e.g | de ad be ef |) will be transformed
+///			   into an actual byte sequence (e.g. '\xde\xad\xbe\xef')
+///			2. Multivariables (e.g. $pdb*) will ignore the star at then end.
+///				$pdb* will not be read as VARIABLE IDENTIFIER STAR
+///				It will be read as VARIABLE MULTI_VAR_IDENTIFIER
+///			3. Any variables with parenthesis will have the parenthesis removed
+///				($malfn) => $malfn, ($str*) => $str*
+/// 
 class Lexer
 {
 public:
@@ -149,6 +163,8 @@ private:
 	///		string
 	/// 
 	///		The calling code is responsible for using m_start and m_current
+	/// 
+	///		Will ignore any 'target' preceded by '\'
 	/// 
 	void scanSection(char target);
 

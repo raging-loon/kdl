@@ -27,7 +27,8 @@ int main()
 	if (lex.scan() < 0)
 		return 1;
 	kdl::Combinator parse(lex.getTokens());
-	parse.parse();
+	if (!parse.parse())
+		printf("errrn\n");
 
 	return 0;
 }

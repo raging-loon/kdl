@@ -47,6 +47,11 @@ enum class token_t : int
 	BYTE_SEQ,
 	BYTE_SEQ_COND,
 	SIZE,
+
+	CND_THEM,
+	CND_ALL,
+	CND_ANY,
+	MULTI_VAR_IDENTIFIER,
 	IDENTIFIER,
 
 	// Modifiers
@@ -57,9 +62,6 @@ enum class token_t : int
 
 	// Conditions
 
-	CND_THEM,
-	CND_ALL,
-	CND_ANY,
 	CND_AT, 
 
 	// logical operators

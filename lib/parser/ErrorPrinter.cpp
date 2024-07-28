@@ -26,7 +26,7 @@ void ErrorPrinter::print(ErrorType t, const char* message, int lineNumber, int l
 	printf("%s\n",fromErrorCode(t));
 	printf("%s: %s:%d:%d\n",message, m_filename, lineNumber, startCharacter);
 
-	printf("\t %d|\t", lineNumber);
+	int pad =printf("\t %d | ", lineNumber);
 
 	for (int i = lineStart-1; i < m_sourceLen; i++)
 	{
@@ -35,10 +35,18 @@ void ErrorPrinter::print(ErrorType t, const char* message, int lineNumber, int l
 			break;
 	}
 	putchar('\t');
-	putchar('\t');
-	for (int i = lineStart; i <= startCharacter + 1; i++)
-	{
+
+	for(int i = 0; i < (pad - 3); i++)
 		putchar('\x20');
+	putchar('|');
+	putchar(' ');
+
+	for (int i = lineStart; i <= startCharacter; i++)
+	{
+		if (m_curSource[i-1] == '\t')
+			putchar('\t');
+		else
+			putchar('\x20');
 	}
 
 	putchar('^');

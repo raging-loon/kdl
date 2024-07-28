@@ -50,7 +50,11 @@ void Lexer::scanToken()
 
 	switch (c)
 	{
-		case '(': addToken(token_t::OPEN_PARENTHESIS); break;
+		case '(':
+		{
+			
+			addToken(token_t::OPEN_PARENTHESIS); break;
+		}
 		case ')': addToken(token_t::CLOSE_PARENTHESIS); break;
 		case '{': addToken(token_t::OPEN_BRACE); break;
 		case '}': addToken(token_t::CLOSE_BRACE); break;
@@ -121,7 +125,7 @@ bool Lexer::match(char n)
 	m_current++;
 	return true;
 }
-
+// todo: remove code duplication
 void Lexer::addToken(token_t tok)
 {
 	m_tokens.push_back({
@@ -173,10 +177,22 @@ void Lexer::scanIdentifierOrKeyword()
 	}
 	else
 	{
-		addToken(
-			token_t::IDENTIFIER,
-			test
-		);
+		if (peek() == '*')
+		{
+			addToken(
+				token_t::MULTI_VAR_IDENTIFIER,
+				test
+			);
+			advance();
+		}
+		else
+		{
+			addToken(
+				token_t::IDENTIFIER,
+				test
+			);
+
+		}
 	}
 }
 
@@ -271,10 +287,20 @@ void kdl::Lexer::scanByteSearch()
 
 void Lexer::scanSection(char target)
 {
-	while (peek() != target) advance();
 
-	while ((peek() != target) && !atEnd())
+	while (!atEnd())
+	{
+		if (peek() == target)
+		{
+			if (m_source[m_current - 1] == '\\')
+			{
+				advance();
+				continue;
+			}
+			break;
+		}
 		advance();
+	}
 	
 	if (atEnd())
 		assert(false);

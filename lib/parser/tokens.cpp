@@ -43,6 +43,7 @@ static std::unordered_map<token_t, const char*> tokenNames = {
 	{token_t::CND_ANY, "CND_ANY"},
 	{token_t::CND_ALL, "CND_ALL"},
 	{token_t::CND_AT, "CND_AT"},
+	{token_t::MULTI_VAR_IDENTIFIER, "MULTI_VAR_IDENTIFIER"},
 	{token_t::TEOF, "TEOF"}
 };
 

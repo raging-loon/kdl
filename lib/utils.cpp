@@ -12,7 +12,7 @@ bool utils::isNumeric(char c)
 
 bool utils::isSignedNumeric(char c)
 {
-	return ((c >= 0x30 && c <= 39) || c == '-' || c == '+');
+	return ((c >= 0x30 && c <= 0x39) || c == '-' || c == '+');
 }
 
 bool utils::isAlpha(char c)

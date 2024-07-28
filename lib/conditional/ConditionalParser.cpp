@@ -23,6 +23,27 @@ static constexpr bool isJunctionOperator(token_t t)
 }
 
 
+constexpr bool ConditionalParser::isSingleVariable()
+{
+	return matchInOrder({
+		token_t::TI_VARIABLE,
+		token_t::IDENTIFIER,
+		token_t::CLOSE_PARENTHESIS
+
+	});
+}
+
+
+constexpr bool ConditionalParser::isMultiVariable()
+{
+	return matchInOrder({ 
+		token_t::TI_VARIABLE,
+		token_t::IDENTIFIER,
+		token_t::STAR, 
+		token_t::CLOSE_PARENTHESIS
+	});
+		
+}
 
 ConditionalParser::ConditionalParser(ConditionalTree& ctree, CTokenMapView& ctmv)
 	: m_ctree(ctree), m_tokens(ctmv), m_numTokens(ctmv.size())
@@ -32,83 +53,48 @@ ConditionalParser::ConditionalParser(ConditionalTree& ctree, CTokenMapView& ctmv
 
 bool kdl::ConditionalParser::parse()
 {
-	CTokenPtr start = advance();
-	
-	if (m_cursor == 1 && isJunctionOperator(start->t))
+
+	if (isJunctionOperator(m_tokens[0].t))
 	{
 		ErrorPrinter::printViaToken(
 			ErrorPrinter::SYNTAX_ERROR,
 			"Condition cannot start with 'and' or 'or'",
-			start
+			&m_tokens[0]
+		);
+		return false;
+	}
+
+	if (isJunctionOperator(m_tokens.back().t))
+	{
+		ErrorPrinter::printViaToken(
+			ErrorPrinter::SYNTAX_ERROR,
+			"Condition cannot end with 'and' or 'or'",
+			&m_tokens.back()
 		);
 		return false;
 	}
 
 
-	if (isAtEnd()) 
-		return true;
-
-	
-	// TODO: move these branches into another function
-	CTokenPtr next = peek();
-
-	// test for a subcondition
-	if (isComparisonOperator(next->t))
+	while (!isAtEnd())
 	{
-
-		advance(); 
-		printf("Sub Condition Found: %s %s %s\n",
-			kdl::getTokenName(start->t),
-			kdl::getTokenName(previous()->t),
-			kdl::getTokenName(peek()->t)
-		);
-		if (!m_ctree.addSubCondition(previous(), start, peek(), pLevel))
+		if (!parseCondition())
+		{
 			return false;
-		return parse();
-
+		}
 	}
 
-	else if (isJunctionOperator(next->t))
+	if (pLevel != 0)
 	{
-		// If this is a junction the last token
-		// throw an error
-		if (m_cursor + 1 == m_numTokens)
+		auto* unclosedParenth = findMissingParenthesis();
+		if (unclosedParenth)
 		{
 			ErrorPrinter::printViaToken(
 				ErrorPrinter::SYNTAX_ERROR,
-				"Condition cannot end with 'and' or 'or'",
-				previous()
+				"No closing parenthesis found",
+				unclosedParenth
 			);
 			return false;
 		}
-
-		printf("Junction Found: %s\n", kdl::getTokenName(next->t));
-		if (!m_ctree.addJunction(next, pLevel))
-			return false;
-		advance();
-
-		return parse();
-		
-	}
-
-	else if (next->t == token_t::CLOSE_PARENTHESIS)
-	{
-		if ((pLevel - 1) < 0)
-			return false;
-		m_ctree.merge(pLevel);
-		pLevel--;
-
-		return parse();
-	}
-	else if (start->t == token_t::OPEN_PARENTHESIS)
-	{
-		pLevel++;
-		return parse();
-	}
-	
-	else if (pLevel != 0)
-	{
-
 	}
 
 	return true;
@@ -140,4 +126,159 @@ bool kdl::ConditionalParser::check(token_t t)
 {
 	if (isAtEnd()) return false;
 	return peek()->t == t;
+}
+
+bool ConditionalParser::parseCondition()
+{
+	CTokenPtr start = advance();
+	
+	if (isAtEnd())
+		return true;
+
+	CTokenPtr next = peek();
+
+	// test for a subcondition
+	if (isComparisonOperator(next->t))
+	{
+
+		auto res = handleSubcondition(start);
+		return res;
+
+	}
+
+	else if (isJunctionOperator(next->t))
+		return handleJunction(start);
+
+	else if (next->t == token_t::CLOSE_PARENTHESIS)
+		return handleCloseParenthesis();
+
+	else if (start->t == token_t::OPEN_PARENTHESIS)
+		return handleOpenParenthesis();
+	//else if (next->t == token_t::IDENTIFIER)
+	//	return m_ctree.addVariableReference(next, pLevel, false);
+	//else if (next->t == token_t::MULTI_VAR_IDENTIFIER)
+	//	return m_ctree.addVariableReference(next, pLevel, true);
+
+
+	else if (start->t == token_t::TI_VARIABLE)
+		return handleVariable(start);
+	
+
+	else
+		return false;
+}
+
+CTokenPtr ConditionalParser::findMissingParenthesis()
+{
+	int curPlevel = 0;
+
+	for (int i = 0; i < m_numTokens; i++)
+	{
+		if (m_tokens[i].t == token_t::OPEN_PARENTHESIS)
+			++curPlevel;
+
+		if (curPlevel == pLevel)
+			return &m_tokens[i];
+	}
+
+	return nullptr;
+
+}
+
+bool ConditionalParser::handleJunction(CTokenPtr op)
+{
+
+	if (isJunctionOperator(op->t))
+	{
+		ErrorPrinter::printViaToken(
+			ErrorPrinter::SYNTAX_ERROR,
+			"Expected subcondition, got junction",
+			op
+		);
+		return false;
+	}
+
+	printf("Junction Found: %s\n", kdl::getTokenName(peek()->t));
+	
+	bool result = m_ctree.addJunction(peek(), pLevel);
+	
+	advance();
+
+	return result;
+}
+
+bool ConditionalParser::handleVariable(CTokenPtr start)
+{
+	if (peek()->t == token_t::IDENTIFIER)
+		return m_ctree.addVariableReference(peek(), pLevel, false);
+	
+	if(peek()->t == token_t::MULTI_VAR_IDENTIFIER)
+		return m_ctree.addVariableReference(peek(), pLevel, true);
+
+	return false;
+
+}
+
+bool ConditionalParser::handleOpenParenthesis()
+{
+
+	int variableNamePos = m_cursor + 1;
+	if (isMultiVariable())
+	{
+		printf("we've gut a multivariable\n");
+		return m_ctree.addVariableReference(&m_tokens[variableNamePos], pLevel, true);
+	}
+
+	if (isSingleVariable())
+	{
+		printf("we've gut a single variable\n");
+		return m_ctree.addVariableReference(&m_tokens[variableNamePos], pLevel, false);
+	}
+
+	pLevel++;
+
+	return true;
+}
+
+bool ConditionalParser::handleCloseParenthesis()
+{
+	if ((pLevel - 1) < 0)
+		return false;
+	
+	int copy = pLevel;
+	
+	m_ctree.merge(copy);
+	
+	pLevel--;
+
+	return true;
+
+}
+
+bool ConditionalParser::handleSubcondition(CTokenPtr start)
+{
+
+	advance();
+	
+	printf("Sub Condition Found: %s %s %s\n",
+		kdl::getTokenName(start->t),
+		kdl::getTokenName(previous()->t),
+		kdl::getTokenName(peek()->t)
+	);
+	CTokenPtr op = previous();
+
+	CTokenPtr rval = peek();
+	if (peek()->t == token_t::TI_VARIABLE)
+	{
+		printf("testing\n");
+		advance();
+		if (peek()->t != token_t::IDENTIFIER && peek()->t != token_t::MULTI_VAR_IDENTIFIER)
+		{
+			printf("ERrorroror\n");
+			return false;
+		}
+		rval = peek();
+	}
+	return m_ctree.addSubCondition(op, start, rval, pLevel);
+
 }

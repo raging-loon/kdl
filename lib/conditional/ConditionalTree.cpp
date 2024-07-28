@@ -1,8 +1,9 @@
-#include "conditional/ConditionalTree.h"
-
+﻿#include "conditional/ConditionalTree.h"
+#include "conditional/ConditionalSemanticChecker.h"
 using kdl::CNode;
 using kdl::CTokenPtr;
 using kdl::ConditionalTree;
+using kdl::ConditionalSemanticChecker;
 using kdl::token_t;
 
 
@@ -36,11 +37,12 @@ ConditionalTree::~ConditionalTree()
 		delete m_subTree;
 }
 
-bool ConditionalTree::addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel)
+bool ConditionalTree::addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel, bool leftIsMV, bool rightIsMv)
 {
 	if (!op || !left || !right)
 		return false;
 
+	
 
 	auto* nnode = new CNode(op);
 
@@ -48,6 +50,10 @@ bool ConditionalTree::addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr ri
 
 
 	nnode->right = new CNode(right);
+	if (left->t == token_t::MULTI_VAR_IDENTIFIER)
+		nnode->left->isMultiVar = true;
+	if (right->t == token_t::MULTI_VAR_IDENTIFIER)
+		nnode->right->isMultiVar = true;
 
 	m_nodes->push_back(nnode);
 	m_nodes->push_back(nnode->left);
@@ -62,15 +68,15 @@ bool ConditionalTree::addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr ri
 	else
 		m_head->right = nnode;
 
+	
 
-
-	return true;
+	return ConditionalSemanticChecker::isValidSubCondition(op, left, right);
 }
 
 bool ConditionalTree::addJunction(CTokenPtr cmpOP, int pLevel)
 {
-	if (!cmpOP || !m_head) return false;
-
+	if (!cmpOP)
+		return false;
 	auto* nnode = new CNode(cmpOP);
 	m_nodes->push_back(nnode);
 
@@ -92,14 +98,34 @@ bool ConditionalTree::addJunction(CTokenPtr cmpOP, int pLevel)
 	return true;
 }
 
-bool ConditionalTree::merge(int pLevel)
+bool ConditionalTree::addVariableReference(CTokenPtr var, int pLevel, bool isMultiVar)
+{
+	auto* nvar = new CNode(var);
+	nvar->value = var;
+	nvar->isMultiVar = isMultiVar;
+
+	m_nodes->push_back(nvar);
+
+	if (pLevel != m_p_level)
+		return forwardVariableReference(var, pLevel, isMultiVar);
+
+	if (!m_head)
+		m_head = nvar;
+	else
+		m_head->right = nvar;
+
+
+	return true;
+}
+
+
+
+bool ConditionalTree::merge(int &pLevel)
 {
 	if (!m_subTree) return true;
 	
-	if(pLevel != m_p_level)
-		m_subTree->merge(pLevel);
 
-	if (pLevel >= m_p_level)
+	if (pLevel - 1== m_p_level)
 	{
 
 		printf("[%d] Merging sub tree (%d).\n", m_p_level, pLevel);
@@ -114,14 +140,15 @@ bool ConditionalTree::merge(int pLevel)
 
 		delete m_subTree;
 		m_subTree = nullptr;
+
 	}
-
-
-
+	else
+		m_subTree->merge(pLevel);
 
 
 	return true;
 }
+
 
 void ConditionalTree::dumpTree()
 {
@@ -130,23 +157,32 @@ void ConditionalTree::dumpTree()
 
 }
 
+void ConditionalTree::dumpTree2()
+{
+	_int_dumpTree2(m_head, false, "");
+}
+
 
 bool ConditionalTree::forwardSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel)
 {
-	if (!m_subTree)
-		m_subTree = new ConditionalTree(m_nodes, m_p_level + 1);
-
+	createSubTree();
 	return m_subTree->addSubCondition(op, left, right, pLevel);
 
 }
 
 bool ConditionalTree::forwardJunction(CTokenPtr cmpOP, int pLevel)
 {
-	if (!m_subTree)
-		m_subTree = new ConditionalTree(m_nodes, m_p_level + 1);
-
+	createSubTree();
 	return m_subTree->addJunction(cmpOP, pLevel);
 }
+
+bool ConditionalTree::forwardVariableReference(CTokenPtr var, int pLevel, bool isMultiVar)
+{
+	createSubTree();
+
+	return m_subTree->addVariableReference(var, pLevel, isMultiVar);
+}
+
 
 void ConditionalTree::_int_dumpTree(const CNode* head)
 {
@@ -159,4 +195,40 @@ void ConditionalTree::_int_dumpTree(const CNode* head)
 		putchar(')');
 
 	}
+}
+
+void kdl::ConditionalTree::_int_dumpTree2(const CNode* head, bool isLeftNode, const std::string& prefix)
+{
+	if (head)
+	{
+
+		printf("%s", prefix.c_str());
+
+		printf("%s", isLeftNode ? "|--" : "\\--");
+
+		if (!head->left && !head->right && head->value->t == token_t::IDENTIFIER)
+		{
+			if (head->isMultiVar)
+				printf("MultiVar ");
+			else
+				printf("SingleVar ");
+			printf("%s\n", getTokenName(head->value->t));
+
+		}
+		else
+		{
+			printf("%s\n", getTokenName(head->value->t));
+
+			_int_dumpTree2(head->left, true, prefix + (isLeftNode ? "|   " : "    "));
+			_int_dumpTree2(head->right, false, prefix + (isLeftNode ? "|   " : "    "));
+
+
+		}
+	}
+}
+
+constexpr void kdl::ConditionalTree::createSubTree()
+{
+	if (!m_subTree)
+		m_subTree = new ConditionalTree(m_nodes, m_p_level + 1);
 }
