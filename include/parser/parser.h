@@ -16,7 +16,7 @@ using CTokenMapIter = TokenList::const_iterator;
 /// without creating copies.
 using CTokenMapView = std::span<const Token>;
 
-
+using RuleBlockList = std::vector< CTokenMapView >;
 ///
 /// PURPOSE
 ///		General Parser Class

@@ -25,7 +25,7 @@ bool Combinator::parse()
 		if (!nextBlock()) 
 			return false;
 	}
-	printf("Found %d rules\n", m_ruleBlocks.size());
+	printf("Found %zd rules\n", m_ruleBlocks.size());
 	return true;
 }
 
@@ -110,15 +110,14 @@ bool Combinator::nextBlock()
 			return false;
 
 		}
-	/*	CTokenMapView s(m_tokenList.data() + ruleStart, (sectionEnd - ruleStart));
-		Rule r;
-		RuleParser p(s, r);
-
-		p.parse();*/
-
 		m_ruleBlocks.push_back( CTokenMapView( m_tokenList.data() + ruleStart, (sectionEnd - ruleStart) ));
 
-		m_cursor = sectionEnd ;
+		/*Rule r;
+		RuleParser p(m_ruleBlocks.back(), r);
+
+		p.parse();
+		*/
+		m_cursor = sectionEnd;
 		return true;
 	}
 	return false;
