@@ -13,6 +13,10 @@ struct Variable
 	constexpr static uint8_t RMOD_ASCII = (1 << 1);
 	constexpr static uint8_t RMOD_NOCASE = (1 << 2);
 	
+	constexpr static uint8_t REF_TYPE_LOCAL_VAR = 1;
+	constexpr static uint8_t REF_TYPE_RULE = 2;
+	constexpr static uint8_t REF_TYPE_EXTERNAL_VAR = 3;
+
 	enum Type
 	{
 		NONE,
@@ -25,7 +29,10 @@ struct Variable
 
 	Type type {NONE};
 
-	uint8_t searchMods{ 0 };
+	uint8_t searchMods;
+
+	uint8_t referenceType;
+
 };
 
 

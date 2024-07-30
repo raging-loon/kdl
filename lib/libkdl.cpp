@@ -10,8 +10,8 @@ int main()
 {
 
 	kdl::Compiler c;
-	c.compileSource(nullptr);
 	
+	c.compileFile("../../../tests/test.kdl");
 
 	return 0;
 }

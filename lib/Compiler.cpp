@@ -2,7 +2,8 @@
 #include "parser/CompilerMessage.h"
 #include "parser/Combinator.h"
 #include "parser/RuleParser.h"
-
+#include "channels/RulePool.h"
+#include "conditional/ConditionalReferenceValidator.h"
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -20,23 +21,20 @@ Compiler::~Compiler()
 
 bool Compiler::compileFile(const char* filename)
 {
-	return false;
+	std::ifstream in(filename);
+	auto sz = std::filesystem::file_size(filename);
+
+	std::string buffer(sz, 0);
+
+	in.read((char*)buffer.c_str(), sz);
+	kdl::CompilerMessage::setSource(buffer.c_str(), filename, buffer.length());
+
+	return compileSource(buffer.c_str(), sz);
 }
 
-bool Compiler::compileSource(const char* source)
+bool Compiler::compileSource(const char* source, int len)
 {
-
-
-	std::ifstream in("../../../tests/test.kdl");
-	//buf << in.rdbuf();
-
-	auto sz = std::filesystem::file_size("../../../tests/test.kdl");
-
-	std::string buf(sz, 0);
-	in.read((char*)buf.c_str(), sz);
-
-	kdl::CompilerMessage::setSource(buf.c_str(), "tests/test.kdl", buf.length());
-	kdl::Lexer lex(buf.c_str(), buf.length());
+	kdl::Lexer lex(source, len);
 
 	if (lex.scan() < 0)
 		return 1;
@@ -47,13 +45,19 @@ bool Compiler::compileSource(const char* source)
 	if (!parse.parse())
 		printf("errrn\n");
 
-	printf("Found %zd rules\n",parse.getBlockList().size());
+	Rule* list = new Rule[parse.getBlockList().size()];
+	memset(list, 0, sizeof(Rule));
+	int listSize = 0;
+
 	for (auto& i : parse.getBlockList())
 	{
-		Rule r;
-		RuleParser rp(i, r);
+		Rule* curPos = &list[listSize++];
+		Rule* cur = new (curPos) Rule();
+		RuleParser rp(i, *cur);
 		rp.parse();
 	}
 
+
+	delete[] list;
 	return true;
 }

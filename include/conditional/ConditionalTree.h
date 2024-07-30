@@ -3,7 +3,7 @@
 
 #include "parser/parser.h"
 #include "parser/tokens.h"
-
+#include <vector>
 namespace kdl
 {
 /* 
@@ -15,10 +15,10 @@ TODO:
 
 struct CNode
 {
-	CNode* left;
-	CNode* right;
+	CNode* left{ nullptr };
+	CNode* right{ nullptr };
 
-	CTokenPtr value;
+	CTokenPtr value{nullptr};
 	// Is something like $malfn*
 	bool isMultiVar;
 
@@ -29,6 +29,7 @@ struct CNode
 
 };
 
+using CNodeList = std::vector<CNode*>;
 
 ///
 /// PURPOSE
@@ -94,19 +95,16 @@ public:
 	bool merge(int &pLevel);
 
 
+	const CNode* const getHead() const { return m_head; }
+
 	bool addVariableReference(CTokenPtr var, int pLevel, bool isMultiVar);
-
-
-	bool addExternalRuleReference();
-
-
 
 	void dumpTree();
 	void dumpTree2();
 
 private:
 	/// Private constructor to pass plevel 0's nodes to
-	ConditionalTree(std::vector<CNode*>* sharedNodes, int pLevel);
+	ConditionalTree(CNodeList* sharedNodes, int pLevel);
 
 	bool forwardSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel);
 	bool forwardJunction(CTokenPtr cmpOP, int pLevel);
@@ -125,8 +123,8 @@ private:
 	CNode* m_head;
 
 	/// List of pointers to the nodes so they can be destroyed 
-	std::vector<CNode*>* m_nodes;
-
+	CNodeList	* m_nodesPtr;
+	CNodeList m_nodes;
 	/// Our parenthesis level
 	int m_p_level;
 

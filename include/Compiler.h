@@ -18,7 +18,7 @@ public:
 	~Compiler();
 
 	bool compileFile(const char* filename);
-	bool compileSource(const char* source);
+	bool compileSource(const char* source, int len);
 
 
 private:

@@ -253,15 +253,15 @@ bool RuleParser::parseConditionals()
 
 
 	CTokenMapView map(m_tokenMapView.data() + start, (end - start));
-	ConditionalTree ctree{};
+	ConditionalParser p(m_rule.m_conditions , map);
 
-	ConditionalParser p(ctree, map);
 	if (!p.parse())
 	{
 		printf("There was an error\n");
 		return false;
 	}
-	ctree.dumpTree2();
+	printf("%p\n",m_rule);
+	m_rule.m_conditions.dumpTree2();
 
 	return false;
 }

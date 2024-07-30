@@ -29,8 +29,11 @@ enum class RuleParameters : uint16_t
 /// 
 class Rule
 {
+	friend class ConditionalReferenceValidator;
+
 public:
 	Rule();
+	~Rule() {}
 
 public:
 	/// Getters/Setters
@@ -51,6 +54,7 @@ public:
 	
 	/// Returns a copy
 	inline RuleParameters getRuleParamters() { return m_params; }
+	ConditionalTree m_conditions;
 
 public:
 	// name and value will be copied
@@ -62,7 +66,6 @@ private:
 	RuleParameters m_params;
 
 	std::unordered_map<std::string, Variable> m_variables;
-	ConditionalTree m_conditions;
 };
 
 

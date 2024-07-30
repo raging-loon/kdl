@@ -1,24 +1,27 @@
 ﻿#include "conditional/ConditionalTree.h"
 #include "conditional/ConditionalSemanticChecker.h"
+
+#include <cstdlib>
+
 using kdl::CNode;
 using kdl::CTokenPtr;
 using kdl::ConditionalTree;
 using kdl::ConditionalSemanticChecker;
 using kdl::token_t;
-
+using kdl::CNodeList;
 
 ConditionalTree::ConditionalTree(int pLevel)
 	: m_head{nullptr}, m_p_level(pLevel)
 {
 	if (pLevel == 0)
-		m_nodes = new std::vector<CNode*>;
+		m_nodesPtr = &m_nodes;
 }
 
-ConditionalTree::ConditionalTree(std::vector<CNode*>* sharedNodes, int pLevel)
+ConditionalTree::ConditionalTree(CNodeList* sharedNodes, int pLevel)
 	: m_head{ nullptr }, m_p_level { pLevel }
 {
 	printf("New subtree made. %d owned by %d\n",pLevel, pLevel-1);
-	m_nodes = sharedNodes;
+	m_nodesPtr = sharedNodes;
 
 }
 ConditionalTree::~ConditionalTree()
@@ -26,16 +29,19 @@ ConditionalTree::~ConditionalTree()
 	// only clean up nodes if we are plevel 0 i.e we are the top of the tree list
 	if (m_p_level == 0)
 	{
-		for (int i = 0; i < m_nodes->size(); i++)
-			delete m_nodes->at(i);
+		printf("I am being destroyed\n");
+		for (int i = 0; i < m_nodes.size(); i++)
+		{
+			delete m_nodes.at(i);
+				
+		}
 
-		m_nodes->clear();
-		delete m_nodes;
 	}
 
 	if (m_subTree)
 		delete m_subTree;
 }
+
 
 bool ConditionalTree::addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel, bool leftIsMV, bool rightIsMv)
 {
@@ -55,9 +61,9 @@ bool ConditionalTree::addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr ri
 	if (right->t == token_t::MULTI_VAR_IDENTIFIER)
 		nnode->right->isMultiVar = true;
 
-	m_nodes->push_back(nnode);
-	m_nodes->push_back(nnode->left);
-	m_nodes->push_back(nnode->right);
+	m_nodesPtr->push_back(nnode);
+	m_nodesPtr->push_back(nnode->left);
+	m_nodesPtr->push_back(nnode->right);
 
 	if (pLevel != m_p_level)
 		return forwardSubCondition(op, left, right, pLevel);
@@ -78,7 +84,7 @@ bool ConditionalTree::addJunction(CTokenPtr cmpOP, int pLevel)
 	if (!cmpOP)
 		return false;
 	auto* nnode = new CNode(cmpOP);
-	m_nodes->push_back(nnode);
+	m_nodesPtr->push_back(nnode);
 
 	if (pLevel == m_p_level)
 	{
@@ -104,8 +110,7 @@ bool ConditionalTree::addVariableReference(CTokenPtr var, int pLevel, bool isMul
 	nvar->value = var;
 	nvar->isMultiVar = isMultiVar;
 
-	m_nodes->push_back(nvar);
-
+	m_nodesPtr->push_back(nvar);
 	if (pLevel != m_p_level)
 		return forwardVariableReference(var, pLevel, isMultiVar);
 
@@ -230,5 +235,5 @@ void kdl::ConditionalTree::_int_dumpTree2(const CNode* head, bool isLeftNode, co
 constexpr void kdl::ConditionalTree::createSubTree()
 {
 	if (!m_subTree)
-		m_subTree = new ConditionalTree(m_nodes, m_p_level + 1);
+		m_subTree = new ConditionalTree(m_nodesPtr, m_p_level + 1);
 }

@@ -6,7 +6,8 @@ using kdl::Rule;
 Rule::Rule()
 	: m_name({}), 
 	  m_params(RuleParameters::NONE), 
-	  m_variables({})
+	  m_variables({}),
+	  m_conditions(0)
 {
 }
 
