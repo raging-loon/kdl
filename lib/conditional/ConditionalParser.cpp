@@ -12,11 +12,6 @@ static constexpr bool isComparisonOperator(token_t t)
 	return t >= token_t::CND_OF && t <= token_t::KW_EQUALITY;
 }
 
-static constexpr bool isValidLeftRightValue(token_t t)
-{
-	return t >= token_t::STRING && t <= token_t::IDENTIFIER;
-}
-
 static constexpr bool isJunctionOperator(token_t t)
 {
 	return t >= token_t::KW_OR && t <= token_t::KW_AND_OP;

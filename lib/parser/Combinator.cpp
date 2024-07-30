@@ -64,8 +64,6 @@ bool Combinator::check(token_t t)
 
 int Combinator::getBlockEndIndex()
 {
-	int startCursorLocation = m_cursor;
-
 	const Token* tok = nullptr;
 	while ((tok = peek()) != nullptr)
 	{
