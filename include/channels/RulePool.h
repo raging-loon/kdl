@@ -1,8 +1,7 @@
 #ifndef CHANNELS_RULE_POOL_H_
 #define CHANNELS_RULE_POOL_H_
 
-#include <vector>
-
+#include "template/Array.h"
 #include "rule.h"
 
 namespace kdl
@@ -11,19 +10,18 @@ namespace kdl
 ///
 /// PURPOSE
 ///		Hold a list of rules
-///		Handles allocation of rules so they are organized
-///		in a cache friendly manner. This way they can be
-///		iterated over quickly (via getIterator/getIteratorEnd)
 /// 
-class RulePool
+/*class RulePool
 {
 	friend class ConditionalReferenceValidator;
 public:
 
 private:
-	
-};
 
+	
+};*/
+
+using RulePool = kdl::Array<Rule>;
 
 } // kdl
 

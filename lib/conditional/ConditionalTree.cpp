@@ -29,7 +29,7 @@ ConditionalTree::~ConditionalTree()
 	// only clean up nodes if we are plevel 0 i.e we are the top of the tree list
 	if (m_p_level == 0)
 	{
-		printf("I am being destroyed\n");
+		//printf("I am being destroyed\n");
 		for (int i = 0; i < m_nodes.size(); i++)
 		{
 			delete m_nodes.at(i);

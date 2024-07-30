@@ -22,7 +22,7 @@ add_executable (libkdl "lib/libkdl.cpp" "include/libkdl.h" "include/parser/lex.h
 					   "lib/parser/Combinator.cpp"
 					   "include/channels/RulePool.h" "lib/channels/rule.cpp" "lib/utils.cpp" "include/conditional/ConditionalTree.h" 
 					   "include/conditional/ConditionalParser.h" "lib/conditional/ConditionalParser.cpp" "lib/conditional/ConditionalTree.cpp" 
-					  "include/conditional/ConditionalSemanticChecker.h" "lib/conditional/ConditionalSemanticChecker.cpp" "include/parser/CompilerMessage.h" "lib/parser/CompilerMessage.cpp" "include/backend/CodeGenerator.h" "include/search/search.h" "include/conditional/ConditionalReferenceValidator.h" "include/Compiler.h" "lib/Compiler.cpp" "lib/conditional/ConditionalReferenceValidator.cpp" "lib/channels/RulePool.cpp" "include/template/Array.h")
+					  "include/conditional/ConditionalSemanticChecker.h" "lib/conditional/ConditionalSemanticChecker.cpp" "include/parser/CompilerMessage.h" "lib/parser/CompilerMessage.cpp" "include/backend/CodeGenerator.h" "include/search/search.h" "include/conditional/ConditionalReferenceValidator.h" "include/Compiler.h" "lib/Compiler.cpp" "lib/conditional/ConditionalReferenceValidator.cpp"  "include/template/Array.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET libkdl PROPERTY CXX_STANDARD 20)

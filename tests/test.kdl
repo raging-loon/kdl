@@ -10,7 +10,7 @@ rule email_Ukraine_power_attack_content : mail {
 		0 of them
 }
 
-rule pony {
+rule pony_malware  {
 	content:
     	$s1 = "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}"
     	$s2 = "YUIPWDFILE0YUIPKDFILE0YUICRYPTED0YUI1.0"
@@ -18,5 +18,5 @@ rule pony {
     	$s4 = "Accept-Encoding: identity, *;q=0"
 
     condition:
-        $s1 and $s2 and $s3 and $s4
+        any of $sa*
 }

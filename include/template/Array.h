@@ -21,8 +21,13 @@ public:
     }
     ~Array()
     {
+
+        for (int i = 0; i < m_size; i++)
+            m_array[i].~T();
         if (m_array)
-            free(m_array);
+            ::free(m_array);
+    
+          
     }
 
     T* operator[](int index)
@@ -47,12 +52,15 @@ public:
     {
         T* new_arr = (T*)malloc(sizeof(T) * n);
 
-
-        for (int i = 0; i < m_size; i++)
-            new_arr[i] = m_array[i];
-
+        // only copy data if there is data to copy.
         if (m_array)
-            free(m_array);
+        {
+            for (int i = 0; i < m_size; i++)
+                new_arr[i] = m_array[i];
+
+            if (m_array)
+                free(m_array);
+        }
 
         m_array = (T*)new_arr;
         m_maxSize = n;

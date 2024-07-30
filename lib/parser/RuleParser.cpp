@@ -260,7 +260,6 @@ bool RuleParser::parseConditionals()
 		printf("There was an error\n");
 		return false;
 	}
-	printf("%p\n",m_rule);
 	m_rule.m_conditions.dumpTree2();
 
 	return false;

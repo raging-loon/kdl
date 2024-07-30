@@ -45,19 +45,16 @@ bool Compiler::compileSource(const char* source, int len)
 	if (!parse.parse())
 		printf("errrn\n");
 
-	Rule* list = new Rule[parse.getBlockList().size()];
-	memset(list, 0, sizeof(Rule));
-	int listSize = 0;
 
 	for (auto& i : parse.getBlockList())
 	{
-		Rule* curPos = &list[listSize++];
-		Rule* cur = new (curPos) Rule();
-		RuleParser rp(i, *cur);
+		RuleParser rp(i, *m_rules.add());
 		rp.parse();
-	}
+	} 
 
+	ConditionalReferenceValidator crv(m_rules);
+	if (!crv.check())
+		printf("err0r\n");
 
-	delete[] list;
 	return true;
 }
