@@ -43,6 +43,7 @@ ConditionalTree::~ConditionalTree()
 }
 
 
+
 bool ConditionalTree::addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel, bool leftIsMV, bool rightIsMv)
 {
 	if (!op || !left || !right)

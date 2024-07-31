@@ -18,5 +18,15 @@ rule pony_malware  {
     	$s4 = "Accept-Encoding: identity, *;q=0"
 
     condition:
-        any of $sa*
+        any of them
+}
+rule pony_malware2  {
+	content:
+    	$s1 = "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}"
+    	$s2 = "YUIPWDFILE0YUIPKDFILE0YUICRYPTED0YUI1.0"
+    	$s3 = "POST %s HTTP/1.0"
+    	$s4 = "Accept-Encoding: identity, *;q=0"
+
+    condition:
+        any of them
 }

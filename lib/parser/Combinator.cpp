@@ -25,7 +25,6 @@ bool Combinator::parse()
 		if (!nextBlock()) 
 			return false;
 	}
-	printf("Found %zd rules\n", m_ruleBlocks.size());
 	return true;
 }
 

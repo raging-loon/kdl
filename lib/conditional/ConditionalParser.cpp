@@ -193,7 +193,7 @@ bool ConditionalParser::handleJunction(CTokenPtr op)
 		return false;
 	}
 
-	printf("Junction Found: %s\n", kdl::getTokenName(peek()->t));
+	//printf("Junction Found: %s\n", kdl::getTokenName(peek()->t));
 	
 	bool result = m_ctree.addJunction(peek(), pLevel);
 	
@@ -220,13 +220,13 @@ bool ConditionalParser::handleOpenParenthesis()
 	int variableNamePos = m_cursor + 1;
 	if (isMultiVariable())
 	{
-		printf("we've gut a multivariable\n");
+	//	printf("we've gut a multivariable\n");
 		return m_ctree.addVariableReference(&m_tokens[variableNamePos], pLevel, true);
 	}
 
 	if (isSingleVariable())
 	{
-		printf("we've gut a single variable\n");
+	//	printf("we've gut a single variable\n");
 		return m_ctree.addVariableReference(&m_tokens[variableNamePos], pLevel, false);
 	}
 
@@ -255,17 +255,16 @@ bool ConditionalParser::handleSubcondition(CTokenPtr start)
 
 	advance();
 	
-	printf("Sub Condition Found: %s %s %s\n",
+	/*printf("Sub Condition Found: %s %s %s\n",
 		kdl::getTokenName(start->t),
 		kdl::getTokenName(previous()->t),
 		kdl::getTokenName(peek()->t)
-	);
+	);*/
 	CTokenPtr op = previous();
 
 	CTokenPtr rval = peek();
 	if (peek()->t == token_t::TI_VARIABLE)
 	{
-		printf("testing\n");
 		advance();
 		if (peek()->t != token_t::IDENTIFIER && peek()->t != token_t::MULTI_VAR_IDENTIFIER)
 		{

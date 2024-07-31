@@ -84,7 +84,7 @@ bool RuleParser::parseHeader()
 			}
 			else
 			{
-				printf("Paramter found: %s\n", peek()->val.c_str());
+				//printf("Paramter found: %s\n", peek()->val.c_str());
 				
 				m_rule.setRuleParameters(peek()->val);
 			}
@@ -92,8 +92,6 @@ bool RuleParser::parseHeader()
 			advance();
 		}
 
-		else if (peek()->t == token_t::OPEN_BRACE)
-			printf("Rule has no paramters\n");
 		
 		// get past the open brace
 		advance();
@@ -136,7 +134,6 @@ bool RuleParser::parseSection()
 
 bool RuleParser::parseVariables()
 {
-	printf("Parsing variables\n");
 	int variablesAdded = 0;
 	while (!(nextTokenIsSection(peek()->t)))
 	{
@@ -185,10 +182,10 @@ bool RuleParser::parseVariables()
 
 		m_rule.addRule(name, value, tType, flags);
 		variablesAdded++;
-		printf("Found variable: %s with '%s' as value\n", 
+	/*	printf("Found variable: %s with '%s' as value\n", 
 			name.c_str(), 
 			value.c_str());
-	
+	*/
 	}
 
 	if (variablesAdded == 0)
@@ -234,7 +231,7 @@ int8_t RuleParser::scanVariableMods()
 
 bool RuleParser::parseConditionals()
 {
-	printf("parsing conditionals\n");
+	//printf("parsing conditionals\n");
 
 	int start = m_cursor;
 	int end = m_cursor;
@@ -260,7 +257,7 @@ bool RuleParser::parseConditionals()
 		printf("There was an error\n");
 		return false;
 	}
-	m_rule.m_conditions.dumpTree2();
+	//m_rule.m_conditions.dumpTree2();
 
 	return false;
 }

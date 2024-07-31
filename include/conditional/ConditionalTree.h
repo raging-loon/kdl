@@ -26,7 +26,7 @@ struct CNode
 		: left(nullptr), right(nullptr), value(val), isMultiVar(false)
 	{}
 
-
+	
 };
 
 using CNodeList = std::vector<CNode*>;
@@ -60,7 +60,6 @@ class ConditionalTree
 public:
 	ConditionalTree(int pLevel = 0);
 	~ConditionalTree();
-
 	///
 	/// PURPOSE
 	///		Adds a subcondition to the tree

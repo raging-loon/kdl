@@ -45,7 +45,7 @@ bool Compiler::compileSource(const char* source, int len)
 	if (!parse.parse())
 		printf("errrn\n");
 
-
+	m_rules.resize(parse.getBlockList().size());
 	for (auto& i : parse.getBlockList())
 	{
 		RuleParser rp(i, *m_rules.add());
