@@ -1,0 +1,55 @@
+
+
+
+$x and $y and any of $str*
+
+
+{
+	bool any_of_str_star = match("srt1") || match("str2") || match("str3");
+
+
+	return (match("x") || match("y")) && any_of_str_star;
+
+}
+
+all of them
+
+{
+	
+	return match("str1") && match("str2") && match("str3")
+
+}
+
+2 of them
+
+{
+	bool _2_of_them = false;
+	{
+		register int counter = 0;
+		counter += match("str1");
+
+		if(counter == 1)
+		{
+			_2_of_them = true;
+			goto end;
+		}
+		counter += match("str2");
+
+		if(counter == 1)
+		{
+			_2_of_them = true;
+			goto end;
+		}
+		counter += match("str3");
+
+		if(counter == 1)
+		{
+			_2_of_them = true;
+			goto end;
+		}
+	}
+	_2_of_them_end:
+
+	return _2_of_them
+	
+}

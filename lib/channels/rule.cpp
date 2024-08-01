@@ -42,4 +42,14 @@ bool Rule::addRule(const std::string& name, const std::string& value, Variable::
 	m_variables[name] = {.searchstr = value, .type = type, .searchMods = flags};
 
 	return true;
-}	
+}
+// todo: is this hacky?
+void Rule::searchVariableName(const std::string& search, std::vector<const Variable*>& out)
+{
+	for (const auto& [rname, rvar] : m_variables)
+	{
+		if (rname.starts_with(search.c_str()))
+			out.push_back(&rvar);
+	}
+}
+

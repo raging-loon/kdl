@@ -36,11 +36,15 @@ public:
 	~Rule() {}
 
 public:
+
+	using CVariableIter = std::unordered_map<std::string, Variable>::const_iterator;
+
+
 	/// Getters/Setters
 
 	inline void setName(const std::string& newName) { m_name = newName; }
 
-	inline const std::string& getName() { return m_name; }
+	inline const std::string& getName() const { return m_name; }
 
 	inline void setRuleParameters(RuleParameters rp) { m_params = rp; };
 
@@ -54,11 +58,27 @@ public:
 	
 	/// Returns a copy
 	inline RuleParameters getRuleParamters() { return m_params; }
-	ConditionalTree m_conditions;
 
-public:
+	inline const Variable& getVariable(const std::string& name) 
+	{
+		return m_variables[name];
+	}
+
+	inline CVariableIter cbegin()
+	{
+		return m_variables.cbegin();
+	}
+	
+	inline CVariableIter cend()
+	{
+		return m_variables.cend();
+	}
 	// name and value will be copied
 	bool addRule(const std::string& name, const std::string& value, Variable::Type type, uint8_t flags = 0);
+
+	ConditionalTree m_conditions;
+
+	void searchVariableName(const std::string& search, std::vector<const Variable*> &);
 
 private:
 	

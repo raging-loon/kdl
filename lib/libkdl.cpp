@@ -11,7 +11,7 @@ int main()
 
 	kdl::Compiler c;
 	
-	c.compileFile("../../../tests/test.kdl");
+	c.compileFile("../../kdl/tests/test.kdl");
 
 	return 0;
 }

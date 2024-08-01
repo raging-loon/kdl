@@ -4,6 +4,9 @@
 #include "parser/RuleParser.h"
 #include "channels/RulePool.h"
 #include "conditional/ConditionalReferenceValidator.h"
+
+#include "backend/clang/CLangCG.h"
+
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -56,5 +59,9 @@ bool Compiler::compileSource(const char* source, int len)
 	if (!crv.check())
 		printf("err0r\n");
 
+	ClangCodeGen clcg(m_rules);
+
+	clcg.generate();
+	printf("%s\n", clcg.getOutput().str().c_str());
 	return true;
 }

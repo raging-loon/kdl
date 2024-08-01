@@ -13,16 +13,23 @@ set(CXX_STANDARD 20)
 
 project ("libkdl")
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 # Add source to this project's executable.
 add_executable (libkdl "lib/libkdl.cpp" "include/libkdl.h" "include/parser/lex.h" 
 					   "include/parser/tokens.h" "lib/parser/lex.cpp" "include/utils.h" 
 					   "lib/parser/tokens.cpp" "include/parser/parser.h" "lib/parser/parser.cpp" 
 					   "include/channels/rule.h"  "include/channels/type.h" "include/parser/RuleParser.h"
 					   "lib/parser/RuleParser.cpp"  "include/parser/Combinator.h"
-					   "lib/parser/Combinator.cpp"
-					   "include/channels/RulePool.h" "lib/channels/rule.cpp" "lib/utils.cpp" "include/conditional/ConditionalTree.h" 
+					   "lib/parser/Combinator.cpp" "include/channels/RulePool.h" 
+					   "lib/channels/rule.cpp" "lib/utils.cpp" "include/conditional/ConditionalTree.h" 
 					   "include/conditional/ConditionalParser.h" "lib/conditional/ConditionalParser.cpp" "lib/conditional/ConditionalTree.cpp" 
-					  "include/conditional/ConditionalSemanticChecker.h" "lib/conditional/ConditionalSemanticChecker.cpp" "include/parser/CompilerMessage.h" "lib/parser/CompilerMessage.cpp" "include/backend/CodeGenerator.h" "include/search/search.h" "include/conditional/ConditionalReferenceValidator.h" "include/Compiler.h" "lib/Compiler.cpp" "lib/conditional/ConditionalReferenceValidator.cpp"  "include/template/Array.h")
+					   "include/conditional/ConditionalSemanticChecker.h" "lib/conditional/ConditionalSemanticChecker.cpp" 
+					   "include/parser/CompilerMessage.h" 
+					   "lib/parser/CompilerMessage.cpp" "include/backend/CodeGenerator.h" "include/search/search.h"
+					   "include/conditional/ConditionalReferenceValidator.h" "include/Compiler.h" "lib/Compiler.cpp" 
+					   "lib/conditional/ConditionalReferenceValidator.cpp"  "include/template/Array.h"  
+					   "include/backend/clang/CLangCG.h" "lib/backend/clang/CLangCG.cpp" 
+					   "include/backend/clang/ClRuleCompiler.h" "lib/backend/clang/ClRuleCompiler.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET libkdl PROPERTY CXX_STANDARD 20)
@@ -30,4 +37,8 @@ endif()
 
 # TODO: Add tests and install targets if needed.
 
-target_include_directories(libkdl PUBLIC "./include")
+# TODO: add a kestrel directory variable
+target_include_directories(
+	libkdl 
+	PUBLIC 
+	"./include" )

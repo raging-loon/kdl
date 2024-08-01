@@ -14,3 +14,9 @@ CMakeUserPresets.json
 CMakePresets.json
 .vs
 .editorconfig
+*.dir
+*.vcx*
+*.sln*
+build
+libkdl
+x64
