@@ -59,9 +59,29 @@ bool Compiler::compileSource(const char* source, int len)
 	if (!crv.check())
 		printf("err0r\n");
 
-	ClangCodeGen clcg(m_rules);
+	ClangCodeGen clcg("test.kdl", m_rules);
 
 	clcg.generate();
-	printf("%s\n", clcg.getOutput().str().c_str());
+
+	for (const auto& [file, src] : clcg.getFileMap())
+		m_files[file] = src->str();
+
 	return true;
+}
+
+void Compiler::writeFiles(const char* directory)
+{
+	for (const auto& [file, src] : m_files)
+	{
+		writeFile(std::string(directory) + "/" + file, src);
+			
+	}
+}
+
+void Compiler::writeFile(const std::string& name, const std::string& source)
+{
+	std::ofstream out(name);
+
+	out.write(source.c_str(), source.length());
+
 }

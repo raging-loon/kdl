@@ -19,6 +19,8 @@ public:
 
 	std::stringstream& compile();
 
+	std::string getFunctionPrototype();
+
 private:
 
 	Rule& m_rule;

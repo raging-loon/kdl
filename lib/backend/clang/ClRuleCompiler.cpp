@@ -25,9 +25,15 @@ std::stringstream& ClRuleCompiler::compile()
 	return m_fnbody;
 }
 
+std::string kdl::ClRuleCompiler::getFunctionPrototype()
+{
+	return "bool kdl_rule_" + m_rule.getName() + 
+		   "(const unsigned char*, unsigned int);\n";
+}
+
 void ClRuleCompiler::writeHeader()
 {
-	m_fnbody << "bool kdl_rule_ " << m_rule.getName()
+	m_fnbody << "bool kdl_rule_" << m_rule.getName()
 		     << "(const unsigned char* data, unsigned int len)\n{\n";
 	
 	writeConditional(m_rule.m_conditions.getHead());

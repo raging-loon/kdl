@@ -20,11 +20,14 @@ public:
 	bool compileFile(const char* filename);
 	bool compileSource(const char* source, int len);
 
+	void writeFiles(const char* directory);
 
 private:
 	RulePool m_rules;
 
+	std::unordered_map<std::string, std::string> m_files;
 
+	void writeFile(const std::string& name, const std::string& source);
 };
 
 

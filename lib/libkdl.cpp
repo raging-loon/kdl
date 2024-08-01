@@ -12,6 +12,6 @@ int main()
 	kdl::Compiler c;
 	
 	c.compileFile("../../kdl/tests/test.kdl");
-
+	c.writeFiles("../../kdl/tests/");
 	return 0;
 }

@@ -11,7 +11,7 @@ namespace kdl
 class ClangCodeGen : public CodeGenerator
 {
 public:
-	ClangCodeGen(RulePool& rp);
+	ClangCodeGen(const char* baseFileName, RulePool& rp);
 
 	bool generate() override;
 	const std::stringstream& getOutput() override
@@ -19,13 +19,17 @@ public:
 		return m_output;
 	}
 
+	const auto& getFileMap() const { return m_fileMap; }
+
 private:
 
-	
+	std::unordered_map<std::string, std::stringstream*> m_fileMap;
 
 	RulePool& m_rules;
 
 	std::stringstream m_output;
+	std::stringstream m_header;
+
 
 };
 
