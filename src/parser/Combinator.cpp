@@ -1,11 +1,11 @@
 #include <cstdarg>
 #include <span>
-#include "parser/CompilerMessage.h"
-#include "parser/parser.h"
-#include "parser/tokens.h"
+#include "CompilerMessage.h"
+#include "parser.h"
+#include "tokens.h"
 
-#include "parser/RuleParser.h"
-
+#include "RuleParser.h"
+#include "Combinator.h"
 using kdl::Combinator;
 using kdl::Token;
 using kdl::Lexer;

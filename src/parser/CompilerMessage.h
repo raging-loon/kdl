@@ -1,7 +1,7 @@
 #ifndef PARSER_COMPILER_MESSAGE_H_
 #define PARSER_COMPILER_MESSAGE_H_
 
-#include "parser/parser.h"
+#include "parser.h"
 
 namespace kdl
 {

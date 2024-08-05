@@ -2,7 +2,7 @@
 #define PARSER_COMBINATOR_H_
 
 #include "lex.h"
-#include "parser/parser.h"
+#include "parser.h"
 #include <cstdarg>
 #include <span>
 namespace kdl

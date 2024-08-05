@@ -1,5 +1,5 @@
-#include "parser/RuleParser.h"
-#include "parser/CompilerMessage.h"
+#include "RuleParser.h"
+#include "CompilerMessage.h"
 #include "conditional/ConditionalParser.h"
 #include "conditional/ConditionalTree.h"
 

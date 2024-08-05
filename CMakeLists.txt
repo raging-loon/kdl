@@ -1,4 +1,4 @@
-﻿# CMakeList.txt : CMake project for libkdl, include source and define
+﻿# CMakeList.txt : CMake project for libkdl, src source and define
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.8)
@@ -20,21 +20,21 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
 
 # Add source to this project's executable.
-add_executable(kdlc "lib/libkdl.cpp" "include/libkdl.h" "include/parser/lex.h" 
-					   "include/parser/tokens.h" "lib/parser/lex.cpp" "include/utils.h" 
-					   "lib/parser/tokens.cpp" "include/parser/parser.h" "lib/parser/parser.cpp" 
-					   "include/channels/rule.h"  "include/channels/type.h" "include/parser/RuleParser.h"
-					   "lib/parser/RuleParser.cpp"  "include/parser/Combinator.h"
-					   "lib/parser/Combinator.cpp" "include/channels/RulePool.h" 
-					   "lib/channels/rule.cpp" "lib/utils.cpp" "include/conditional/ConditionalTree.h" 
-					   "include/conditional/ConditionalParser.h" "lib/conditional/ConditionalParser.cpp" "lib/conditional/ConditionalTree.cpp" 
-					   "include/conditional/ConditionalSemanticChecker.h" "lib/conditional/ConditionalSemanticChecker.cpp" 
-					   "include/parser/CompilerMessage.h" 
-					   "lib/parser/CompilerMessage.cpp" "include/backend/CodeGenerator.h" "include/search/search.h"
-					   "include/conditional/ConditionalReferenceValidator.h" "include/Compiler.h" "lib/Compiler.cpp" 
-					   "lib/conditional/ConditionalReferenceValidator.cpp"  "include/template/Array.h"  
-					   "include/backend/clang/CLangCG.h" "lib/backend/clang/CLangCG.cpp" 
-					   "include/backend/clang/ClRuleCompiler.h" "lib/backend/clang/ClRuleCompiler.cpp" "lib/kdlc.cpp")
+add_executable(kdlc "src/libkdl.cpp" "src/libkdl.h" "src/parser/lex.h" 
+					   "src/parser/tokens.h" "src/parser/lex.cpp" "src/utils.h" 
+					   "src/parser/tokens.cpp" "src/parser/parser.h" "src/parser/parser.cpp" 
+					   "src/channels/rule.h"  "src/channels/type.h" "src/parser/RuleParser.h"
+					   "src/parser/RuleParser.cpp"  "src/parser/Combinator.h"
+					   "src/parser/Combinator.cpp" "src/channels/RulePool.h" 
+					   "src/channels/rule.cpp" "src/utils.cpp" "src/conditional/ConditionalTree.h" 
+					   "src/conditional/ConditionalParser.h" "src/conditional/ConditionalParser.cpp" "src/conditional/ConditionalTree.cpp" 
+					   "src/conditional/ConditionalSemanticChecker.h" "src/conditional/ConditionalSemanticChecker.cpp" 
+					   "src/parser/CompilerMessage.h" 
+					   "src/parser/CompilerMessage.cpp" "src/backend/CodeGenerator.h" "src/search/search.h"
+					   "src/conditional/ConditionalReferenceValidator.h" "src/Compiler.h" "src/Compiler.cpp" 
+					   "src/conditional/ConditionalReferenceValidator.cpp"  "src/template/Array.h"  
+					   "src/backend/clang/CLangCG.h" "src/backend/clang/CLangCG.cpp" 
+					   "src/backend/clang/ClRuleCompiler.h" "src/backend/clang/ClRuleCompiler.cpp" "src/kdlc.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET kdlc PROPERTY CXX_STANDARD 20)
@@ -46,5 +46,5 @@ endif()
 target_include_directories(
 	kdlc 
 	PUBLIC 
-	"./include" )
+	"./src" )
 
