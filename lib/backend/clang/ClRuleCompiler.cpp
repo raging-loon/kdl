@@ -123,11 +123,11 @@ void ClRuleCompiler::writeFunction(const Variable& var)
 	switch (var.type)
 	{
 		case Variable::BYTE_SEQUENCE:
+		case Variable::STRING:
 			m_fnbody << " ldu_bytesrch(\"" << var.searchstr << "\", data, " << var.searchstr.length() << ", len) ";
 			break;
-		case Variable::STRING:
-			m_fnbody << " ldu_strsrch(\"" << var.searchstr << "\", data, " << var.searchstr.length() << ") ";
-			break;
+			//m_fnbody << " ldu_strsrch(\"" << var.searchstr << "\", data, " << var.searchstr.length() << ") ";
+			//break;
 	}
 }
 

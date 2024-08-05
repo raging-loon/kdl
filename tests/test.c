@@ -8,13 +8,13 @@ bool kdl_rule_email_Ukraine_power_attack_content(const unsigned char* data, unsi
 {
 
      bool _any_of_body = 
-     ldu_strsrch("=B3 =C7=E1=F0=EE=E9=ED=E8=F5 =D1=E8=EB =D3=EA=F0=E0=BF=ED=E8 =F2=E0=20", data, 70) 
- ||  ldu_strsrch("=E5=E7=E8=E4=E5=ED=F2=E0 =D3=EA=F0=E0=BF=ED=E8 =F2=E0 =EF=EE=F0=FF=E4=EE=EA=", data, 76) 
- ||  ldu_strsrch("=E1=B3=F2=ED=E8=EA=B3=E2 =EE=F0=E3=E0=ED=B3=E7=E0=F6=B3=E9 =E7=E0 =E7=F0=E0=", data, 76) 
- ||  ldu_strsrch("=C2=B3=E4=EF=EE=E2=B3=E4=ED=EE =E4=EE =D3=EA=E0=E7=F3 =CF=F0=E5=E7=E8=E4=E5=", data, 76) ;
+     ldu_bytesrch("=B3 =C7=E1=F0=EE=E9=ED=E8=F5 =D1=E8=EB =D3=EA=F0=E0=BF=ED=E8 =F2=E0=20", data, 70, len) 
+ ||  ldu_bytesrch("=E5=E7=E8=E4=E5=ED=F2=E0 =D3=EA=F0=E0=BF=ED=E8 =F2=E0 =EF=EE=F0=FF=E4=EE=EA=", data, 76, len) 
+ ||  ldu_bytesrch("=E1=B3=F2=ED=E8=EA=B3=E2 =EE=F0=E3=E0=ED=B3=E7=E0=F6=B3=E9 =E7=E0 =E7=F0=E0=", data, 76, len) 
+ ||  ldu_bytesrch("=C2=B3=E4=EF=EE=E2=B3=E4=ED=EE =E4=EE =D3=EA=E0=E7=F3 =CF=F0=E5=E7=E8=E4=E5=", data, 76, len) ;
 
      bool _any_of_sub = 
-     ldu_strsrch("=?windows-1251?B?0+rg5yDP8OXn6OTl7fLgINPq8OC/7egguSAx?=", data, 55) ;
+     ldu_bytesrch("=?windows-1251?B?0+rg5yDP8OXn6OTl7fLgINPq8OC/7egguSAx?=", data, 55, len) ;
 
     return  (  _any_of_body  &&  _any_of_sub  ) ;
 }
@@ -24,25 +24,25 @@ bool kdl_rule_pony_malware(const unsigned char* data, unsigned int len)
 {
 
      bool _try_match_s2 = 
-      ldu_strsrch("YUIPWDFILE0YUIPKDFILE0YUICRYPTED0YUI1.0", data, 39) ;
+      ldu_bytesrch("YUIPWDFILE0YUIPKDFILE0YUICRYPTED0YUI1.0", data, 39, len) ;
 
      bool _try_match_s1 = 
-      ldu_strsrch("{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}", data, 50) ;
+      ldu_bytesrch("{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}", data, 50, len) ;
 
      bool _try_match_s3 = 
-      ldu_strsrch("POST %s HTTP/1.0", data, 16) ;
+      ldu_bytesrch("POST %s HTTP/1.0", data, 16, len) ;
 
     return  (  _try_match_s2  ||  (  _try_match_s1  &&  _try_match_s3  )  ) ;
 }
 
 
-bool kdl_rule_pony_malware2(const unsigned char* data, unsigned int len)
+bool kdl_rule_EICAR(const unsigned char* data, unsigned int len)
 {
 
-     bool _try_match_s2 = 
-      ldu_strsrch("YUIPWDFILE0YUIPKDFILE0YUICRYPTED0YUI1.0", data, 39) ;
+     bool _try_match_str = 
+      ldu_bytesrch("X5O!P%@AP[4PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*", data, 67, len) ;
 
-    return  _try_match_s2 ;
+    return  _try_match_str ;
 }
 
 

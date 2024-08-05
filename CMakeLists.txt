@@ -10,12 +10,17 @@ if (POLICY CMP0141)
 endif()
 
 set(CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 20)
 
-project ("libkdl")
+project ("kdlc")
 
+set(LIBKDL_DIR ${CMAKE_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
+
+
 # Add source to this project's executable.
-add_executable (libkdl "lib/libkdl.cpp" "include/libkdl.h" "include/parser/lex.h" 
+add_executable(kdlc "lib/libkdl.cpp" "include/libkdl.h" "include/parser/lex.h" 
 					   "include/parser/tokens.h" "lib/parser/lex.cpp" "include/utils.h" 
 					   "lib/parser/tokens.cpp" "include/parser/parser.h" "lib/parser/parser.cpp" 
 					   "include/channels/rule.h"  "include/channels/type.h" "include/parser/RuleParser.h"
@@ -29,16 +34,17 @@ add_executable (libkdl "lib/libkdl.cpp" "include/libkdl.h" "include/parser/lex.h
 					   "include/conditional/ConditionalReferenceValidator.h" "include/Compiler.h" "lib/Compiler.cpp" 
 					   "lib/conditional/ConditionalReferenceValidator.cpp"  "include/template/Array.h"  
 					   "include/backend/clang/CLangCG.h" "lib/backend/clang/CLangCG.cpp" 
-					   "include/backend/clang/ClRuleCompiler.h" "lib/backend/clang/ClRuleCompiler.cpp")
+					   "include/backend/clang/ClRuleCompiler.h" "lib/backend/clang/ClRuleCompiler.cpp" "lib/kdlc.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET libkdl PROPERTY CXX_STANDARD 20)
+  set_property(TARGET kdlc PROPERTY CXX_STANDARD 20)
 endif()
 
 # TODO: Add tests and install targets if needed.
 
 # TODO: add a kestrel directory variable
 target_include_directories(
-	libkdl 
+	kdlc 
 	PUBLIC 
 	"./include" )
+

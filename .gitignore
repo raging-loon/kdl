@@ -24,3 +24,6 @@ x64
 *.obj
 Debug
 *.gen
+
+*.exe
+tests

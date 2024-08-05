@@ -20,13 +20,11 @@ rule pony_malware  {
     condition:
         $s2 or ($s1 and $s3)
 }
-rule pony_malware2  {
-	content:
-    	$s1 = "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}"
-    	$s2 = "YUIPWDFILE0YUIPKDFILE0YUICRYPTED0YUI1.0"
-    	$s3 = "POST %s HTTP/1.0"
-    	$s4 = "Accept-Encoding: identity, *;q=0"
 
-    condition:
-        $s2
+rule EICAR
+{
+	content:
+		$str = "X5O!P%@AP[4PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
+	condition:
+		$str
 }

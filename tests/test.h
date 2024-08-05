@@ -28,7 +28,7 @@ KSR_API bool kdl_rule_email_Ukraine_power_attack_content(const unsigned char*, u
 
 KSR_API bool kdl_rule_pony_malware(const unsigned char*, unsigned int);
 
-KSR_API bool kdl_rule_pony_malware2(const unsigned char*, unsigned int);
+KSR_API bool kdl_rule_EICAR(const unsigned char*, unsigned int);
 
 
 
