@@ -165,7 +165,9 @@ void ConditionalTree::dumpTree()
 
 void ConditionalTree::dumpTree2()
 {
+	printf("\n======= [ CTREE at %p ] =======\n", this);
 	_int_dumpTree2(m_head, false, "");
+	printf("=============================================\n\n");
 }
 
 

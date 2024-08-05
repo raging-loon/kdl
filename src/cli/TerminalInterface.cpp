@@ -22,7 +22,7 @@ static void printHelp()
 		"                       Supported backends: clang\n"
 		"  -k                   !!unimplemented!! Rules should use kernel mode functions\n"
 		"  -p, --platform       platform rules should be compiled for\n"
-		"                       using this option will only compile rules the specify they are for that platform\n"
+		"                       this option will filter any rules whose platform indicator does not match\n"
 		"DEBUG OPTIONS\n"
 		"  -d, --debug          Print general debug info\n"
 		"  --dump-ctree         Print Conditional Trees\n"
