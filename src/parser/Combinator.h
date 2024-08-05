@@ -23,7 +23,7 @@ namespace kdl
 class Combinator : private Parser 
 {
 public:
-	Combinator(const TokenList& t);
+	explicit Combinator(const TokenList& t);
 
 	bool parse() override;
 	// TODO: replace me with DI

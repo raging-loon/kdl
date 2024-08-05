@@ -22,7 +22,7 @@ struct CNode
 	// Is something like $malfn*
 	bool isMultiVar;
 
-	CNode(CTokenPtr val)
+	explicit CNode(CTokenPtr val)
 		: left(nullptr), right(nullptr), value(val), isMultiVar(false)
 	{}
 

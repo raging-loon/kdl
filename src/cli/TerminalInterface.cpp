@@ -2,7 +2,8 @@
 #include "kdlc.h"
 #include "KdlOptions.h"
 #include "Compiler.h"
-
+#include <functional>
+#include <algorithm>
 #include <stdio.h>
 #include <filesystem>
 
@@ -193,11 +194,8 @@ bool TerminalInterface::validateOutput()
 
 	m_outdir = std::filesystem::absolute(m_outdir).string();
 	
-	for (auto& i : m_outdir)
-	{
-		if (i == '\\')
-			i = '/';
-	}
+
+	std::replace(m_outdir.begin(), m_outdir.end(), '\\', '/');
 	return true;
 }
 

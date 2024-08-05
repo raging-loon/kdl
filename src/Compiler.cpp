@@ -50,7 +50,6 @@ bool Compiler::compileSource(const char* source, int len)
 	if (KdlOptions::dumpLexerTokens)
 		lex.dumpTokens();
 
-	RuleBlockList ruleBlocks;
 	
 	kdl::Combinator parse(lex.getTokens());
 	if (!parse.parse())
