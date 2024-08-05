@@ -367,11 +367,10 @@ int Lexer::formatByteSequence(std::string& input)
 
 
 
-#ifdef _DEBUG
 
 void Lexer::dumpTokens()
 {
-
+	printf("\n[=================]\n");
 	for(auto& tok : m_tokens)
 	{
 
@@ -381,6 +380,7 @@ void Lexer::dumpTokens()
 		putchar('\n');
 		
 	}
+	printf("[=================]\n\n");
+
 }
 
-#endif // _DEBUG

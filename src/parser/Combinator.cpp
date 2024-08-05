@@ -1,9 +1,11 @@
 #include <cstdarg>
 #include <span>
+#include <iostream>
+#include <iomanip>
+
 #include "CompilerMessage.h"
 #include "parser.h"
 #include "tokens.h"
-
 #include "RuleParser.h"
 #include "Combinator.h"
 using kdl::Combinator;
@@ -26,6 +28,27 @@ bool Combinator::parse()
 			return false;
 	}
 	return true;
+}
+
+void Combinator::dumpBlocks()
+{
+	printf("\n+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n"
+		   "|         name        | start position | end position |\n"
+	       "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n");
+	
+	std::string toPrint;
+	for (auto& i : m_ruleBlocks)
+	{
+		toPrint = i[1].val;
+		if (toPrint.length() > 21)
+			toPrint = toPrint.substr(0, 18) + "...";
+
+		std::cout << '|' << std::left << std::setw(21) << toPrint
+				  << '|' << std::left << std::setw(16) << i.front().startPos
+				  << '|' << std::left << std::setw(14) << i.back().startPos 
+			      << "|\n";
+	}
+	printf("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n\n");
 }
 
 const Token* Combinator::advance()

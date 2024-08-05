@@ -35,7 +35,7 @@ private:
 	void writeAllOfX();
 	void writeNumOfX();
 
-
+	void writeAllOfThem();
 	void writeAnyOfThem();
 	void writeAnyOfMultiVar(const std::string& prefix);
 	void writeConditional(const CNode* head);

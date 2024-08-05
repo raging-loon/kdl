@@ -1,6 +1,6 @@
 ﻿#include "conditional/ConditionalTree.h"
 #include "conditional/ConditionalSemanticChecker.h"
-
+#include "cli/KdlOptions.h"
 #include <cstdlib>
 
 using kdl::CNode;
@@ -20,7 +20,7 @@ ConditionalTree::ConditionalTree(int pLevel)
 ConditionalTree::ConditionalTree(CNodeList* sharedNodes, int pLevel)
 	: m_head{ nullptr }, m_p_level { pLevel }
 {
-	printf("New subtree made. %d owned by %d\n",pLevel, pLevel-1);
+	DEBUG_PRINT("New subtree made. %d owned by %d\n",pLevel, pLevel-1);
 	m_nodesPtr = sharedNodes;
 
 }
@@ -134,7 +134,7 @@ bool ConditionalTree::merge(int &pLevel)
 	if (pLevel - 1== m_p_level)
 	{
 
-		printf("[%d] Merging sub tree (%d).\n", m_p_level, pLevel);
+		DEBUG_PRINT("[%d] Merging sub tree (%d).\n", m_p_level, pLevel);
 	
 		// If our head is null, our conditional
 		// might start with parenthesis, thus we would

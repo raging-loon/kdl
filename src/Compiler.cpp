@@ -47,11 +47,17 @@ bool Compiler::compileSource(const char* source, int len)
 	if (lex.scan() < 0)
 		return 1;
 
+	if (KdlOptions::dumpLexerTokens)
+		lex.dumpTokens();
+
 	RuleBlockList ruleBlocks;
 	
 	kdl::Combinator parse(lex.getTokens());
 	if (!parse.parse())
 		printf("errrn\n");
+
+	if (KdlOptions::dumpBlocks)
+		parse.dumpBlocks();
 
 	m_rules.resize(parse.getBlockList().size());
 	for (auto& i : parse.getBlockList())
@@ -59,6 +65,8 @@ bool Compiler::compileSource(const char* source, int len)
 		RuleParser rp(i, *m_rules.add());
 		rp.parse();
 	} 
+
+
 
 	ConditionalReferenceValidator crv(m_rules);
 	if (!crv.check())

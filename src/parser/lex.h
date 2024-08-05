@@ -35,9 +35,7 @@ public:
 
 	int scan();
 	const TokenList& getTokens() const { return m_tokens; }
-#ifdef _DEBUG
 	void dumpTokens();
-#endif // _DEBUG
 
 private:
 	const char* m_source{ nullptr };

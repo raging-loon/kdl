@@ -2,7 +2,7 @@
 #include "CompilerMessage.h"
 #include "conditional/ConditionalParser.h"
 #include "conditional/ConditionalTree.h"
-
+#include "cli/KdlOptions.h"
 using kdl::RuleParser;
 using kdl::CTokenMapIter;
 using kdl::token_t;
@@ -70,7 +70,7 @@ bool RuleParser::parseHeader()
 {
 	if (matchInOrder({ token_t::SI_RULES, token_t::IDENTIFIER }))
 	{
-		printf("Found new rule: %s\n", m_tokenMapView[1].val.c_str());
+		printf("Compiling rule '%s'...\n", m_tokenMapView[1].val.c_str());
 		
 		m_rule.setName(m_tokenMapView[1].val.c_str());
 
@@ -257,8 +257,9 @@ bool RuleParser::parseConditionals()
 		printf("There was an error\n");
 		return false;
 	}
-	//m_rule.m_conditions.dumpTree2();
 
+	if (KdlOptions::dumpCTrees)
+		m_rule.m_conditions.dumpTree2();
 	return false;
 }
 

@@ -24,6 +24,7 @@ static void printHelp()
 		"  -p, --platform       platform rules should be compiled for\n"
 		"                       using this option will only compile rules the specify they are for that platform\n"
 		"DEBUG OPTIONS\n"
+		"  -d, --debug          Print general debug info\n"
 		"  --dump-ctree         Print Conditional Trees\n"
 		"  --dump-tokens        Print Tokens\n"
 		"  --dump-blocks        Print Rule Blocks as they are found\n"
@@ -116,7 +117,9 @@ bool kdl::TerminalInterface::parseArgs()
 
 		else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--verbose") == 0)
 			KdlOptions::verbose = true;
-		
+		else if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--debug") == 0)
+			KdlOptions::debug = true;
+
 		else if (strcmp(argv[i], "--dump-ctree") == 0)
 			KdlOptions::dumpCTrees = true;
 		

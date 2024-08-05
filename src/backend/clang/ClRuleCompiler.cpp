@@ -40,6 +40,27 @@ void ClRuleCompiler::writeHeader()
 
 }
 
+void ClRuleCompiler::writeAllOfThem()
+{
+	auto start = m_rule.cbegin();
+	auto end = m_rule.cend();
+
+	m_fnbody << "     bool _all_of_them =\n\t ";
+
+	while (start != end)
+	{
+		auto& s = start->second;
+		writeFunction(s);
+		++start;
+		if (start != end)
+			m_fnbody << "\n && ";
+	}
+
+	m_fnbody << ";\n";
+
+	m_return << " _all_of_them ";
+}
+
 void ClRuleCompiler::writeAnyOfThem()
 {
 	auto start = m_rule.cbegin();
@@ -147,6 +168,10 @@ void ClRuleCompiler::handleOfCondition(const CNode* left, const CNode* right)
 		return;
 	if (matchLeftRight(left, right, token_t::CND_ANY, token_t::CND_THEM))
 		writeAnyOfThem();
+
 	else if (matchLeftRight(left, right, token_t::CND_ANY, token_t::MULTI_VAR_IDENTIFIER))
 		writeAnyOfMultiVar(right->value->val);
+
+	else if (matchLeftRight(left, right, token_t::CND_ALL, token_t::CND_THEM))
+		writeAllOfThem();
 }
