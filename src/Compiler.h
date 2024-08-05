@@ -6,8 +6,6 @@
 #include "channels/RulePool.h"
 #include "channels/rule.h"
 #include "conditional/ConditionalParser.h"
-
-#include "libkdl.h"
 namespace kdl
 {
 

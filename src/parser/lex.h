@@ -7,7 +7,6 @@
 #include <string>
 #include <regex>
 #include "tokens.h"
-#include "libkdl.h"
 
 namespace kdl
 {

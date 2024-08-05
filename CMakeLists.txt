@@ -16,11 +16,11 @@ project ("kdlc")
 
 set(LIBKDL_DIR ${CMAKE_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
+
 
 
 # Add source to this project's executable.
-add_executable(kdlc "src/libkdl.cpp" "src/libkdl.h" "src/parser/lex.h" 
+add_executable(kdlc   "src/parser/lex.h" 
 					   "src/parser/tokens.h" "src/parser/lex.cpp" "src/utils.h" 
 					   "src/parser/tokens.cpp" "src/parser/parser.h" "src/parser/parser.cpp" 
 					   "src/channels/rule.h"  "src/channels/type.h" "src/parser/RuleParser.h"
@@ -34,12 +34,14 @@ add_executable(kdlc "src/libkdl.cpp" "src/libkdl.h" "src/parser/lex.h"
 					   "src/conditional/ConditionalReferenceValidator.h" "src/Compiler.h" "src/Compiler.cpp" 
 					   "src/conditional/ConditionalReferenceValidator.cpp"  "src/template/Array.h"  
 					   "src/backend/clang/CLangCG.h" "src/backend/clang/CLangCG.cpp" 
-					   "src/backend/clang/ClRuleCompiler.h" "src/backend/clang/ClRuleCompiler.cpp" "src/kdlc.cpp")
+					   "src/backend/clang/ClRuleCompiler.h" "src/backend/clang/ClRuleCompiler.cpp" "src/kdlc.cpp" "src/cli/TerminalInterface.h" "src/cli/TerminalInterface.cpp" "src/kdlc.h" "src/cli/KdlOptions.h" "src/cli/KdlOptions.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET kdlc PROPERTY CXX_STANDARD 20)
 endif()
-
+if (MSVC)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} setargv.obj")
+endif ()
 # TODO: Add tests and install targets if needed.
 
 # TODO: add a kestrel directory variable
@@ -47,4 +49,5 @@ target_include_directories(
 	kdlc 
 	PUBLIC 
 	"./src" )
+
 

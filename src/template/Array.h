@@ -6,7 +6,10 @@
 namespace kdl
 {
 
-
+///
+/// PURPOSE
+///     Generic Array 
+/// 
 template <class T>
 class Array
 {
@@ -21,22 +24,27 @@ public:
     }
     ~Array()
     {
-
         for (int i = 0; i < m_size; i++)
             m_array[i].~T();
         if (m_array)
             ::free(m_array);
-    
-          
     }
 
+    ///
+    /// PURPOSE
+    ///     Get object at index
+    /// 
     T* operator[](int index)
     {
         return &m_array[index];
     }
 
 
-
+    ///
+    /// PURPOSE
+    ///     Add a new T to the array
+    ///     Will construct in place
+    ///     
     template<class...Args>
     T* add(Args...args)
     {
@@ -47,7 +55,11 @@ public:
         return nobject;
     }
 
-
+    ///
+    /// PURPOSE
+    ///     Resize the array to n * T bytes
+    ///     Copies any data to the new array
+    /// 
     void resize(int n)
     {
         T* new_arr = (T*)malloc(sizeof(T) * n);
@@ -83,8 +95,6 @@ private:
     T* m_array;
     int m_size;
     int m_maxSize;
-
-
 
 };
 
