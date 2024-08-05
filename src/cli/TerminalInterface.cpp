@@ -29,6 +29,7 @@ static void printHelp()
 		"  --dump-ctree         Print Conditional Trees\n"
 		"  --dump-tokens        Print Tokens\n"
 		"  --dump-blocks        Print Rule Blocks as they are found\n"
+		"  --dump-rules			Print Rule info\n"
 		"EXAMPLES\n"
 		"  kdlc -f myrules.kdl -o myrules/\n"
 		"  kdlc -f rules.kdl -o rules/ -b clang --platform linux\n"
@@ -68,7 +69,10 @@ int TerminalInterface::run()
 		if (!cmplr.compileFile(i.c_str()))
 			return 1;
 		cmplr.writeFiles(m_outdir);
+		if (KdlOptions::dumpRules)
+			cmplr.dumpRules();
 	}
+
 
 
 	return 0;
@@ -129,6 +133,8 @@ bool kdl::TerminalInterface::parseArgs()
 		
 		else if (strcmp(argv[i], "--dump-blocks") == 0)
 			KdlOptions::dumpBlocks = true;
+		else if (strcmp(argv[i], "--dump-rules") == 0)
+			KdlOptions::dumpRules = true;
 
 		else if (strcmp(argv[i], "/?") == 0 || strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
 		{

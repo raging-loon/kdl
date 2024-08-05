@@ -10,9 +10,31 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <iostream>
+#include <iomanip>
 #include <filesystem>
 
 using kdl::Compiler;
+
+static void strtohex(std::string& str)
+{
+	std::stringstream ss;
+
+	for (unsigned char i : str)
+		ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(i);
+
+	str = ss.str();
+}
+
+static void formatTableEntry(std::string& str, bool isHex, int maxlen)
+{
+	if (isHex)
+		strtohex(str);
+
+	if (str.length() > maxlen)
+		str = str.substr(0, maxlen - 3) + "...";
+
+}
 
 Compiler::Compiler()
 	: m_currentFile(nullptr)
@@ -88,6 +110,41 @@ void Compiler::writeFiles(const std::string& directory)
 	
 		writeFile(directory + "/" + file, src);
 			
+	}
+}
+
+void Compiler::dumpRules()
+{
+
+	for (int i = 0; i < m_rules.size(); i++)
+	{
+		auto& rule = *m_rules[i];
+		auto start = rule.cbegin();
+		auto end =   rule.cend();
+		
+		std::cout << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n"
+				  << "|  " << std::left << std::setw(57) << rule.getName() << "|\n" 
+			      << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n";
+		std::string value;
+		std::string varname;
+
+		while (start != end)
+		{
+			value = start->second.searchstr;
+			varname = start->first;
+			formatTableEntry(value, start->second.type == Variable::BYTE_SEQUENCE, 29);
+			formatTableEntry(varname, false, 10);
+
+
+			std::cout << "|  " << std::left << std::setw(10) << varname
+				<< "|  " << std::left << std::setw(12) 
+				<< (start->second.type == Variable::BYTE_SEQUENCE ? "BYTE_SEQ" : "STRING")
+				<< "|  " << std::left << std::setw(29) << value << "|\n";
+
+			++start;
+		}
+		std::cout << "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+\n";
+
 	}
 }
 

@@ -16,7 +16,7 @@ public:
 	static bool dumpCTrees;
 	static bool dumpLexerTokens;
 	static bool dumpBlocks;
-
+	static bool dumpRules;
 };
 
 #define DEBUG_PRINT(...) if(kdl::KdlOptions::debug) { printf(##__VA_ARGS__);}

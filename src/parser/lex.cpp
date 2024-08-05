@@ -358,7 +358,7 @@ int Lexer::formatByteSequence(std::string& input)
 	}
 
 	input.clear();
-	input.assign(formatted, charsParsed);
+	input.assign(formatted, charsParsed/2);
 	delete[] formatted;
 
 	return -1;

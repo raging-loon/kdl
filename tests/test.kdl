@@ -25,6 +25,7 @@ rule EICAR
 {
 	content:
 		$str = "X5O!P%@AP[4PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
+		$t = |90 90|
 	condition:
 		$str
 }

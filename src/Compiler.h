@@ -54,8 +54,12 @@ public:
 
 	void writeFiles(const std::string&  directory);
 
+	void dumpRules();
+
 private:
 	RulePool m_rules;
+
+	
 
 	std::unordered_map<std::string, std::string> m_files;
 

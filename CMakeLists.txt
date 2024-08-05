@@ -44,7 +44,7 @@ if (MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} setargv.obj")
 	set_target_properties(kdlc PROPERTIES 
 	VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-	VS_DEBUGGER_COMMAND_ARGUMENTS "-f D:/dev/kestrel/kdl/tests/*.kdl -o out -b clang -v --dump-blocks")	
+	VS_DEBUGGER_COMMAND_ARGUMENTS "-f D:/dev/kestrel/kdl/tests/*.kdl -o out -b clang -v --dump-rules")	
 
 
 endif ()
