@@ -9,6 +9,8 @@ ClangCodeGen::ClangCodeGen(const char* baseFileName, RulePool& rp)
 {
 	std::string fileName(baseFileName);
 
+	int slashIndex = fileName.rfind('/');
+	fileName = fileName.substr(slashIndex + 1);
 	fileName = fileName.substr(0, fileName.rfind("."));
 
 	m_fileMap[fileName + ".c"] = &m_output;

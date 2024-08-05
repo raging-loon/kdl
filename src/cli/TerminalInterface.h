@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-
+#include <filesystem>
 namespace kdl
 {
 
@@ -18,15 +18,30 @@ private:
 
 	bool parseArgs();
 	bool validateArgs();
+
+	/// 
+	/// PURPOSE
+	///		Make sure input files are set and exist
+	///		Will produce a warning if a file does not end 
+	///		in '.kdl'
+	/// 
 	bool validateInputFiles();
+
+	///
+	/// PURPOSE
+	///		Ensure output directory is set
+	///		Will create it if it does not exist
+	/// 
 	bool validateOutput();
+	
 	bool validateBackend();
+
 private:
 
 	char** argv;
 	int argc;
 	std::vector<std::string> m_ruleFiles;
-	const char* m_outdir;
+	std::string m_outdir;
 	const char* m_backend;
 };
 

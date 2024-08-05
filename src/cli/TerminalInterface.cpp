@@ -1,6 +1,7 @@
 #include "cli/TerminalInterface.h"
 #include "kdlc.h"
 #include "KdlOptions.h"
+#include "Compiler.h"
 
 #include <stdio.h>
 #include <filesystem>
@@ -40,7 +41,7 @@ static void printNeedArgument(const char* arg)
 }
 
 TerminalInterface::TerminalInterface(int argc, char** argv)
-	: argc(argc), argv(argv), m_outdir(nullptr), m_backend(nullptr)
+	: argc(argc), argv(argv), m_backend(nullptr)
 {
 }
 
@@ -57,6 +58,16 @@ int TerminalInterface::run()
 
 	if (!validateArgs())
 		return 1;
+
+
+	for (const auto& i : m_ruleFiles)
+	{
+		Compiler cmplr;
+		if (!cmplr.compileFile(i.c_str()))
+			return 1;
+		cmplr.writeFiles(m_outdir);
+	}
+
 
 	return 0;
 }
@@ -160,7 +171,7 @@ bool TerminalInterface::validateInputFiles()
 
 bool TerminalInterface::validateOutput()
 {
-	if (!m_outdir)
+	if (m_outdir.empty())
 	{
 		printf("No output directory set. Defaulting to cwd.\n");
 		m_outdir = "./";
@@ -169,14 +180,21 @@ bool TerminalInterface::validateOutput()
 	if (!std::filesystem::exists(m_outdir))
 	{
 		if(KdlOptions::verbose)
-			printf("Creating new directory %s...\n",m_outdir);
+			printf("Creating new directory %s...\n", (char*)m_outdir.c_str());
 		
 		if (!std::filesystem::create_directory(m_outdir))
 		{
-			printf("Failed to create new directory '%s'!\n", m_outdir);
+			printf("Failed to create new directory '%s'!\n", (char*)m_outdir.c_str());
 		}
 	}
 
+	m_outdir = std::filesystem::absolute(m_outdir).string();
+	
+	for (auto& i : m_outdir)
+	{
+		if (i == '\\')
+			i = '/';
+	}
 	return true;
 }
 
@@ -188,6 +206,8 @@ bool TerminalInterface::validateBackend()
 		printf("Need a backend. Specify with '-b'\n");
 		return false;
 	}
+
+
 
 	return true;
 }

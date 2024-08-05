@@ -8,16 +8,14 @@ if (POLICY CMP0141)
   cmake_policy(SET CMP0141 NEW)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
-
 set(CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD 20)
 
 project ("kdlc")
 
 set(LIBKDL_DIR ${CMAKE_SOURCE_DIR})
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
-
-
 
 # Add source to this project's executable.
 add_executable(kdlc   "src/parser/lex.h" 
@@ -39,8 +37,16 @@ add_executable(kdlc   "src/parser/lex.h"
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET kdlc PROPERTY CXX_STANDARD 20)
 endif()
+
 if (MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} setargv.obj")
+	add_compile_options(kdlc "/EHsc")
+    
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} setargv.obj")
+	set_target_properties(kdlc PROPERTIES 
+	VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+	VS_DEBUGGER_COMMAND_ARGUMENTS "-f D:/dev/kestrel/kdl/tests/*.kdl -o out -b clang -v")	
+
+
 endif ()
 # TODO: Add tests and install targets if needed.
 
