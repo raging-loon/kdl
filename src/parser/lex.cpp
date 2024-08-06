@@ -264,10 +264,10 @@ void Lexer::scanString()
 	if (m_curLine != curline)
 	{
 		m_wasError = true;
-		printf("No closing quote found\n");
-		CompilerMessage::print(
-			"",
-			curline, curlinestart, start, start
+		CompilerMessage::error(
+			message_class_t::INVALID_SYNTAX,
+			curline, curlinestart, start, start,
+			"No closing quote found"
 		);
 		return;
 	}

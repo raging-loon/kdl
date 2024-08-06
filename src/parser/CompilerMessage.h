@@ -21,9 +21,10 @@ public:
 	static void setSource(const char* source, const char* file, int len);
 
 	static void error(message_class_t, const char* message, CTokenPtr offendingToken);
-	static void warning(const char* message, CTokenPtr offendingToken);
-
 	static void error(message_class_t, CTokenPtr offendingToken, const char* message, ...);
+	
+	static void error(message_class_t, int line, int lineStart, int startChar, int endChar, const char* message, ...);
+	static void warning(const char* message, CTokenPtr offendingToken);
 
 	static void print(const char* message, int lineNo, int lineStart, int startChar, int endChar);
 	static const char* msgClassToStr(message_class_t mc);

@@ -27,10 +27,30 @@ void CompilerMessage::setSource(const char* source, const char* file, int len)
 
 void CompilerMessage::error(message_class_t mc, const char* message, CTokenPtr offendingToken)
 {
-	printf("\033[31;1mError\033[0;0;0m\n%s\n", msgClassToStr(mc));
-	printf("%s: %s:%d:%d\n", message, m_file, offendingToken->lineNumber, offendingToken->startPos);
+	
+	error(mc, offendingToken->lineNumber, offendingToken->lineStart, offendingToken->startPos, offendingToken->val.length(), message);
+}
+void kdl::CompilerMessage::error(message_class_t mc, CTokenPtr offendingToken, const char* message, ...)
+{
+	va_list args;
+	va_start(args, message);
+	error(mc, offendingToken->lineNumber, offendingToken->lineStart, offendingToken->startPos, offendingToken->val.length(), message, args);
+	va_end(args);
 
-	print(message, offendingToken->lineNumber, offendingToken->lineStart, offendingToken->startPos, offendingToken->val.length());
+}
+
+void CompilerMessage::error(message_class_t mc, int line, int lineStart, int startChar, int endChar, const char* message, ...)
+{
+	printf("\033[31;1mError\033[0;0;0m\n%s\n", msgClassToStr(mc));
+
+	va_list args;
+	va_start(args, message);
+	vprintf(message, args);
+	va_end(args);
+	printf(": %s:%d:%d\n", m_file, line, startChar);
+
+	print(message, line, lineStart, startChar, endChar);
+
 }
 
 void CompilerMessage::warning(const char* message, CTokenPtr offendingToken)
@@ -43,19 +63,6 @@ void CompilerMessage::warning(const char* message, CTokenPtr offendingToken)
 
 }
 
-void kdl::CompilerMessage::error(message_class_t mc, CTokenPtr offendingToken, const char* message, ...)
-{
-	printf("\033[31;1mError\033[0;0;0m\n%s\n", msgClassToStr(mc));
-
-	va_list args;
-	va_start(args, message);
-	vprintf(message, args);
-	va_end(args);
-
-	printf(":%s:%d:%d\n", m_file, offendingToken->lineNumber, offendingToken->startPos);
-	print(message, offendingToken->lineNumber, offendingToken->lineStart, offendingToken->startPos, offendingToken->val.length());
-
-}
 
 void CompilerMessage::print(const char* message, int lineNo, int lineStart, int startChar, int endChar)
 		{
