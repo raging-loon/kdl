@@ -1,5 +1,6 @@
 #include "backend/clang/ClRuleCompiler.h"
 #include "channels/rule.h"
+#include "cli/KdlOptions.h"
 using kdl::ClRuleCompiler;
 using kdl::Rule;
 using kdl::CNode;
@@ -115,7 +116,7 @@ void ClRuleCompiler::writeConditional(const CNode* head)
 			return;
 		}
 		
-		if (ht == token_t::IDENTIFIER)
+		if (ht == token_t::SINGLE_VAR_IDENTIFIER)
 		{
 			writeSingleMatchVariable(head->value->val);
 			return;

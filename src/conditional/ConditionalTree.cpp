@@ -214,24 +214,12 @@ void kdl::ConditionalTree::_int_dumpTree2(const CNode* head, bool isLeftNode, co
 
 		printf("%s", isLeftNode ? "|--" : "\\--");
 
-		if (!head->left && !head->right && head->value->t == token_t::IDENTIFIER)
-		{
-			if (head->isMultiVar)
-				printf("MultiVar ");
-			else
-				printf("SingleVar ");
-			printf("%s\n", getTokenName(head->value->t));
-
-		}
-		else
-		{
 			printf("%s\n", getTokenName(head->value->t));
 
 			_int_dumpTree2(head->left, true, prefix + (isLeftNode ? "|   " : "    "));
 			_int_dumpTree2(head->right, false, prefix + (isLeftNode ? "|   " : "    "));
 
 
-		}
 	}
 }
 

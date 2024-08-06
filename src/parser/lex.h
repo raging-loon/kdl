@@ -32,9 +32,16 @@ class Lexer
 public:
 	Lexer(const char* src, int len);
 
-
+	///
+	/// PURPOSE
+	///		Scanning loop
+	///		Will continutally call scanToken
+	///		until there are none left
+	/// 
 	int scan();
+
 	const TokenList& getTokens() const { return m_tokens; }
+	
 	void dumpTokens();
 
 private:
@@ -91,6 +98,9 @@ private:
 	///		If so advance the cursor
 	/// 
 	bool match(char n);
+
+	///
+	char previous();
 
 	/// 
 	/// PURPOSE

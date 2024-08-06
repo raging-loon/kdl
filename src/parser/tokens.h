@@ -52,6 +52,7 @@ enum class token_t : int
 	CND_ALL,
 	CND_ANY,
 	MULTI_VAR_IDENTIFIER,
+	SINGLE_VAR_IDENTIFIER,
 	IDENTIFIER,
 
 	// Modifiers

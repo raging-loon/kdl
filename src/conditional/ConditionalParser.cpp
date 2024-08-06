@@ -22,7 +22,7 @@ constexpr bool ConditionalParser::isSingleVariable()
 {
 	return matchInOrder({
 		token_t::TI_VARIABLE,
-		token_t::IDENTIFIER,
+		token_t::SINGLE_VAR_IDENTIFIER,
 		token_t::CLOSE_PARENTHESIS
 
 	});
@@ -33,7 +33,7 @@ constexpr bool ConditionalParser::isMultiVariable()
 {
 	return matchInOrder({ 
 		token_t::TI_VARIABLE,
-		token_t::IDENTIFIER,
+		token_t::MULTI_VAR_IDENTIFIER,
 		token_t::STAR, 
 		token_t::CLOSE_PARENTHESIS
 	});
@@ -204,7 +204,7 @@ bool ConditionalParser::handleJunction(CTokenPtr op)
 
 bool ConditionalParser::handleVariable(CTokenPtr start)
 {
-	if (peek()->t == token_t::IDENTIFIER)
+	if (peek()->t == token_t::SINGLE_VAR_IDENTIFIER)
 		return m_ctree.addVariableReference(peek(), pLevel, false);
 	
 	if(peek()->t == token_t::MULTI_VAR_IDENTIFIER)
@@ -266,7 +266,9 @@ bool ConditionalParser::handleSubcondition(CTokenPtr start)
 	if (peek()->t == token_t::TI_VARIABLE)
 	{
 		advance();
-		if (peek()->t != token_t::IDENTIFIER && peek()->t != token_t::MULTI_VAR_IDENTIFIER)
+		if (peek()->t != token_t::IDENTIFIER && 
+			peek()->t != token_t::MULTI_VAR_IDENTIFIER &&
+			peek()->t != token_t::SINGLE_VAR_IDENTIFIER)
 		{
 			printf("ERrorroror\n");
 			return false;

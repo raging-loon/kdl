@@ -125,6 +125,12 @@ bool Lexer::match(char n)
 	m_current++;
 	return true;
 }
+char Lexer::previous()
+{
+	if (m_current == 0)
+		return -1;
+	return m_source[m_curLine - 1];
+}
 // todo: remove code duplication
 void Lexer::addToken(token_t tok)
 {
@@ -169,14 +175,18 @@ void Lexer::scanIdentifierOrKeyword()
 	
 	//printf("%s s:%d e:%d\n", test.c_str(), m_start, m_current);
 	auto posKw = m_keywords.find(test);
+
+	// is this a keyword?
 	if (posKw != m_keywords.end())
 	{
 		addToken(
 			posKw->second
 		);
 	}
+	// if not it must be an identifier or variable
 	else
 	{
+		// match something like '$str*' as in 'all of $str*'
 		if (peek() == '*')
 		{
 			addToken(
@@ -187,10 +197,15 @@ void Lexer::scanIdentifierOrKeyword()
 		}
 		else
 		{
-			addToken(
-				token_t::IDENTIFIER,
-				test
-			);
+			// match a single variable like '$str1'
+
+			// -2 because of the advance in the loop. -1 is the name, 0 is the next symbol
+			// $str = 1 
+			//      ^ we are here
+			if(m_source[m_start-1] == '$')
+				addToken(token_t::SINGLE_VAR_IDENTIFIER, test);
+			else
+				addToken(token_t::IDENTIFIER, test);
 
 		}
 	}

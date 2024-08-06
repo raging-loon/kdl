@@ -98,14 +98,14 @@ bool Compiler::compileSource(const char* source, int len)
 	clcg.generate();
 
 	for (const auto& [file, src] : clcg.getFileMap())
-		m_files[file] = src->str();
+		m_outputFiles[file] = src->str();
 
 	return true;
 }
 
 void Compiler::writeFiles(const std::string& directory)
 {
-	for (const auto& [file, src] : m_files)
+	for (const auto& [file, src] : m_outputFiles)
 	{
 	
 		writeFile(directory + "/" + file, src);

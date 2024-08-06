@@ -54,7 +54,7 @@ bool ConditionalSemanticChecker::isValid_CND_OF_Operation(CTokenPtr left, CToken
 
 bool ConditionalSemanticChecker::isValidRelationalOperation(CTokenPtr left, CTokenPtr right)
 {
-	if (left->t != token_t::IDENTIFIER)
+	if (left->t != token_t::SINGLE_VAR_IDENTIFIER && left->t != token_t::IDENTIFIER)
 		return error(left, "Expected identifier");
 
 	if (right->t != token_t::INTEGER)

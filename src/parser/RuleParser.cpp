@@ -137,7 +137,7 @@ bool RuleParser::parseVariables()
 	int variablesAdded = 0;
 	while (!(nextTokenIsSection(peek()->t)))
 	{
-		if ( !( matchInOrder( { token_t::TI_VARIABLE, token_t::IDENTIFIER, token_t::ASSIGNMENT } ) ) )
+		if ( !( matchInOrder( { token_t::TI_VARIABLE, token_t::SINGLE_VAR_IDENTIFIER, token_t::ASSIGNMENT } ) ) )
 		{
 			CompilerMessage::error(message_class_t::INVALID_SYNTAX, "Invalid variable. Expected '$<name> = <value>'", peek());
 			return false;
