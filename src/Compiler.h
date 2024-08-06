@@ -19,28 +19,32 @@ namespace kdl
 ///		Pipeline goes:
 ///		
 ///		+-+-+-+-+-+-+-+-+
-///		|     Lexer     |	src/parser/lex.h
-///		+-+-+-+-+-+-+-+-+
-///			    ↓
-///		+-+-+-+-+-+-+-+-+
-///		|   Combinator  |	src/parser/Combinator.h
-///		+-+-+-+-+-+-+-+-+
-///			    ↓
-///		+-+-+-+-+-+-+-+-+
-///		|  Rule Parser  |	src/parser/RuleParser.h
-///		+-+-+-+-+-+-+-+-+
-///			    ↓
-///		+-+-+-+-+-+-+-+-+
-///		|   CTree Gen   |	src/conditional/ConditionalParser.h
-///		+-+-+-+-+-+-+-+-+
-///			    ↓
-///		+-+-+-+-+-+-+-+-+
-///		|   Reference   |	src/conditional/ConditionalReferenceValidator.h
-///     |   Validator   |
-///		+-+-+-+-+-+-+-+-+
-///			    ↓
-///		+-+-+-+-+-+-+-+-+
-///		|    Code Gen   |	src/backend/<generator>/<generator-code>.h
+///		|  Source Code  |		 Text
+///		+-+-+-+-+-+-+-+-+		  ┊ 
+///			    ↓			      ┊ 
+///		+-+-+-+-+-+-+-+-+		  ↓	
+///		|     Lexer     |	   CTokenList		 src/parser/lex.h
+///		+-+-+-+-+-+-+-+-+         ┊ 
+///			    ↓				  ┊ 
+///		+-+-+-+-+-+-+-+-+         ↓
+///		|   Combinator  |	  RuleBlocks		src/parser/Combinator.h
+///		+-+-+-+-+-+-+-+-+         ┊ 
+///			    ↓				  ┊ 
+///		+-+-+-+-+-+-+-+-+		  ↓
+///		|  Rule Parser  |		 Rule			src/parser/RuleParser.h
+///		+-+-+-+-+-+-+-+-+         ┊ 
+///			    ↓                 ┊ 
+///		+-+-+-+-+-+-+-+-+		  ↓
+///		|   CTree Gen   |   ConditionalTree		src/conditional/ConditionalParser.h
+///		+-+-+-+-+-+-+-+-+	      ┊ 	
+///			    ↓			      ┊ 
+///		+-+-+-+-+-+-+-+-+	      ┊ 
+///		|   Reference   |	      ┊ 			src/conditional/ConditionalReferenceValidator.h
+///     |   Validator   |	      ┊ 
+///		+-+-+-+-+-+-+-+-+	      ┊ 
+///			    ↓			      ┊ 
+///		+-+-+-+-+-+-+-+-+		  ↓
+///		|    Code Gen   |		Output			src/backend/<generator>/<generator-code>.h
 ///		+-+-+-+-+-+-+-+-+
 ///
 class Compiler

@@ -32,7 +32,9 @@ add_executable(kdlc   "src/parser/lex.h"
 					   "src/conditional/ConditionalReferenceValidator.h" "src/Compiler.h" "src/Compiler.cpp" 
 					   "src/conditional/ConditionalReferenceValidator.cpp"  "src/template/Array.h"  
 					   "src/backend/clang/CLangCG.h" "src/backend/clang/CLangCG.cpp" 
-					   "src/backend/clang/ClRuleCompiler.h" "src/backend/clang/ClRuleCompiler.cpp" "src/kdlc.cpp" "src/cli/TerminalInterface.h" "src/cli/TerminalInterface.cpp" "src/kdlc.h" "src/cli/KdlOptions.h" "src/cli/KdlOptions.cpp")
+					   "src/backend/clang/ClRuleCompiler.h" "src/backend/clang/ClRuleCompiler.cpp" "src/kdlc.cpp"
+					   "src/cli/TerminalInterface.h" "src/cli/TerminalInterface.cpp" "src/kdlc.h" "src/cli/KdlOptions.h" 
+					   "src/cli/KdlOptions.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET kdlc PROPERTY CXX_STANDARD 20)

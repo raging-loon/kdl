@@ -29,7 +29,7 @@ static void printHelp()
 		"  --dump-ctree         Print Conditional Trees\n"
 		"  --dump-tokens        Print Tokens\n"
 		"  --dump-blocks        Print Rule Blocks as they are found\n"
-		"  --dump-rules			Print Rule info\n"
+		"  --dump-rules         Print Rule info\n"
 		"EXAMPLES\n"
 		"  kdlc -f myrules.kdl -o myrules/\n"
 		"  kdlc -f rules.kdl -o rules/ -b clang --platform linux\n"
