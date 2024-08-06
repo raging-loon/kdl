@@ -257,7 +257,20 @@ void Lexer::scanSize()
 
 void Lexer::scanString()
 {
+	int curline = m_curLine;
+	int start = m_start;
+	int curlinestart = m_lineStart;
 	scanSection('"');
+	if (m_curLine != curline)
+	{
+		m_wasError = true;
+		printf("No closing quote found\n");
+		CompilerMessage::print(
+			"",
+			curline, curlinestart, start, start
+		);
+		return;
+	}
 	addToken(token_t::STRING, m_start + 1, m_current - 1);
 }
 
@@ -314,6 +327,8 @@ void Lexer::scanSection(char target)
 			}
 			break;
 		}
+		else if (peek() == '\n')
+			m_curLine++;
 		advance();
 	}
 	
@@ -329,7 +344,7 @@ void Lexer::showError(const char* message)
 	m_wasError = true;
 
 	CompilerMessage::print(
-		"Unknown token/operator/identifier",
+		"\nUnknown token/operator/identifier",
 		m_curLine, m_lineStart, m_start,m_current
 	);
 	

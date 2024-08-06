@@ -58,13 +58,14 @@ void kdl::CompilerMessage::error(message_class_t mc, CTokenPtr offendingToken, c
 }
 
 void CompilerMessage::print(const char* message, int lineNo, int lineStart, int startChar, int endChar)
-{
+		{
 	if (!m_source)
 	{
 		printf("CompileMessage::print called with no source set\n");
 		return;
 	}
-	endChar += startChar-1;
+	if(endChar != startChar)
+		endChar += startChar-1;
 
 
 	int pad = printf("\t %d | ", lineNo);
@@ -97,8 +98,7 @@ void CompilerMessage::print(const char* message, int lineNo, int lineStart, int 
 			putchar('\x20');
 	}
 
-	putchar('^');
-	putchar('\n');
+	printf("^\n\033[0m");
 
 
 }

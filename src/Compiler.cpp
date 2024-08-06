@@ -66,12 +66,11 @@ bool Compiler::compileSource(const char* source, int len)
 {
 	kdl::Lexer lex(source, len);
 
-	if (lex.scan() < 0)
-		return 1;
-
+	int scanSuccess = lex.scan();
 	if (KdlOptions::dumpLexerTokens)
 		lex.dumpTokens();
-
+	if (scanSuccess < 0)
+		return false;
 	
 	kdl::Combinator parse(lex.getTokens());
 	if (!parse.parse())
