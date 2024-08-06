@@ -29,3 +29,4 @@ Debug
 !/thirdparty/**
 tests/**
 !tests/**/*.kdl
+*.json
