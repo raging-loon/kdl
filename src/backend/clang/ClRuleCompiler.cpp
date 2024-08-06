@@ -41,6 +41,33 @@ void ClRuleCompiler::writeHeader()
 
 }
 
+void kdl::ClRuleCompiler::writeNOfThem(int n)
+{
+	std::string prefix = "counter_" + std::to_string(n);
+	m_fnbody << "\n\tint " << prefix << "_of_them = 0;\n";
+
+	auto start = m_rule.cbegin();
+	auto end = m_rule.cend();
+
+	int index = 0;
+	while (start != end)
+	{
+		m_fnbody << prefix << "_of_them += ";
+		writeFunction(start->second);
+
+		m_fnbody << ";\nif(" << prefix << "_of_them ==" << n << ")"
+			     << "\n\t\tgoto __" << prefix << ";\n";
+
+
+		++start;
+	}
+
+	m_fnbody << "__" << prefix << ":\n";
+
+	m_return << "(" << prefix << "_of_them == " << n << ")";
+}
+
+
 void ClRuleCompiler::writeConditional(const CNode* head)
 {
 	if (head)
@@ -87,7 +114,10 @@ void kdl::ClRuleCompiler::writeMultiOperatorConnectedCondition(char connector)
 	auto start = m_rule.cbegin();
 	auto end = m_rule.cend();
 
-	m_fnbody << "     bool " << (connector == '&' ? "all" : "any") << "_of_them" << ++numTimesCalled << " =\n\t ";
+	std::string varName(connector == '&' ? "all" : "any");
+	varName += "_of_them";
+
+	m_fnbody << "     bool " <<varName << ++numTimesCalled << " =\n\t ";
 
 	while (start != end)
 	{
@@ -100,7 +130,7 @@ void kdl::ClRuleCompiler::writeMultiOperatorConnectedCondition(char connector)
 
 	m_fnbody << ";\n";
 
-	m_return << " _any_of_them ";
+	m_return << " " << varName << numTimesCalled << " ";
 }
 
 void kdl::ClRuleCompiler::writeMultiVariableConnectedCondition(const CNode* target, char connector)
@@ -123,7 +153,7 @@ void kdl::ClRuleCompiler::writeMultiVariableConnectedCondition(const CNode* targ
 
 	m_fnbody << ";\n";
 
-	m_return << target->value->val << "_detector";
+	m_return << target->value->val << "_detector" << numTimesCalled;
 }
 
 void ClRuleCompiler::writeFunction(const Variable& var)
@@ -164,5 +194,35 @@ void ClRuleCompiler::handleOfCondition(const CNode* left, const CNode* right)
 
 	else if (matchLeftRight(left, right, token_t::CND_ALL, token_t::CND_THEM))
 		writeMultiOperatorConnectedCondition('&');
+
+	else if (left->value->t == token_t::INTEGER)
+	{
+		int val = std::stoi(left->value->val);
+		if (val == 1)
+		{
+			// treat '1 of them' as 'any of them'
+			if(right->value->t == token_t::CND_THEM)
+				writeMultiVariableConnectedCondition(right, '|');
+			// treat '1 of $str*' as 'any of $str*'
+			else if(right->value->t == token_t::MULTI_VAR_IDENTIFIER)
+				writeMultiVariableConnectedCondition(right, '|');
+
+		}
+		else if (val == m_rule.getNumVariables())
+		{
+			// treat '1 of them' as 'any of them'
+			if (right->value->t == token_t::CND_THEM)
+				writeMultiVariableConnectedCondition(right, '&');
+			// treat '1 of $str*' as 'any of $str*'
+			else if (right->value->t == token_t::MULTI_VAR_IDENTIFIER)
+				writeMultiVariableConnectedCondition(right, '&');
+		}
+		else
+		{
+			if (right->value->t == token_t::CND_THEM)
+				writeNOfThem(val);
+		}
+
+	}
 
 }

@@ -32,7 +32,7 @@ private:
 
 	void writeHeader();
 	
-	void writeNumOfX();
+	void writeNOfThem(int n);
 
 	void writeConditional(const CNode* head);
 
@@ -47,7 +47,7 @@ private:
 	///
 	/// PURPOSE
 	///		
-	///		Adds the functions for all variables referenced by 'target' and 
+	///		Adds the functions for all variables referenced by taand 
 	///     connects them together with 2x of the connecter (e.g. '&' -> '&&')
 	/// 
 	void writeMultiVariableConnectedCondition(const CNode* target, char connector);

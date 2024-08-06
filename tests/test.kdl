@@ -7,7 +7,7 @@ rule email_Ukraine_power_attack_content : mail {
 		$body_string3 = "=E1=B3=F2=ED=E8=EA=B3=E2 =EE=F0=E3=E0=ED=B3=E7=E0=F6=B3=E9 =E7=E0 =E7=F0=E0="
 		$body_string5 = "=C2=B3=E4=EF=EE=E2=B3=E4=ED=EE =E4=EE =D3=EA=E0=E7=F3 =CF=F0=E5=E7=E8=E4=E5="
 	condition:
-        any of $body* and any of $sub* 
+        3 of them
 }
 
 rule pony_malware  {
@@ -28,4 +28,15 @@ rule EICAR
 		$t = |90 90|
 	condition:
 		$str
+}
+
+rule test
+{
+	content:
+		$str1 = "hello world"
+		$str2 = "hola mundo"
+		$str3 = "privet komrad"
+
+	condition:
+		2 of them
 }

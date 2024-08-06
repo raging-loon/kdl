@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	HMODULE ruleDLL = LoadLibraryA(argv[0]);
+	HMODULE ruleDLL = LoadLibraryA(argv[1]);
 	
 	if(ruleDLL == NULL)
 	{
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	SEARCH_FN test = (SEARCH_FN)(GetProcAddress(ruleDLL, "kdl_rule_EICAR"));
+	SEARCH_FN test = (SEARCH_FN)(GetProcAddress(ruleDLL, "kdl_rule_test"));
 
 	if (!test)
 	{
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	const unsigned char testStr[] = "\x0X5O!P%@AP[4PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
+	const unsigned char testStr[] = "sdfasdfasglkjsl;ajdsfhello worldasdkfa;sdf;askldnfprivet adasdadsf";
 	if (test(testStr, sizeof(testStr)) == TRUE)
 		printf("Found\n");
 

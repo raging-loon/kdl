@@ -80,6 +80,11 @@ public:
 
 	void searchVariableName(const std::string& search, std::vector<const Variable*> &);
 
+	inline int getNumVariables()
+	{
+		return m_variables.size();
+	}
+
 private:
 	
 	std::string m_name;
