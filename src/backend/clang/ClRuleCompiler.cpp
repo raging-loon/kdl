@@ -41,68 +41,6 @@ void ClRuleCompiler::writeHeader()
 
 }
 
-void ClRuleCompiler::writeAllOfThem()
-{
-	auto start = m_rule.cbegin();
-	auto end = m_rule.cend();
-
-	m_fnbody << "     bool _all_of_them =\n\t ";
-
-	while (start != end)
-	{
-		auto& s = start->second;
-		writeFunction(s);
-		++start;
-		if (start != end)
-			m_fnbody << "\n && ";
-	}
-
-	m_fnbody << ";\n";
-
-	m_return << " _all_of_them ";
-}
-
-void ClRuleCompiler::writeAnyOfThem()
-{
-	auto start = m_rule.cbegin();
-	auto end = m_rule.cend();
-	
-	m_fnbody << "     bool _any_of_them =\n\t ";
-
-	while (start != end)
-	{
-		auto & s= start->second;
-		writeFunction(s);
-		++start;
-		if(start != end)
-			m_fnbody << "\n || ";
-	}
-
-	m_fnbody << ";\n";
-
-	m_return << " _any_of_them ";
-}
-
-void ClRuleCompiler::writeAnyOfMultiVar(const std::string& prefix)
-{
-	std::vector<const Variable*> mvs;
-	m_rule.searchVariableName(prefix, mvs);
-
-	m_fnbody << "\n     bool _any_of_" << prefix << " = \n    ";
-
-	for (int i = 0; i < mvs.size(); i++)
-	{
-		if(i != 0)
-			m_fnbody << "\n || ";
-
-		writeFunction(*mvs[i]);
-	}
-	
-	m_fnbody << ";\n";
-
-	m_return << " _any_of_" << prefix << " ";
-}
-
 void ClRuleCompiler::writeConditional(const CNode* head)
 {
 	if (head)
@@ -140,6 +78,54 @@ void ClRuleCompiler::writeConditional(const CNode* head)
 	}
 }
 
+
+void kdl::ClRuleCompiler::writeMultiOperatorConnectedCondition(char connector)
+{
+	assert(connector == '&' || connector == '|');
+	static int numTimesCalled = 0;
+	
+	auto start = m_rule.cbegin();
+	auto end = m_rule.cend();
+
+	m_fnbody << "     bool " << (connector == '&' ? "all" : "any") << "_of_them" << ++numTimesCalled << " =\n\t ";
+
+	while (start != end)
+	{
+		auto& s = start->second;
+		writeFunction(s);
+		++start;
+		if (start != end)
+			m_fnbody << "\n " << connector << connector << " ";
+	}
+
+	m_fnbody << ";\n";
+
+	m_return << " _any_of_them ";
+}
+
+void kdl::ClRuleCompiler::writeMultiVariableConnectedCondition(const CNode* target, char connector)
+{
+	assert(connector == '&' || connector == '|');
+	static int numTimesCalled = 0;
+
+	std::vector<const Variable*> mvs;
+	m_rule.searchVariableName(target->value->val, mvs);
+
+	m_fnbody << "\n     bool " << target->value->val << "_detector" << ++numTimesCalled << " = \n    ";
+
+	for (int i = 0; i < mvs.size(); i++)
+	{
+		if (i != 0)
+			m_fnbody << "\n " << connector << connector << " ";
+
+		writeFunction(*mvs[i]);
+	}
+
+	m_fnbody << ";\n";
+
+	m_return << target->value->val << "_detector";
+}
+
 void ClRuleCompiler::writeFunction(const Variable& var)
 {
 	switch (var.type)
@@ -168,11 +154,15 @@ void ClRuleCompiler::handleOfCondition(const CNode* left, const CNode* right)
 	if (!left || !right)
 		return;
 	if (matchLeftRight(left, right, token_t::CND_ANY, token_t::CND_THEM))
-		writeAnyOfThem();
+		writeMultiOperatorConnectedCondition('|');
 
 	else if (matchLeftRight(left, right, token_t::CND_ANY, token_t::MULTI_VAR_IDENTIFIER))
-		writeAnyOfMultiVar(right->value->val);
+		writeMultiVariableConnectedCondition(right, '|');
+
+	else if (matchLeftRight(left, right, token_t::CND_ALL, token_t::MULTI_VAR_IDENTIFIER))
+		writeMultiVariableConnectedCondition(right, '&');
 
 	else if (matchLeftRight(left, right, token_t::CND_ALL, token_t::CND_THEM))
-		writeAllOfThem();
+		writeMultiOperatorConnectedCondition('&');
+
 }

@@ -32,13 +32,25 @@ private:
 
 	void writeHeader();
 	
-	void writeAllOfX();
 	void writeNumOfX();
 
-	void writeAllOfThem();
-	void writeAnyOfThem();
-	void writeAnyOfMultiVar(const std::string& prefix);
 	void writeConditional(const CNode* head);
+
+	///
+	/// PURPOSE
+	///		
+	///		Adds the functions for all variables and 
+	///     connects them together with 2x of the connecter (e.g. '&' -> '&&')
+	/// 
+	void writeMultiOperatorConnectedCondition(char connector);
+
+	///
+	/// PURPOSE
+	///		
+	///		Adds the functions for all variables referenced by 'target' and 
+	///     connects them together with 2x of the connecter (e.g. '&' -> '&&')
+	/// 
+	void writeMultiVariableConnectedCondition(const CNode* target, char connector);
 
 	void writeFunction(const Variable& var);
 	/// 
