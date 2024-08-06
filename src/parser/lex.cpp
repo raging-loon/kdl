@@ -343,9 +343,10 @@ void Lexer::showError(const char* message)
 {
 	m_wasError = true;
 
-	CompilerMessage::print(
-		"\nUnknown token/operator/identifier",
-		m_curLine, m_lineStart, m_start,m_current
+	CompilerMessage::error(
+		message_class_t::INVALID_SYNTAX,
+		m_curLine, m_lineStart, m_start,m_current,
+		"\nUnknown token/operator/identifier"
 	);
 	
 }

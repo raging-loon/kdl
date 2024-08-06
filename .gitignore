@@ -26,5 +26,6 @@ Debug
 *.gen
 
 *.exe
+!/thirdparty/**
 tests/**
 !tests/**/*.kdl
