@@ -32,7 +32,7 @@ bool kdl::ConditionalReferenceValidator::validateIdentifier(const CNode* const n
 	if (!n || !n->value)
 		return true;
 
-	if (n->value->t == token_t::IDENTIFIER)// || n.value->t == token_t::MULTI_VAR_IDENTIFIER)
+	if (n->value->t == token_t::SINGLE_VAR_IDENTIFIER)// || n.value->t == token_t::MULTI_VAR_IDENTIFIER)
 	{
 		auto& name = n->value->val;
 		if (r.m_variables.find(name) == r.m_variables.end())

@@ -190,6 +190,14 @@ private:
 	///		-1 on success or position of failure
 	/// 
 	int formatByteSequence(std::string& input);
+
+
+	///
+	/// PURPOSE
+	///		Convert a size to the integer it is representing
+	///		
+	///		e.g. 10KB -> 10 * 1024
+	uint64_t formatSize(int numStart, int numEnd, char input[3]);
 };
 
 

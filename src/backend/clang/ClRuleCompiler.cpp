@@ -68,6 +68,12 @@ void kdl::ClRuleCompiler::writeNOfThem(int n)
 }
 
 
+///
+/// ORDER OF OPERATOR DETECTION
+///		1. OF
+///		2. >=, <=, ==, !=, <, >
+///		3. singlevar
+/// 
 void ClRuleCompiler::writeConditional(const CNode* head)
 {
 	if (head)

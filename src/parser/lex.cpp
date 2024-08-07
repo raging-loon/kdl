@@ -224,34 +224,50 @@ void Lexer::scanInteger()
 void Lexer::scanSize()
 {
 	char n = peek();
+	
+	int curCopy = m_current - 1;
 
+	char sizeIndicator[3] = { 0,0, 0 };
+
+	// byte, e.g. 10B
 	if (n == 'B' || n == 'b')
 	{
+		sizeIndicator[0] = n;
 		advance();
-		addToken(token_t::SIZE, m_start, m_current);
-		return; 
 	}
-
-	if (n == 'M' || n == 'm' || n == 'K' ||
+	// KB - GB
+	else if (n == 'M' || n == 'm' || n == 'K' ||
 		n == 'k' || n == 'g' || n == 'G')
 	{
 		advance(); 
+		sizeIndicator[0] = n;
+
 		char sb = peek();
+		
 		if (sb == 'B' || sb == 'b')
 		{
+			sizeIndicator[1] = sb;
 			advance();
-			addToken(token_t::SIZE, m_start, m_current);
 		}
+		
 		else
 		{
 			showError("Invalid Size indicator. Must end with 'B' or 'b'");
+			return;
 		}
 	}
 	else
 	{
 		showError("Invalid Size indicator. Must start with one of these characters: 'KkMmGg'");
+		return;
 	}
 	
+	
+	int target = formatSize(m_start, curCopy, sizeIndicator);
+	// TODO vvvv optimize
+	auto str = std::to_string(target);
+	addToken(token_t::INTEGER, str);
+	return;
 }
 
 
@@ -393,6 +409,44 @@ int Lexer::formatByteSequence(std::string& input)
 	delete[] formatted;
 
 	return -1;
+}
+
+uint64_t Lexer::formatSize(int numStart, int numEnd, char input[3])
+{
+	// expect that error checking has already occured
+	// assume that mainnum is a byte quantity
+
+
+	char numberBuffer[10];
+	int i;
+	for (i = 0; i < (numEnd- numStart) && i < 9; i++)
+		numberBuffer[i] = m_source[numStart + i];
+	
+	numberBuffer[i] = 0;
+
+	int mainnum = std::atoi(numberBuffer);
+
+	switch (input[0])
+	{
+		case 'B':
+		case 'b':
+			return mainnum;
+		case 'K':
+		case 'k':
+			return mainnum * (2 << 9);
+		case 'M':
+		case 'm':
+			return mainnum * (2 << 19);
+		case 'G':
+		case 'g':
+			return mainnum * (2 << 29);
+	/*	case 'T':
+		case 't':
+			return mainnum * (2 << 39);*/
+		default:
+			return -1;
+	}
+
 }
 
 
