@@ -6,10 +6,16 @@ using kdl::Rule;
 using kdl::CNode;
 using kdl::token_t;
 
-constexpr bool matchLeftRight(const CNode* left, const CNode* right, token_t el, token_t er)
+constexpr bool matchLeftAndRight(const CNode* left, const CNode* right, token_t el, token_t er)
 {
 	return left->value->t == el && 
 		   right->value->t == er;
+}
+
+constexpr bool matchLeftOrRight(const CNode* left, const CNode* right, token_t el, token_t er)
+{
+	return left->value->t == el || 
+		right->value->t == er;
 }
 
 ClRuleCompiler::ClRuleCompiler(Rule& rule)
@@ -35,7 +41,7 @@ std::string kdl::ClRuleCompiler::getFunctionPrototype()
 void ClRuleCompiler::writeHeader()
 {
 	m_fnbody << "bool kdl_rule_" << m_rule.getName()
-		     << "(const unsigned char* data, unsigned int len)\n{\n";
+		     << "(const unsigned char* data, unsigned int filesize)\n{\n";
 	
 	writeConditional(m_rule.m_conditions.getHead());
 
@@ -93,16 +99,27 @@ void ClRuleCompiler::writeConditional(const CNode* head)
 			return;
 		}
 
-
+		if (ht >= token_t::KW_GT && ht <= token_t::KW_EQUALITY)
+		{
+			writeLogicalOperator(head->left->value->val, ht, std::stol(head->right->value->val));
+			return;
+		}
 		if(head->left && head->right)
 		{ 
 			m_return << " ( ";
 
 			writeConditional(head->left);
-			if (ht == token_t::KW_AND)
-				m_return << " && ";
-			else if(ht == token_t::KW_OR)
-				m_return << " || ";
+
+			// if the right token is KW_GT or above, it is a conditional involving a
+			// built in variable like 'filesize >= 120MB'
+			if(head->right->value->t <= token_t::KW_GT)
+			{
+				if (ht == token_t::KW_AND)
+					m_return << " && ";
+				else if(ht == token_t::KW_OR)
+					m_return << " || ";
+
+			}
 			writeConditional(head->right);
 			m_return << " ) ";
 
@@ -168,7 +185,7 @@ void ClRuleCompiler::writeFunction(const Variable& var)
 	{
 		case Variable::BYTE_SEQUENCE:
 		case Variable::STRING:
-			m_fnbody << " ldu_bytesrch(\"" << var.searchstr << "\", data, " << var.searchstr.length() << ", len) ";
+			m_fnbody << " ldu_bytesrch(\"" << var.searchstr << "\", data, " << var.searchstr.length() << ", filesize) ";
 			break;
 			//m_fnbody << " ldu_strsrch(\"" << var.searchstr << "\", data, " << var.searchstr.length() << ") ";
 			//break;
@@ -189,16 +206,21 @@ void ClRuleCompiler::handleOfCondition(const CNode* left, const CNode* right)
 {
 	if (!left || !right)
 		return;
-	if (matchLeftRight(left, right, token_t::CND_ANY, token_t::CND_THEM))
+
+	// any of them => str1 || str2 || str3
+	if (matchLeftAndRight(left, right, token_t::CND_ANY, token_t::CND_THEM))
 		writeMultiOperatorConnectedCondition('|');
 
-	else if (matchLeftRight(left, right, token_t::CND_ANY, token_t::MULTI_VAR_IDENTIFIER))
+	// any of $mv* => mv1 || mv2 || mv3
+	else if (matchLeftAndRight(left, right, token_t::CND_ANY, token_t::MULTI_VAR_IDENTIFIER))
 		writeMultiVariableConnectedCondition(right, '|');
 
-	else if (matchLeftRight(left, right, token_t::CND_ALL, token_t::MULTI_VAR_IDENTIFIER))
+	// all of $mv* => mv1 && mv2 && mv3
+	else if (matchLeftAndRight(left, right, token_t::CND_ALL, token_t::MULTI_VAR_IDENTIFIER))
 		writeMultiVariableConnectedCondition(right, '&');
 
-	else if (matchLeftRight(left, right, token_t::CND_ALL, token_t::CND_THEM))
+	// all of them => str1 && str2 && str3
+	else if (matchLeftAndRight(left, right, token_t::CND_ALL, token_t::CND_THEM))
 		writeMultiOperatorConnectedCondition('&');
 
 	else if (left->value->t == token_t::INTEGER)
@@ -231,4 +253,33 @@ void ClRuleCompiler::handleOfCondition(const CNode* left, const CNode* right)
 
 	}
 
+}
+
+void ClRuleCompiler::writeLogicalOperator(const std::string& left, token_t lop, int num)
+{
+	m_fnbody << "\nif(!(" << left;
+
+	switch (lop)
+	{
+		case token_t::KW_GT:
+			m_fnbody << " > ";
+			break;
+		case token_t::KW_GEQ:
+			m_fnbody << " >= ";
+			break;
+		case token_t::KW_LT:
+			m_fnbody << " < ";
+			break;
+		case token_t::KW_LEQ:
+			m_fnbody << " <= ";
+			break;
+		case token_t::KW_EQUALITY:
+			m_fnbody << " == ";
+			break;
+		default:
+			printf("errr!\n");
+			return;
+	}
+
+	m_fnbody << num << "))\n\treturn false;\n\n";
 }

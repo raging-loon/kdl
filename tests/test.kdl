@@ -24,9 +24,9 @@ rule pony_malware  {
 rule EICAR
 {
 	content:
-		$str = "X5O!P%@AP[4PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
+		$str = "X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
 	condition:
-		$str and filesize < 128MB
+		$str and filesize <= 128B and filesize >= 68B
 }
 
 rule test

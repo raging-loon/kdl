@@ -225,7 +225,7 @@ void Lexer::scanSize()
 {
 	char n = peek();
 	
-	int curCopy = m_current - 1;
+	int curCopy = m_current ;
 
 	char sizeIndicator[3] = { 0,0, 0 };
 

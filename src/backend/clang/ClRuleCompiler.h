@@ -60,7 +60,7 @@ private:
 	void writeSingleMatchVariable(const std::string& name);
 	void handleOfCondition(const CNode* left, const CNode* right);
 
-	void writeLogicalOperator(const std::string& left, int num);
+	void writeLogicalOperator(const std::string& left, token_t lop, int num);
 };
 
 
