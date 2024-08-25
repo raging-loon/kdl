@@ -10,9 +10,9 @@ namespace kdl
 class CodeGenerator
 {
 public:
-	
-	virtual bool generate() = 0;
-	virtual const std::stringstream& getOutput() = 0;
+
+    virtual bool generate() = 0;
+    virtual const std::stringstream& getOutput() = 0;
 
 };
 

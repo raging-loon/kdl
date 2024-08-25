@@ -11,10 +11,10 @@ namespace kdl
 
 enum class RuleParameters : uint16_t
 {
-	NONE,
-	NET,
-	FILE,
-	PROCESS
+    NONE,
+    NET,
+    FILE,
+    PROCESS
 
 };
 
@@ -29,68 +29,68 @@ enum class RuleParameters : uint16_t
 /// 
 class Rule
 {
-	friend class ConditionalReferenceValidator;
+    friend class ConditionalReferenceValidator;
 
 public:
-	Rule();
-	~Rule() {}
+    Rule();
+    ~Rule() {}
 
 public:
 
-	using CVariableIter = std::unordered_map<std::string, Variable>::const_iterator;
+    using CVariableIter = std::unordered_map<std::string, Variable>::const_iterator;
 
 
-	/// Getters/Setters
+    /// Getters/Setters
 
-	inline void setName(const std::string& newName) { m_name = newName; }
+    inline void setName(const std::string& newName) { m_name = newName; }
 
-	inline const std::string& getName() const { return m_name; }
+    inline const std::string& getName() const { return m_name; }
 
-	inline void setRuleParameters(RuleParameters rp) { m_params = rp; };
+    inline void setRuleParameters(RuleParameters rp) { m_params = rp; };
 
 
-	/// 
-	/// PURPOSE
-	///		Parse 'rp' and set the rule parameter 
-	///		Returns false if the rule parameter is invalid.
-	/// 
-	bool setRuleParameters(const std::string& rp);
-	
-	/// Returns a copy
-	inline RuleParameters getRuleParamters() { return m_params; }
+    /// 
+    /// PURPOSE
+    ///		Parse 'rp' and set the rule parameter 
+    ///		Returns false if the rule parameter is invalid.
+    /// 
+    bool setRuleParameters(const std::string& rp);
 
-	inline const Variable& getVariable(const std::string& name) 
-	{
-		return m_variables[name];
-	}
+    /// Returns a copy
+    inline RuleParameters getRuleParamters() { return m_params; }
 
-	inline CVariableIter cbegin()
-	{
-		return m_variables.cbegin();
-	}
-	
-	inline CVariableIter cend()
-	{
-		return m_variables.cend();
-	}
-	// name and value will be copied
-	bool addRule(const std::string& name, const std::string& value, Variable::Type type, uint8_t flags = 0);
+    inline const Variable& getVariable(const std::string& name)
+    {
+        return m_variables[name];
+    }
 
-	ConditionalTree m_conditions;
+    inline CVariableIter cbegin()
+    {
+        return m_variables.cbegin();
+    }
 
-	void searchVariableName(const std::string& search, std::vector<const Variable*> &);
+    inline CVariableIter cend()
+    {
+        return m_variables.cend();
+    }
+    // name and value will be copied
+    bool addRule(const std::string& name, const std::string& value, Variable::Type type, uint8_t flags = 0);
 
-	inline int getNumVariables()
-	{
-		return m_variables.size();
-	}
+    ConditionalTree m_conditions;
+
+    void searchVariableName(const std::string& search, std::vector<const Variable*>&);
+
+    inline int getNumVariables()
+    {
+        return m_variables.size();
+    }
 
 private:
-	
-	std::string m_name;
-	RuleParameters m_params;
 
-	std::unordered_map<std::string, Variable> m_variables;
+    std::string m_name;
+    RuleParameters m_params;
+
+    std::unordered_map<std::string, Variable> m_variables;
 };
 
 

@@ -50,26 +50,26 @@ namespace kdl
 class Compiler
 {
 public:
-	Compiler();
-	~Compiler();
+    Compiler();
+    ~Compiler();
 
-	bool compileFile(const char* filename);
-	bool compileSource(const char* source, int len);
+    bool compileFile(const char* filename);
+    bool compileSource(const char* source, int len);
 
 
-	void writeFiles(const std::string&  directory);
+    void writeFiles(const std::string& directory);
 
-	void dumpRules();
+    void dumpRules();
 
 private:
-	RulePool m_rules;
+    RulePool m_rules;
 
-	
-	std::vector<std::string> m_inputFiles;
-	std::unordered_map<std::string, std::string> m_outputFiles;
 
-	void writeFile(const std::string& name, const std::string& source);
-	const char* m_currentFile;
+    std::vector<std::string> m_inputFiles;
+    std::unordered_map<std::string, std::string> m_outputFiles;
+
+    void writeFile(const std::string& name, const std::string& source);
+    const char* m_currentFile;
 };
 
 

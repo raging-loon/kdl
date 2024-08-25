@@ -13,12 +13,12 @@ namespace kdl
 /// 
 /*class RulePool
 {
-	friend class ConditionalReferenceValidator;
+    friend class ConditionalReferenceValidator;
 public:
 
 private:
 
-	
+
 };*/
 
 using RulePool = kdl::Array<Rule>;

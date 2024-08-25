@@ -1,4 +1,4 @@
-#ifndef BACKEND_CLANG_CLANG_CG_H_
+#define BACKEND_CLANG_CLANG_CG_H_
 #define BACKEND_CLANG_CLANG_CG_H_
 
 #include <sstream>

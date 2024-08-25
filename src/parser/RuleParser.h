@@ -12,80 +12,80 @@ namespace kdl
 class RuleParser : private Parser
 {
 public:
-	
-	RuleParser(CTokenMapView& tokenMap, Rule& newRule);
-	bool parse() override;
+
+    RuleParser(CTokenMapView& tokenMap, Rule& newRule);
+    bool parse() override;
 
 private:
-	/// Parser-overriden functions
-	inline CTokenPtr advance() override;
-	
-	inline bool isAtEnd() override;
+    /// Parser-overriden functions
+    inline CTokenPtr advance() override;
 
-	CTokenPtr peek() override;
+    inline bool isAtEnd() override;
 
-	CTokenPtr previous() override;
-	
-	bool check(token_t t) override;
+    CTokenPtr peek() override;
 
-private:
-	/// 
-	/// PURPOSE
-	///		Retrieves header information
-	///		Including the rule name and if found,
-	///		a parameter like "File" or "Net"
-	///		
-	bool parseHeader();
-	
-	///
-	/// PURPOSE
-	///		Initiate parsing of other sections e.g. "conditions:", "meta:"
-	///		
-	bool parseSection();
+    CTokenPtr previous() override;
 
-	///
-	/// PURPOSE
-	///		Pick out and format variables in the "content:" section
-	/// 
-	bool parseVariables();
-
-	///
-	/// PURPOSE
-	///		Scan for modifications after the TI_* token has been found
-	///		Will OR them together based on flags present in 'channels/type.h'
-	///
-	int8_t scanVariableMods();
-
-
-	///
-	/// PURPOSE
-	///		Parse the conditionals section
-	///		Will produce a conditional tree
-	///		
-	///		Note: parseConditional expcets the current token to be 
-	///			  The first token in the conditional sequence
-	///
-	bool parseConditionals();
+    bool check(token_t t) override;
 
 private:
+    /// 
+    /// PURPOSE
+    ///		Retrieves header information
+    ///		Including the rule name and if found,
+    ///		a parameter like "File" or "Net"
+    ///		
+    bool parseHeader();
 
-	/// PURPOSE: The rule we are operating upon
-	Rule& m_rule;
+    ///
+    /// PURPOSE
+    ///		Initiate parsing of other sections e.g. "conditions:", "meta:"
+    ///		
+    bool parseSection();
 
-	/// Span of tokens
-	CTokenMapView& m_tokenMapView;
+    ///
+    /// PURPOSE
+    ///		Pick out and format variables in the "content:" section
+    /// 
+    bool parseVariables();
 
-	int m_numTokens;
-	
-	enum State
-	{
-		NO_SECTION,
-		SECTION_META,
-		SECTION_CONDITION,
-		SECTION_CONTENT
-	};
+    ///
+    /// PURPOSE
+    ///		Scan for modifications after the TI_* token has been found
+    ///		Will OR them together based on flags present in 'channels/type.h'
+    ///
+    int8_t scanVariableMods();
 
-	State m_currentState;
+
+    ///
+    /// PURPOSE
+    ///		Parse the conditionals section
+    ///		Will produce a conditional tree
+    ///		
+    ///		Note: parseConditional expcets the current token to be 
+    ///			  The first token in the conditional sequence
+    ///
+    bool parseConditionals();
+
+private:
+
+    /// PURPOSE: The rule we are operating upon
+    Rule& m_rule;
+
+    /// Span of tokens
+    CTokenMapView& m_tokenMapView;
+
+    int m_numTokens;
+
+    enum State
+    {
+        NO_SECTION,
+        SECTION_META,
+        SECTION_CONDITION,
+        SECTION_CONTENT
+    };
+
+    State m_currentState;
 
 
 };

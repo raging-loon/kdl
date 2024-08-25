@@ -19,7 +19,7 @@ extern "C" {
 #define FALSE 0
 #endif // FALSE
 
-typedef bool (*KDL_FILE_SEARCH_FN)(void);
+    typedef bool (*KDL_FILE_SEARCH_FN)(void);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -10,14 +10,14 @@ class ConditionalSemanticChecker
 {
 public:
 
-	static bool isValidSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right);
+    static bool isValidSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right);
 
-	static bool isValid_CND_OF_Operation(CTokenPtr left, CTokenPtr right);
-	
-	static bool isValidRelationalOperation(CTokenPtr left, CTokenPtr right);
+    static bool isValid_CND_OF_Operation(CTokenPtr left, CTokenPtr right);
+
+    static bool isValidRelationalOperation(CTokenPtr left, CTokenPtr right);
 private:
 
-	static bool error(CTokenPtr bad, const char* message);
+    static bool error(CTokenPtr bad, const char* message);
 };
 
 } // kdl

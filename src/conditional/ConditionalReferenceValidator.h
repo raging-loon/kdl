@@ -9,16 +9,16 @@ namespace kdl
 class ConditionalReferenceValidator
 {
 public:
-	ConditionalReferenceValidator(RulePool& rp);
+    ConditionalReferenceValidator(RulePool& rp);
 
-	bool check();
+    bool check();
 
 private:
 
-	bool validateRule(Rule& r);
-	bool validateIdentifier(const CNode* const n, Rule& r);
-	RulePool& m_pool;
-	
+    bool validateRule(Rule& r);
+    bool validateIdentifier(const CNode* const n, Rule& r);
+    RulePool& m_pool;
+
 };
 
 

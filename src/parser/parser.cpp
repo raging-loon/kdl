@@ -6,41 +6,41 @@ using kdl::token_t;
 
 bool Parser::match(token_t t)
 {
-	if (check(t))
-	{
-		advance();
-		return true;
-	}
+    if (check(t))
+    {
+        advance();
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 bool Parser::match(std::initializer_list<token_t> t)
 {
-	for (auto i : t)
-	{
-		if (check(i))
-		{
-			advance();
-			return true;
-		}
-	}
-	return false;
+    for (auto i : t)
+    {
+        if (check(i))
+        {
+            advance();
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Parser::matchInOrder(std::initializer_list<token_t> t)
 {
-	setReturnMarker();
-	for (auto i : t)
-	{
-		if (peek()->t != i)
-		{
-			returnToMarker();
-			return false;
-		}
+    setReturnMarker();
+    for (auto i : t)
+    {
+        if (peek()->t != i)
+        {
+            returnToMarker();
+            return false;
+        }
 
-		advance();
-	}
+        advance();
+    }
 
-	return true;
+    return true;
 }

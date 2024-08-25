@@ -10,13 +10,13 @@ class KdlOptions
 public:
 
 
-	static bool verbose;
-	static bool debug;
+    static bool verbose;
+    static bool debug;
 
-	static bool dumpCTrees;
-	static bool dumpLexerTokens;
-	static bool dumpBlocks;
-	static bool dumpRules;
+    static bool dumpCTrees;
+    static bool dumpLexerTokens;
+    static bool dumpBlocks;
+    static bool dumpRules;
 };
 
 #define DEBUG_PRINT(...) if(kdl::KdlOptions::debug) { printf(##__VA_ARGS__);}

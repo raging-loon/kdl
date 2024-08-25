@@ -6,27 +6,27 @@
 #include <vector>
 namespace kdl
 {
-/* 
+/*
 TODO:
-	See if we can detect the max parenthesis level
-	to preallocate the right number of condition trees
+    See if we can detect the max parenthesis level
+    to preallocate the right number of condition trees
 */
 
 
 struct CNode
 {
-	CNode* left{ nullptr };
-	CNode* right{ nullptr };
+    CNode* left{ nullptr };
+    CNode* right{ nullptr };
 
-	CTokenPtr value{nullptr};
-	// Is something like $malfn*
-	bool isMultiVar;
+    CTokenPtr value{ nullptr };
+    // Is something like $malfn*
+    bool isMultiVar;
 
-	explicit CNode(CTokenPtr val)
-		: left(nullptr), right(nullptr), value(val), isMultiVar(false)
-	{}
+    explicit CNode(CTokenPtr val)
+        : left(nullptr), right(nullptr), value(val), isMultiVar(false)
+    {}
 
-	
+
 };
 
 using CNodeList = std::vector<CNode*>;
@@ -55,81 +55,81 @@ using CNodeList = std::vector<CNode*>;
 ///		Merging consists of moving the sub-tree's head to our head's right leaf
 /// 
 
-class ConditionalTree 
+class ConditionalTree
 {
 public:
-	ConditionalTree(int pLevel = 0);
-	~ConditionalTree();
-	///
-	/// PURPOSE
-	///		Adds a subcondition to the tree
-	/// 
-	///		If the head is null, the new subcondition becomes the head
-	/// 
-	///		Otherwise, the subcondition becomes the head's right node
-	/// 
-	bool addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel, bool leftIsMV = false, bool rightIsMv = false);
+    ConditionalTree(int pLevel = 0);
+    ~ConditionalTree();
+    ///
+    /// PURPOSE
+    ///		Adds a subcondition to the tree
+    /// 
+    ///		If the head is null, the new subcondition becomes the head
+    /// 
+    ///		Otherwise, the subcondition becomes the head's right node
+    /// 
+    bool addSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel, bool leftIsMV = false, bool rightIsMv = false);
 
 
-	/// 
-	/// PURPOSE
-	///		Adds a junction to the tree
-	/// 
-	///		If the head is null, an error will be thrown
-	/// 
-	///		If this is a parenthisized junction, add it as the head's right node
-	/// 
-	///		Otherwise, the junction becomes the new head and the previous head becomes
-	///		the junctions's left node	
-	/// 
-	bool addJunction(CTokenPtr cmpOP, int pLevel);
+    /// 
+    /// PURPOSE
+    ///		Adds a junction to the tree
+    /// 
+    ///		If the head is null, an error will be thrown
+    /// 
+    ///		If this is a parenthisized junction, add it as the head's right node
+    /// 
+    ///		Otherwise, the junction becomes the new head and the previous head becomes
+    ///		the junctions's left node	
+    /// 
+    bool addJunction(CTokenPtr cmpOP, int pLevel);
 
-	/// 
-	/// PURPOSE
-	///		Merge any trees below pLevel with the tree at pLevel
-	///		After merging, the tree at pLevel will set it's head's 
-	///		right leaf to it's sub-tree's head.
-	///		It will also copy the contents of it's node list.	
-	/// 
-	bool merge(int &pLevel);
-
-
-	const CNode* const getHead() const { return m_head; }
-
-	bool addVariableReference(CTokenPtr var, int pLevel, bool isMultiVar);
-
-	void dumpTree();
-	void dumpTree2();
-
-private:
-	/// Private constructor to pass plevel 0's nodes to
-	ConditionalTree(CNodeList* sharedNodes, int pLevel);
-
-	bool forwardSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel);
-	bool forwardJunction(CTokenPtr cmpOP, int pLevel);
-
-	bool forwardVariableReference(CTokenPtr var, int pLevel, bool isMultiVar);
-	
-	void _int_dumpTree(const CNode* head);
-	void _int_dumpTree2(const CNode* head, bool isLeftNode, const std::string& prefix);
+    /// 
+    /// PURPOSE
+    ///		Merge any trees below pLevel with the tree at pLevel
+    ///		After merging, the tree at pLevel will set it's head's 
+    ///		right leaf to it's sub-tree's head.
+    ///		It will also copy the contents of it's node list.	
+    /// 
+    bool merge(int& pLevel);
 
 
-	constexpr void createSubTree();
+    const CNode* const getHead() const { return m_head; }
+
+    bool addVariableReference(CTokenPtr var, int pLevel, bool isMultiVar);
+
+    void dumpTree();
+    void dumpTree2();
 
 private:
+    /// Private constructor to pass plevel 0's nodes to
+    ConditionalTree(CNodeList* sharedNodes, int pLevel);
+
+    bool forwardSubCondition(CTokenPtr op, CTokenPtr left, CTokenPtr right, int pLevel);
+    bool forwardJunction(CTokenPtr cmpOP, int pLevel);
+
+    bool forwardVariableReference(CTokenPtr var, int pLevel, bool isMultiVar);
+
+    void _int_dumpTree(const CNode* head);
+    void _int_dumpTree2(const CNode* head, bool isLeftNode, const std::string& prefix);
 
 
-	CNode* m_head;
+    constexpr void createSubTree();
 
-	/// List of pointers to the nodes so they can be destroyed 
-	CNodeList	* m_nodesPtr;
-	CNodeList m_nodes;
-	/// Our parenthesis level
-	int m_p_level;
+private:
 
-	/// Sub Tree where additions with plevels that don't match ours 
-	/// are forwarded to
-	ConditionalTree* m_subTree{ nullptr };
+
+    CNode* m_head;
+
+    /// List of pointers to the nodes so they can be destroyed 
+    CNodeList* m_nodesPtr;
+    CNodeList m_nodes;
+    /// Our parenthesis level
+    int m_p_level;
+
+    /// Sub Tree where additions with plevels that don't match ours 
+    /// are forwarded to
+    ConditionalTree* m_subTree{ nullptr };
 
 };
 
