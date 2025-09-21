@@ -1,0 +1,30 @@
+rule AAR
+{
+
+	content:
+		$a = "Hashtable"
+		$b = "get_IsDisposed"
+		$c = "TripleDES"
+		$d = "testmemory.FRMMain.resources"
+		$e = "$this.Icon" wide
+		$f = "{11111-22222-20001-00001}" wide
+		$g = "@@@@@"
+
+	condition:
+		all of them
+}
+
+
+rule Ap0calypse 
+{
+	content:
+		$a = "Ap0calypse"
+		$b = "Sifre"
+		$c = "MsgGoster"
+		$d = "Baslik"
+		$e = "Dosyalars"
+		$f = "Injecsiyon"
+
+	condition:
+		all of them
+}
