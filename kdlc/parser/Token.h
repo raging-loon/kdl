@@ -21,10 +21,17 @@ enum token_t
     KDL_T_COLON,
     KDL_T_DOT,
     KDL_T_ASSIGNMENT,
-
+    KDL_T_ASTERISK,
+    KDL_T_PLUS,
+    KDL_T_MINUS,
     /// COMPARISON OPERATORS
     KDL_T_EQUALS,
-    
+    KDL_T_LEQ,
+    KDL_T_LT,
+    KDL_T_NE,
+    KDL_T_NOT,
+    KDL_T_GT,
+    KDL_T_GEQ,
 
     /// KEYWORDS
     KDL_T_RULE,
@@ -53,7 +60,19 @@ struct Token
     int lineNumber;
 };
 
-std::string_view getTokenName(token_t t);
+
+///
+/// PURPOSE
+///     Get the name of a token
+/// 
+std::string_view GetTokenName(token_t t);
+
+///
+/// PURPOSE
+///     Given a keyword, return the token
+///     Returns -1 on fail
+/// 
+token_t GetKeyWord(const std::string_view& str);
 
 } // kdl
 

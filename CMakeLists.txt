@@ -13,5 +13,27 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
+
+function(set_source_files varname)
+
+    set(filelist ${ARGV})
+    list(REMOVE_AT filelist 0)
+
+    set(adjusted_filelist "")
+
+    foreach(arg IN LISTS filelist)
+        string(FIND "${arg}" "${CMAKE_CURRENT_SOURCE_DIR}" pos)
+        if(NOT pos EQUAL 0)
+            list(APPEND adjusted_filelist "${CMAKE_CURRENT_SOURCE_DIR}/${arg}")
+        else()
+            list(APPEND adjusted_filelist "${arg}")
+        endif()
+
+    endforeach()
+
+    set(${varname} ${adjusted_filelist} CACHE INTERNAL "" FORCE)
+endfunction()
+
+
 add_subdirectory(test_vm)
 add_subdirectory(kdlc)

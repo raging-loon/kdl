@@ -1,0 +1,3 @@
+SET_SOURCE_FILES(INTERFACE_SOURCES
+    CompilerMessage.cpp
+)
