@@ -7,7 +7,7 @@
 #include <cassert>
 
 #include "parser/Token.h"
-
+#include "context/SourceManager.h"
 namespace kdl
 {
 
@@ -15,7 +15,7 @@ class Lexer
 {
 public:
 
-    Lexer(const std::string& source);
+    Lexer(FileID id);
 
     ///
     /// @brief
@@ -39,12 +39,12 @@ private:
     inline char advance()
     {
         assert(!atEnd());
-        return m_source[m_current++];
+        return m_source->contents[m_current++];
     }
 
     inline bool atEnd() const 
     {
-        return m_current >= m_source.length();
+        return m_current >= m_source->contents.length();
     }
 
     ///
@@ -117,7 +117,7 @@ private:
     void scanSection(char target, bool errorOnNewline = false);
 private:
     /// @brief Source being lexed
-    const std::string_view m_source;
+    const FileInfo* m_source;
 
     /// @brief Tokens found
     std::vector<Token> m_tokens;

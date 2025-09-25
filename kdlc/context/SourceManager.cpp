@@ -21,14 +21,14 @@ FileID SourceManager::addRawSource(const std::string& source)
     return id;
 }
 
-std::optional<FileInfo> SourceManager::getSourceFile(FileID id)
+const FileInfo* SourceManager::getSourceFile(FileID id) const
 {
     auto i = m_fileMap.find(id);
 
     if (i == m_fileMap.cend())
-        return std::nullopt;
+        return nullptr;
 
-    return i->second;
+    return &i->second;
 }
 
 

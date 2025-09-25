@@ -1,12 +1,12 @@
 #include "Lexer.h"
 
 #include <cstdio>
-
+#include "context/CompilerContext.h"
 namespace kdl
 {
 
-Lexer::Lexer(const std::string& source)
-    : m_source{ source },
+Lexer::Lexer(FileID id)
+    : m_source{ nullptr },
     m_tokens{ },
     m_current{ 0 },
     m_start{ 0 },
@@ -14,7 +14,9 @@ Lexer::Lexer(const std::string& source)
     m_lineStartPos{ 0 },
     m_error{ false }
 {
+    m_source = SRC_MGR.getSourceFile(id);
 
+    assert(m_source);
 }
 
 int Lexer::scan()
@@ -104,7 +106,7 @@ char Lexer::peek()
     if (atEnd())
         return '\0';
 
-    return m_source[m_current];
+    return m_source->contents[m_current];
 }
 
 bool Lexer::match(char n)
@@ -121,7 +123,7 @@ char Lexer::previous()
 {
     if (m_current == 0)
         return '\0';
-    return m_source[m_current - 1];
+    return m_source->contents[m_current - 1];
 }
 
 void Lexer::nextLine()
@@ -202,7 +204,7 @@ void Lexer::addTokenSubstring(
     int end
 )
 {
-    std::string_view view = m_source.substr(start, (end - start));
+    std::string_view view = m_source->contents.substr(start, (end - start));
 
     addTokenString(
         tok, view

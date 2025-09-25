@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "parser/lexer/Lexer.h"
-
+#include "context/CompilerContext.h"
 int main(int argc, char** argv)
 {
     printf("hello\n");
@@ -12,8 +12,8 @@ int main(int argc, char** argv)
 []{}()!=
 # hello
 )kdl";
-
-    kdl::Lexer l{ test };
+    kdl::FileID id= SRC_MGR.addRawSource(test);
+    kdl::Lexer l{ id };
     l.scan();
     l.dumpTokens();
     return 0;

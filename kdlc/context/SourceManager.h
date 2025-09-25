@@ -56,9 +56,7 @@ public:
 
     FileID addRawSource(const std::string& source);
 
-    std::optional<
-        FileInfo
-    > getSourceFile(FileID id);
+    const FileInfo* getSourceFile(FileID id) const;
 
 
 private:

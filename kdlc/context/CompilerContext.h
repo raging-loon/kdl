@@ -55,5 +55,5 @@ private:
 } // kdl
 
 #define COMPILER_CTX    kdl::CompilerContext::getContext()
-
+#define SRC_MGR         COMPILER_CTX.getSourceManager()
 #endif // KDLC_CONTEXT_COMPILER_CONTEXT_H_
