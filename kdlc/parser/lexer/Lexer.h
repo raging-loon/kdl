@@ -107,6 +107,14 @@ private:
     ///     Reset the line variables 
     ///     
     void nextLine();
+
+    ///
+    /// @brief
+    ///     Section a section from 'target' to the location of the next next target,
+    ///     unless it is escaped (e.g. if the target is '"', '\"' 
+    ///     would be included in the section)
+    /// 
+    void scanSection(char target, bool errorOnNewline = false);
 private:
     /// @brief Source being lexed
     const std::string_view m_source;

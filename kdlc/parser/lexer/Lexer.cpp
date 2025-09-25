@@ -138,6 +138,43 @@ void Lexer::scanComment()
     nextLine();
 }
 
+void Lexer::scanSection(char target, bool errorOnNewline)
+{
+    while (!atEnd())
+    {
+        if (peek() == target)
+        {
+            // target is escaped, so include it
+            if (previous() == '\\')
+            {
+                advance();
+                continue;
+            }
+            break;
+        }
+        else if (peek() == '\n')
+        {
+            if (errorOnNewline)
+            {
+                m_error = true;
+                return;
+            }
+            else
+                nextLine();
+        }
+
+
+        advance();
+    }
+
+    if (atEnd())
+        assert(false);
+
+    advance();
+
+
+}
+
 void Lexer::addToken(token_t tok)
 {
     m_tokens.push_back({
