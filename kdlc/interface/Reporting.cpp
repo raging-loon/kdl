@@ -60,7 +60,7 @@ void Report::PrintSourceSection(ReportInfo& reportInfo)
     int startChar = srcLoc.locationStart;
     int endChar = srcLoc.locationEnd;
     if (endChar == 0)
-        endChar = srcLoc.locationStart + 1;
+        endChar = srcLoc.locationStart;
 
     // write the line
     for (int i = srcLoc.lineOffset - 1; i < fi->contents.length(); i++)
@@ -84,6 +84,12 @@ void Report::PrintSourceSection(ReportInfo& reportInfo)
         buffer << ' ';
  
     buffer << "| ";
+
+    // pad before squiggle thing
+    for (int i = srcLoc.lineOffset; i < startChar; i++)
+    {
+        buffer << ' ';
+    }
 
     // draw squiggle that points to source
     for (int i = startChar; i <= endChar; i++)

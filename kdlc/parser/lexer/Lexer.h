@@ -8,6 +8,7 @@
 
 #include "parser/Token.h"
 #include "context/SourceManager.h"
+#include "interface/Reporting.h"
 namespace kdl
 {
 
@@ -67,7 +68,7 @@ private:
     /// @detail
     ///     This internally calls @ref addTokenString
     /// 
-    void addTokenSubstring(token_t, int start, int end);
+    void addTokenSubstring(token_t, size_t start, size_t end);
 
     ///
     /// @brief
@@ -115,6 +116,24 @@ private:
     ///     would be included in the section)
     /// 
     void scanSection(char target, bool errorOnNewline = false);
+
+    ///
+    /// @brief
+    ///     Scan a string. These can start/end with either ' or "
+    /// 
+    void scanString();
+
+    ///
+    /// @brief
+    ///     Create a ReportInfo instance for use with Report
+    /// 
+    ReportInfo& getReportInfo(int startChar, int endChar = 0);
+
+    ///
+    /// @brief
+    ///     Show an error
+    /// 
+    void showError(const std::string_view& message, int startChar, int endChar = 0);
 private:
     /// @brief FileID, used for printing errors
     FileID m_fileID;

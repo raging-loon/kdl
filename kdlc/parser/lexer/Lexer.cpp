@@ -97,16 +97,12 @@ void Lexer::scanToken()
             break;
         case '\n': nextLine(); break;
         case '#': scanComment(); break;
+        case '\'':
+        case '"':
+            scanString();
+            break;
         default:
-            ReportInfo r{};
-            r.fileID = m_fileID;
-            r.location.lineNumber = m_currentLine;
-            r.location.lineOffset = m_lineStartPos;
-            r.location.locationStart = m_start;
-            r.location.locationEnd = 0;
-            Report::Error(
-                r, "Testing {}", 1
-            );
+            showError("Unknown Token", m_current);
             break;
     }
 
@@ -188,6 +184,31 @@ void Lexer::scanSection(char target, bool errorOnNewline)
 
 }
 
+void Lexer::scanString()
+{
+    char strChar = previous();
+
+    assert(strChar == '\'' || strChar == '"');
+    // start of string, for substr or error
+    int startChar  = m_start;
+
+    scanSection(strChar, true);
+
+    if (m_error)
+    {
+        showError("No closing quote found", startChar);
+        return;
+    }
+
+    addTokenSubstring(
+        KDL_T_STRING,
+        // +1/-1 to get rid of quotes
+        startChar + 1, m_current - 1
+    );
+    
+
+}
+
 void Lexer::addToken(token_t tok)
 {
     m_tokens.push_back({
@@ -211,12 +232,14 @@ void Lexer::addTokenString(token_t tok, std::string_view str)
 
 void Lexer::addTokenSubstring(
     token_t tok,
-    int start,
-    int end
+    size_t start,
+    size_t end
 )
 {
-    std::string_view view = m_source->contents.substr(start, (end - start));
-
+    std::string_view view{
+        m_source->contents.c_str() + start,
+        (end - start)
+    };
     addTokenString(
         tok, view
     );
@@ -231,13 +254,46 @@ void Lexer::dumpTokens()
         std::printf("[%s]", GetTokenName(token.token).data());
 
         if (!token.value.empty())
-            std::printf(" %s", token.value.data());
+        {
+            std::printf(
+                " %s", std::format("{}", token.value).c_str()
+            );
+        }
 
         std::putchar('\n');
 
     }
 
     std::printf("\n[==========================]\n");
+}
+
+ReportInfo& Lexer::getReportInfo(int startChar, int endChar)
+{
+    SourceLocation sl{};
+    
+    sl.lineNumber = m_currentLine;
+    sl.lineOffset = m_lineStartPos;
+    sl.locationStart = startChar;
+    sl.locationEnd = endChar;
+
+    ReportInfo ri{};
+    ri.fileID = m_fileID;
+    ri.location = sl;
+    return ri;
+}
+
+void Lexer::showError(
+    const std::string_view& message,
+    int startChar,
+    int endChar
+)
+{
+    
+    ReportInfo ri = getReportInfo(startChar, endChar);
+    Report::Error(
+        ri,
+        message
+    );
 }
 
 
