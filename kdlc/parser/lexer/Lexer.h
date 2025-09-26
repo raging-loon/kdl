@@ -116,6 +116,9 @@ private:
     /// 
     void scanSection(char target, bool errorOnNewline = false);
 private:
+    /// @brief FileID, used for printing errors
+    FileID m_fileID;
+
     /// @brief Source being lexed
     const FileInfo* m_source;
 

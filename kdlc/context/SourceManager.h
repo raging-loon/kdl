@@ -13,10 +13,14 @@ namespace kdl
 using FileID = uint16_t;
 
 
-class SourceLocation
+struct SourceLocation
 {
-
+    int lineNumber;
+    int lineOffset;
+    int locationStart;
+    int locationEnd;
 };
+
 
 
 struct FileInfo

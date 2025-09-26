@@ -2,11 +2,13 @@
 
 #include <cstdio>
 #include "context/CompilerContext.h"
+#include "interface/Reporting.h"
 namespace kdl
 {
 
 Lexer::Lexer(FileID id)
     : m_source{ nullptr },
+    m_fileID{id},
     m_tokens{ },
     m_current{ 0 },
     m_start{ 0 },
@@ -96,6 +98,15 @@ void Lexer::scanToken()
         case '\n': nextLine(); break;
         case '#': scanComment(); break;
         default:
+            ReportInfo r{};
+            r.fileID = m_fileID;
+            r.location.lineNumber = m_currentLine;
+            r.location.lineOffset = m_lineStartPos;
+            r.location.locationStart = m_start;
+            r.location.locationEnd = 0;
+            Report::Error(
+                r, "Testing {}", 1
+            );
             break;
     }
 

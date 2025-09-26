@@ -7,6 +7,7 @@ int main(int argc, char** argv)
 
     std::string test = R"kdl(
 # this is a comment
+@@@@
 # ============
 [][]{}[]{} # this is a comnet ****
 []{}()!=
