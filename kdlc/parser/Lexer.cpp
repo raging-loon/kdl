@@ -1,10 +1,28 @@
 #include "Lexer.h"
 
 #include <cstdio>
+#include <unordered_map>
+
 #include "context/CompilerContext.h"
 #include "interface/Reporting.h"
+
 namespace kdl
 {
+
+static std::unordered_map<
+    std::string_view,
+    token_t
+> s_KeyWordMap = {
+    { "rule",           KDL_T_RULE },
+    { "evt_source",     KDL_T_EVT_SOURCE },
+    { "meta",           KDL_T_META },
+    { "action",         KDL_T_ACTION },
+    { "condition",      KDL_T_CONDITION },
+
+};
+
+
+
 
 Lexer::Lexer(FileID id)
     : m_source{ nullptr },
@@ -91,12 +109,16 @@ void Lexer::scanToken()
         }
 
         case '*': addToken(KDL_T_ASTERISK); break;
+
         case ' ':
         case '\t':
         case '\r':
             break;
+        
         case '\n': nextLine(); break;
+        
         case '#': scanComment(); break;
+        
         case '\'':
         case '"':
             scanString();
@@ -206,6 +228,11 @@ void Lexer::scanString()
         startChar + 1, m_current - 1
     );
     
+
+}
+
+void Lexer::scanIdentifierOrKeyword()
+{
 
 }
 

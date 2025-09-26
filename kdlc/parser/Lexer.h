@@ -36,6 +36,7 @@ public:
 private:
 
     void scanToken();
+    
     /// @brief: go to the next char
     inline char advance()
     {
@@ -122,6 +123,16 @@ private:
     ///     Scan a string. These can start/end with either ' or "
     /// 
     void scanString();
+
+    ///
+    /// @brief
+    ///     Scan a string of alphanumeric characters
+    ///     Then determine if it is a keyword or identifier
+    /// 
+    void scanIdentifierOrKeyword();
+
+    void scanNumber();
+
 
     ///
     /// @brief

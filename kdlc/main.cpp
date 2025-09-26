@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "parser/lexer/Lexer.h"
+#include "parser/Lexer.h"
 #include "context/CompilerContext.h"
 int main(int argc, char** argv)
 {

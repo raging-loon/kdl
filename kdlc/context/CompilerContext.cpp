@@ -1,6 +1,6 @@
 #include "CompilerContext.h"
 
-#include "parser/lexer/Lexer.h"
+#include "parser/Lexer.h"
 
 namespace kdl
 {
