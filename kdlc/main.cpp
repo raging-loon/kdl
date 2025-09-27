@@ -3,14 +3,14 @@
 #include "context/CompilerContext.h"
 int main(int argc, char** argv)
 {
-    printf("hello\n");
-
     std::string test = R"kdl(
-# this is a comment
-# ============
-[][]{}[]{} # this is a comnet ****
-[]{}()!="hello"
-# hello
+rule SimpleEICARTest {
+    evt_source: process;
+    condition:
+        process.file.contains("EICAR-STANDARD-ANTIVIRUS-TEST-FILE");
+
+}
+
 )kdl";
     kdl::FileID id= SRC_MGR.addRawSource(test);
     kdl::Lexer l{ id };

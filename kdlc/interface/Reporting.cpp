@@ -65,12 +65,12 @@ void Report::PrintSourceSection(ReportInfo& reportInfo)
     // write the line
     for (int i = srcLoc.lineOffset - 1; i < fi->contents.length(); i++)
     {
-        if (i >= startChar && i <= endChar)
+        if (i == startChar)
             buffer << BOLD_ESCAPE_CODE;
 
         buffer << fi->contents[i];
 
-        if (i >= endChar)
+        if (i == endChar)
             buffer << CLEAR_ESCAPE_CODE;
 
         if (fi->contents[i] == '\n')

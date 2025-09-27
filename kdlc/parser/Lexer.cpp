@@ -22,6 +22,20 @@ static std::unordered_map<
 };
 
 
+static inline bool IsNumeric(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+static inline bool IsAlphaNumeric(char c)
+{
+    return IsNumeric(c)
+        || (c >= 'a' && c <= 'z')
+        || (c >= 'A' && c <= 'Z')
+        || (c == '_');
+}
+
+
 
 
 Lexer::Lexer(FileID id)
@@ -35,7 +49,6 @@ Lexer::Lexer(FileID id)
     m_error{ false }
 {
     m_source = SRC_MGR.getSourceFile(id);
-
     assert(m_source);
 }
 
@@ -109,7 +122,7 @@ void Lexer::scanToken()
         }
 
         case '*': addToken(KDL_T_ASTERISK); break;
-
+        case '.': addToken(KDL_T_DOT); break;
         case ' ':
         case '\t':
         case '\r':
@@ -124,7 +137,15 @@ void Lexer::scanToken()
             scanString();
             break;
         default:
-            showError("Unknown Token", m_current);
+
+            // scan number first to avoid variable names 
+            // that start with numbers
+            if (IsNumeric(c))
+                scanNumber();
+            else if (IsAlphaNumeric(c))
+                scanIdentifierOrKeyword();
+            else
+                showError("Unknown Token", m_start);
             break;
     }
 
@@ -231,9 +252,40 @@ void Lexer::scanString()
 
 }
 
-void Lexer::scanIdentifierOrKeyword()
+void Lexer::scanNumber()
 {
 
+}
+
+void Lexer::scanIdentifierOrKeyword()
+{
+    while (IsAlphaNumeric(peek()))
+        advance();
+
+    auto text = getSubView(m_start, m_current);
+
+    // test if it's a key word. 
+    // if so, add the appropriate token, otherwise it's an identifier
+
+    auto kw = s_KeyWordMap.find(text);
+
+    if (kw != s_KeyWordMap.end())
+        addToken(kw->second);
+    else {
+        addTokenString(
+            KDL_T_IDENTIFIER,
+            text
+        );
+    }
+}
+
+std::string_view Lexer::getSubView(size_t start, size_t end)
+{
+    std::string_view view{
+        m_source->contents.c_str() + start,
+        (end - start)
+    };
+    return view;
 }
 
 void Lexer::addToken(token_t tok)
@@ -263,10 +315,7 @@ void Lexer::addTokenSubstring(
     size_t end
 )
 {
-    std::string_view view{
-        m_source->contents.c_str() + start,
-        (end - start)
-    };
+    std::string_view view = getSubView(start, end);
     addTokenString(
         tok, view
     );
@@ -321,6 +370,7 @@ void Lexer::showError(
         ri,
         message
     );
+    m_error = true;
 }
 
 

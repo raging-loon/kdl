@@ -37,6 +37,7 @@ constexpr std::array<std::string_view, KDL_NUM_TOKENS> TOKEN_STRS =
     "STRING",
     "REGEX",
     "INTEGER",
+    "IDENTIFIER"
 };
 
 static const std::unordered_map<

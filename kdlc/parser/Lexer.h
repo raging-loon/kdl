@@ -145,6 +145,8 @@ private:
     ///     Show an error
     /// 
     void showError(const std::string_view& message, int startChar, int endChar = 0);
+
+    std::string_view getSubView(size_t start, size_t end);
 private:
     /// @brief FileID, used for printing errors
     FileID m_fileID;
