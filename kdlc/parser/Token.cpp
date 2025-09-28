@@ -34,6 +34,7 @@ constexpr std::array<std::string_view, KDL_NUM_TOKENS> TOKEN_STRS =
     "CONDITION",
     "ACTION",
     "META",
+    "KDL_T_PREDICATE",
     "STRING",
     "REGEX",
     "INTEGER",
@@ -48,7 +49,6 @@ static const std::unordered_map<
     { "condition",      KDL_T_CONDITION},
     { "action",         KDL_T_ACTION },
 };
-
 std::string_view GetTokenName(token_t t)
 {
     assert((int)t < KDL_NUM_TOKENS);

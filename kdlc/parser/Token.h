@@ -39,6 +39,7 @@ enum token_t
     KDL_T_CONDITION,
     KDL_T_ACTION,
     KDL_T_META,
+    KDL_T_PREDICATES,
     /// LITERALS
     KDL_T_STRING,
     KDL_T_REGEX,

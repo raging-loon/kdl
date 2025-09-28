@@ -2,7 +2,7 @@
 
 #include <cstdio>
 #include <unordered_map>
-
+#include <format>
 #include "context/CompilerContext.h"
 #include "interface/Reporting.h"
 
@@ -18,6 +18,7 @@ static std::unordered_map<
     { "meta",           KDL_T_META },
     { "action",         KDL_T_ACTION },
     { "condition",      KDL_T_CONDITION },
+    { "predicates",     KDL_T_PREDICATES },
 
 };
 
@@ -25,6 +26,13 @@ static std::unordered_map<
 static inline bool IsNumeric(char c)
 {
     return c >= '0' && c <= '9';
+}
+
+static inline bool IsNumOrHex(char c)
+{
+    return IsNumeric(c)
+        || (c >= 'a' && c <= 'f')
+        || (c >= 'A' && c <= 'F');
 }
 
 static inline bool IsAlphaNumeric(char c)
@@ -254,6 +262,52 @@ void Lexer::scanString()
 
 void Lexer::scanNumber()
 {
+    int radix = 10;
+    int numStart = m_start;
+
+    if (previous() == '0')
+    {
+        char next = peek();
+
+        if (next == 'b' || next == 'B')
+        {
+            radix = 2;
+            numStart += 2;
+            advance();
+        }
+        if (next == 'x' || next == 'X')
+        {
+            radix = 16;
+            numStart += 2;
+            advance();
+        }
+    }
+
+    while (IsNumOrHex(peek()))
+        advance();
+
+    // now validate
+    auto num = getSubView(numStart, m_current);
+    long ret = 0;
+    auto result = std::from_chars(
+        num.data(),
+        num.data() + num.size(),
+        ret,
+        radix
+    );
+
+    if (result.ec != std::errc{})
+    {
+        showNumericError(result.ec, radix);
+        return;
+    }
+
+    if (result.ptr != num.data() + num.size())
+    {
+        showError("Invalid number or identifier", m_start, m_current);
+        return;
+    }
+    addTokenString(KDL_T_INTEGER, num);
 
 }
 
@@ -373,5 +427,30 @@ void Lexer::showError(
     m_error = true;
 }
 
+void Lexer::showNumericError(std::errc& ec, int radix)
+{
+    std::string_view message{};
+
+    switch (ec)
+    {
+        case std::errc::invalid_argument:
+            message = "Invalid input for base {} number";
+            break;
+        case std::errc::result_out_of_range:
+            message = "Base {} number out of range";
+            break;
+        default:
+            message = "Unknown error while parsing base {} number";
+            break;
+    }
+
+    std::string formatted = std::vformat(message, std::make_format_args(radix));
+
+    showError(
+        formatted,
+        m_start,
+        m_current
+    );
+}
 
 } // kdl

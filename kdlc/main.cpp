@@ -7,7 +7,9 @@ int main(int argc, char** argv)
 rule SimpleEICARTest {
     evt_source: process;
     condition:
-        process.file.contains("EICAR-STANDARD-ANTIVIRUS-TEST-FILE");
+        c1 = process.file.contains("EICAR-STANDARD-ANTIVIRUS-TEST-FILE");
+        c2 = 1 == 0b111b
+        
 
 }
 
