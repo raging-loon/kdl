@@ -9,20 +9,6 @@
 namespace kdl
 {
 
-static std::unordered_map<
-    std::string_view,
-    token_t
-> s_KeyWordMap = {
-    { "rule",           KDL_T_RULE },
-    { "evt_source",     KDL_T_EVT_SOURCE },
-    { "meta",           KDL_T_META },
-    { "action",         KDL_T_ACTION },
-    { "condition",      KDL_T_CONDITION },
-    { "predicates",     KDL_T_PREDICATES },
-
-};
-
-
 static inline bool IsNumeric(char c)
 {
     return c >= '0' && c <= '9';
@@ -321,10 +307,10 @@ void Lexer::scanIdentifierOrKeyword()
     // test if it's a key word. 
     // if so, add the appropriate token, otherwise it's an identifier
 
-    auto kw = s_KeyWordMap.find(text);
-
-    if (kw != s_KeyWordMap.end())
-        addToken(kw->second);
+    token_t kw = GetKeyWord(text);
+    
+    if (kw != KDL_T_ERROR)
+        addToken(kw);
     else {
         addTokenString(
             KDL_T_IDENTIFIER,

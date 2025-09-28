@@ -6,52 +6,24 @@
 namespace kdl
 {
 
-constexpr std::array<std::string_view, KDL_NUM_TOKENS> TOKEN_STRS = 
+constexpr auto TOKEN_STRS = std::to_array<std::string_view>(
 {
-    "OPEN_PARENTHESIS",
-    "CLOSE_PARENTHESIS",
-    "OPEN_BRACE",
-    "CLOSE_BRACE",
-    "OPEN_BRACKET",
-    "CLOSE_BRACKET",
-    "COMMA",
-    "SEMI_COLON",
-    "COLON",
-    "DOT",
-    "ASSIGNMENT",
-    "ASTERISK",
-    "PLUS",
-    "MINUS",
-    "EQUALS",
-    "LEQ",
-    "LT",
-    "NE",
-    "NOT",
-    "GT",
-    "GEQ",
-    "RULE",
-    "EVT_SOURCE",
-    "CONDITION",
-    "ACTION",
-    "META",
-    "KDL_T_PREDICATE",
-    "STRING",
-    "REGEX",
-    "INTEGER",
-    "IDENTIFIER"
-};
+#define KDL_TOKEN(name) #name,
+#include "Token.def.h"
+});
 
 static const std::unordered_map<
     std::string_view,
     token_t
 > s_KeywordMap = {
-    { "rule",           KDL_T_RULE },
-    { "condition",      KDL_T_CONDITION},
-    { "action",         KDL_T_ACTION },
+#define KDL_TOKEN(name)
+#define KDL_SYMBOL_TOKEN(name, sym)
+#define KDL_KEYWORD_TOKEN(name, kw) { kw, KDL_T_##name }
+
 };
 std::string_view GetTokenName(token_t t)
 {
-    assert((int)t < KDL_NUM_TOKENS);
+    assert((int)t < TOKEN_STRS.size());
 
     return TOKEN_STRS[t];
 }
@@ -63,7 +35,7 @@ token_t GetKeyWord(const std::string_view& str)
     if (iter != s_KeywordMap.cend())
         return iter->second;
 
-    return static_cast<token_t>(-1);
+    return KDL_T_ERROR;
 }
 
 } // kdl
