@@ -80,6 +80,7 @@ void Lexer::scanToken()
         case ':': addToken(KDL_T_COLON); break;
         case ';': addToken(KDL_T_SEMI_COLON); break;
 
+        case ',': addToken(KDL_T_COMMA); break;
         case '=': {
             // test for '=='
             match('=')

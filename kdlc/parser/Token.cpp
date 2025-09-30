@@ -18,8 +18,8 @@ static const std::unordered_map<
 > s_KeywordMap = {
 #define KDL_TOKEN(name)
 #define KDL_SYMBOL_TOKEN(name, sym)
-#define KDL_KEYWORD_TOKEN(name, kw) { kw, KDL_T_##name }
-
+#define KDL_KEYWORD_TOKEN(name, kw) { kw, KDL_T_##name },
+#include "Token.def.h"
 };
 std::string_view GetTokenName(token_t t)
 {

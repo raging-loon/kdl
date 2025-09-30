@@ -1,0 +1,65 @@
+(* 
+    EBNF for KDL    
+*)
+
+program = { top_decl };
+
+top_decl = { struct | rule };
+
+struct = "struct", identifer, "{", { field_decl },"}";
+field_decl = type, identifer, ';';
+
+type = identifer
+        |   "string"
+        |   "int"
+        |   "bool"
+        |   '[', type, ']';
+
+rule_decl = "rule", identifer, '{', section, '}';
+
+section = meta_section
+        | evt_source_section
+        | predicate_section
+        | condition_section
+        | action_section;
+
+evt_source_section = "evt_source", ":", identifer, ';';
+
+predicate_section = "predicate", ':', { stmt };
+
+condition_section = "condition", ':', expr;
+
+action_section = "action", ':', { stmt };
+
+stmt = decl | expr, ';';
+
+decl = identifer, '=', expr, ';';
+
+expr = binary_expr;
+
+binary_expr = unary_expr, { binary_op, unary_expr };
+
+binary_op = 'and' | 'or' | '==' | '!=' | '>' | '<' | '<=' | '>=' | '~=' | 'in';
+
+unary_expr = 'not', unary_expr | primary;
+
+primary = literal
+        | identifer
+        | primary, '.',  identifer,
+        | identifer, '(', [ expr, {',', expr } ], ')'
+        | '(', expr, ')';
+
+literal = string | number | 'true' | 'false' | array | regex;
+
+regex = '/', { valid_regex } ,'/';
+array = '[', [ expr, { ',', expr } ], ']';
+
+letter = /A-Za-z_/;
+
+
+identifer = letter, { letter, number };
+number = digit, { digit };
+
+boolean = "true" | "false";
+
+string = '"', { any_char_but_unescaped_quote }, '"';
