@@ -26,6 +26,7 @@ struct Token
     int lineNumber;
 };
 
+using TokenPtr = Token*;
 
 ///
 /// PURPOSE

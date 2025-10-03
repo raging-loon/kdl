@@ -35,7 +35,7 @@ KDL_SYMBOL_TOKEN(LT,                    "<")
 KDL_SYMBOL_TOKEN(NE,                    "!=")
 KDL_SYMBOL_TOKEN(GT,                    ">")
 KDL_SYMBOL_TOKEN(GEQ,                   ">=")
-
+KDL_SYMBOL_TOKEN(VARIABLE,              "$")
 KDL_KEYWORD_TOKEN(RULE,                 "rule")
 KDL_KEYWORD_TOKEN(EVT_SOURCE,           "evt_source")
 KDL_KEYWORD_TOKEN(CONDITION,            "condition")
