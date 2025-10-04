@@ -1,7 +1,7 @@
 #include "Parser.h"
 
 #include "interface/Reporting.h"
-
+#include "ast/ASTDumper.h"
 #include <cassert>
 
 #define EXPECT_OR_RETURN(token, message, retval)    \
@@ -37,6 +37,12 @@ bool Parser::parse()
         {
             m_programRoot->topDecls.push_back(parseRuleDecl());
         }
+    }
+
+    if (!m_error)
+    {
+        ASTDumper d{};
+        d.dump(m_programRoot);
     }
     return m_error;
 }

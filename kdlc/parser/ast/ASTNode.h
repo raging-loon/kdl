@@ -3,7 +3,7 @@
 
 #include "context/SourceManager.h"
 #include "parser/Token.h"
-
+#include "ASTVisitor.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -36,22 +36,14 @@ constexpr NodePtr<T> MakeNode(Args&&... args)
 
 enum class NodeType
 {
-    UNTYPED,
-    PROGRAM,
-    RULE,
-    PREDICATE,
-    IDENTIFIER,
-    LITERAL,
-    BINARY_OP,
-    UNARY_OP,
-    STMT,
-    DECL,
-    BLOCK
+#define KDL_NODE_TYPE(name) name,
+#include "Node.def.h"
 };
 
 #define NEW_NODE_TYPE(type) \
     using ASTNode::ASTNode; \
-    virtual inline NodeType getNodeType() const override  { return type; }
+    inline NodeType getNodeType() const override  { return type; } \
+    void accept(ASTVisitor& v) const override { v.visit(*this); }
     
 
 ///
@@ -78,6 +70,7 @@ struct ASTNode
     virtual ~ASTNode() = default;
 
     virtual inline NodeType getNodeType() const { return NodeType::UNTYPED; }
+    virtual void accept(ASTVisitor& v) const { v.visit(*this); }
 };
 
 ///
