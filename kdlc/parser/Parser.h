@@ -88,6 +88,18 @@ private:
     /// 
     NodePtr<ASTNode> parseUnary();
 
+    ///
+    /// @brief 
+    ///     Parse multiplication and division operations 
+    /// 
+    NodePtr<ASTNode> parseFactor();
+    
+    ///
+    /// @brief
+    ///     Parse addition and subtraction operations
+    /// 
+    NodePtr<ASTNode> parseTerm();
+
 
     template <std::same_as<token_t>... Tokens>
     inline bool matchMany(Tokens&&... tokens)

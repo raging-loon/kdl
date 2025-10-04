@@ -14,23 +14,45 @@
 namespace kdl
 {
 struct ASTNode;
+
 template <class N>
-concept ISAstNode = std::is_base_of_v<ASTNode, N>;
+concept IsAstNode = std::is_base_of_v<ASTNode, N>;
 
 template <class T> 
-    requires ISAstNode<T>
+    requires IsAstNode<T>
 using NodePtr = std::unique_ptr<T>;
 
 template <class T> 
-    requires ISAstNode<T>
+    requires IsAstNode<T>
 using NodeList = std::vector<T>;
 
 template <class T, class... Args> 
-    requires ISAstNode<T>
+    requires IsAstNode<T>
 constexpr NodePtr<T> MakeNode(Args&&... args)
 {
     return std::make_unique<T>(std::forward<Args>(args)...);
 }
+
+
+enum class NodeType
+{
+    UNTYPED,
+    PROGRAM,
+    RULE,
+    PREDICATE,
+    IDENTIFIER,
+    LITERAL,
+    BINARY_OP,
+    UNARY_OP,
+    STMT,
+    DECL,
+    BLOCK
+};
+
+#define NEW_NODE_TYPE(type) \
+    using ASTNode::ASTNode; \
+    virtual inline NodeType getNodeType() const override  { return type; }
+    
 
 ///
 /// @brief
@@ -54,6 +76,8 @@ struct ASTNode
     SourceLocation sloc{};
 
     virtual ~ASTNode() = default;
+
+    virtual inline NodeType getNodeType() const { return NodeType::UNTYPED; }
 };
 
 ///
@@ -63,24 +87,27 @@ struct ASTNode
 /// 
 struct ASTProgram : ASTNode
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::PROGRAM);
+
     std::vector<NodePtr<ASTNode>> topDecls;
+
+
 };
 
 struct ASTIdentifier : ASTNode
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::IDENTIFIER);
 
     std::string name;
 };
 
 struct ASTLiteral : ASTNode
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::LITERAL);
 
     enum Type {
         INTEGER = KDL_T_INTEGER,
-        STRING = KDL_T_STRING,
+        STRING  = KDL_T_STRING,
         BOOLEAN
     };
 
@@ -101,7 +128,7 @@ struct ASTLiteral : ASTNode
 ///     
 struct ASTBinaryOperation : ASTNode
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::BINARY_OP);
 
     token_t operation;
 
@@ -115,7 +142,7 @@ struct ASTBinaryOperation : ASTNode
 /// 
 struct ASTUnaryOperation : ASTNode
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::UNARY_OP);
 
     token_t operation;
     NodePtr<ASTNode> operand;
@@ -123,14 +150,14 @@ struct ASTUnaryOperation : ASTNode
 
 struct ASTStmt : ASTNode
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::STMT);
 
     NodePtr<ASTNode> stmt;
 };
 
 struct ASTDecl : ASTNode
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::DECL);
 
     std::string name;
 
@@ -142,7 +169,7 @@ struct ASTDecl : ASTNode
 ///     Arbitrary block of statements
 struct ASTBlock : ASTNode 
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::BLOCK);
 
     std::vector<
         NodePtr<ASTDecl>
@@ -155,7 +182,7 @@ struct ASTBlock : ASTNode
 /// 
 struct ASTRule : ASTNode
 {
-    using ASTNode::ASTNode;
+    NEW_NODE_TYPE(NodeType::RULE);
 
     std::string name;
 

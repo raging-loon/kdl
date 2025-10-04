@@ -228,6 +228,13 @@ NodePtr<ASTNode> Parser::parseUnary()
     return parsePrimary();
 }
 
+NodePtr<ASTNode> Parser::parseFactor()
+{
+    auto node = parseUnary();
+    return node;
+}
+
+
 void Parser::errorAtCurrent(
     const std::string_view& errorMsg
 )
