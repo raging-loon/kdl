@@ -24,6 +24,7 @@ public:
     void visit(const ASTDecl& node)                 override;
     void visit(const ASTBlock& node)                override;
     void visit(const ASTRule& node)                 override;
+    void visit(const ASTFieldAccess& node)          override;
 
 
 private:

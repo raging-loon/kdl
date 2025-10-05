@@ -32,6 +32,7 @@ void ASTDumper::visit(const ASTProgram& node)
 }
 void ASTDumper::visit(const ASTIdentifier& node)
 {
+    indentation();
     std::cout << "IDENTIFIER: " << node.name << '\n';
 }
 void ASTDumper::visit(const ASTLiteral& node)
@@ -49,14 +50,32 @@ void ASTDumper::visit(const ASTLiteral& node)
         case ASTLiteral::INTEGER:
             std::cout << "INTEGER";
             break;
+        case ASTLiteral::ARRAY:
+            std::cout << "ARRAY";
+            break;
         default:
             std::cout << "UNKNOWN";
             break;
     }
 
-    std::cout << " LITERAL -> ";
+    if (node.type == ASTLiteral::ARRAY)
+    {
+        std::cout << '\n';
+        auto& values = std::get<1>(node.value);
+        m_indentLevel += 1;
+        for (const auto& value : values)
+        {
+            value->accept(*this);
+        }
+        m_indentLevel -= 1;
 
-    std::cout << std::get<0>(node.value) << '\n';
+    }
+    else
+    {
+        std::cout << " LITERAL -> ";
+        std::cout << std::get<0>(node.value) << '\n';
+
+    }
 
 }
 
@@ -120,8 +139,10 @@ void ASTDumper::visit(const ASTRule& node)
     if (node.evtSource)
     {
         indentation();
-        std::cout  << "EVT_SOURCE -> ";
+        m_indentLevel += 1;
+        std::cout  << "EVT_SOURCE\n";
         node.evtSource->accept(*this);
+        m_indentLevel -= 1;
     }
 
     if (node.predicate)
@@ -135,6 +156,21 @@ void ASTDumper::visit(const ASTRule& node)
 
     m_indentLevel--;
 
+}
+
+void ASTDumper::visit(const ASTFieldAccess& node)
+{
+    indentation();
+    std::cout << "FIELD_ACCESS: " << node.fieldName << '\n';
+
+    if (node.target)
+    {
+        m_indentLevel++;
+
+        node.target->accept(*this);
+
+        m_indentLevel--;
+    }
 }
 
 void ASTDumper::indentation()

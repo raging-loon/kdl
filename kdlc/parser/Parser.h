@@ -104,6 +104,11 @@ private:
 
     NodePtr<ASTNode> parseEquality();
 
+    NodePtr<ASTLiteral> parseArray();
+    
+    NodePtr<ASTIdentifier> parseIdentifier();
+
+    NodePtr<ASTFieldAccess> parseFieldAccess();
     template <std::same_as<token_t>... Tokens>
     inline bool matchMany(Tokens&&... tokens)
     {

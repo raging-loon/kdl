@@ -14,6 +14,7 @@ struct ASTStmt;
 struct ASTDecl;
 struct ASTBlock;
 struct ASTRule;
+struct ASTFieldAccess;
 
 ///
 /// @brief
@@ -34,6 +35,7 @@ public:
     virtual void visit(const ASTDecl& node) = 0;
     virtual void visit(const ASTBlock& node) = 0;
     virtual void visit(const ASTRule& node) = 0;
+    virtual void visit(const ASTFieldAccess& node) = 0;
 
 };
 

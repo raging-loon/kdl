@@ -8,26 +8,19 @@
 #include <string>
 #include <vector>
 #include <variant>
-#include <concepts>
 #include <type_traits>
 
 namespace kdl
 {
 struct ASTNode;
 
-template <class N>
-concept IsAstNode = std::is_base_of_v<ASTNode, N>;
-
 template <class T> 
-    requires IsAstNode<T>
 using NodePtr = std::unique_ptr<T>;
 
 template <class T> 
-    requires IsAstNode<T>
 using NodeList = std::vector<T>;
 
 template <class T, class... Args> 
-    requires IsAstNode<T>
 constexpr NodePtr<T> MakeNode(Args&&... args)
 {
     return std::make_unique<T>(std::forward<Args>(args)...);
@@ -99,16 +92,17 @@ struct ASTLiteral : ASTNode
     NEW_NODE_TYPE(NodeType::LITERAL);
 
     enum Type {
-        INTEGER = KDL_T_INTEGER,
         STRING  = KDL_T_STRING,
-        BOOLEAN
+        INTEGER = KDL_T_INTEGER,
+        BOOLEAN,
+        ARRAY
     };
 
     Type type;
 
     std::variant<
         std::string,
-        NodePtr<ASTNode>
+        std::vector<NodePtr<ASTNode>>
     > value;
 
 };
@@ -183,6 +177,14 @@ struct ASTRule : ASTNode
     NodePtr<ASTBlock> predicate;
 };
 
+struct ASTFieldAccess : ASTNode
+{
+    NEW_NODE_TYPE(NodeType::FIELD_ACCESS);
+
+    std::string fieldName;
+    NodePtr<ASTFieldAccess> target{ nullptr };
+    
+};
 
 
 } // kdl

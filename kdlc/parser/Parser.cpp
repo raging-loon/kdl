@@ -20,10 +20,10 @@ Parser::Parser(
     FileID fid
 
 ) : m_tokens{ tokens },
-    m_cursor{ 0 },
-    m_fileID{ fid },
-    m_programRoot{ nullptr },
-    m_error{ false }
+m_cursor{ 0 },
+m_fileID{ fid },
+m_programRoot{ nullptr },
+m_error{ false }
 {
 
     m_programRoot = std::make_unique<ASTProgram>(nullptr);
@@ -213,8 +213,95 @@ NodePtr<ASTNode> Parser::parsePrimary()
         literal->value = std::string(token->value);
         return literal;
     }
-    errorAtCurrent("Expected a literal");
+    if (match(KDL_T_IDENTIFIER))
+    {
+        advance();
+        if (match(KDL_T_DOT))
+            return parseFieldAccess();
+        return parseIdentifier();
+    }
+    if (match(KDL_T_VARIABLE))
+    {
+        advance();
+        const auto variable = consumeValue(KDL_T_IDENTIFIER, "Expected an identifier");
+        auto identifier = MakeNode<ASTIdentifier>(variable);
+        identifier->name = variable->value;
+        return identifier;
+
+    }
+    if (match(KDL_T_OPEN_PARENTHESIS))
+    {
+        advance();
+        auto expr = parseEquality();
+        consume(KDL_T_CLOSE_PARENTHESIS, "Expected closing ')' after expression");
+        return expr;
+    }
+    if (match(KDL_T_OPEN_BRACKET))
+    {
+        advance();
+        auto expr = parseArray();
+
+        return expr;
+    }
+
     return nullptr;
+}
+NodePtr<ASTFieldAccess> Parser::parseFieldAccess()
+{
+    auto token = previous();
+    auto baseAccess = MakeNode<ASTFieldAccess>(token);
+    baseAccess->fieldName = token->value;
+
+    auto* header = &baseAccess;
+
+    while (match(KDL_T_DOT))
+    {
+        advance();
+        auto id = consumeValue(KDL_T_IDENTIFIER, "Expected Identifier");
+        if (!id)
+            return nullptr;
+        
+        auto fieldAccess = MakeNode<ASTFieldAccess>(id);
+        fieldAccess->fieldName = id->value;
+
+        (*header)->target = std::move(fieldAccess);
+
+        header = &(*header)->target;
+
+
+    }
+
+    return baseAccess;
+}
+
+NodePtr<ASTLiteral> Parser::parseArray()
+{
+    auto array = MakeNode<ASTLiteral>(previous());
+    array->type = ASTLiteral::ARRAY;
+    array->value = std::vector<NodePtr<ASTNode>>{};
+    auto& values = std::get<1>(array->value);
+
+    while (!match(KDL_T_CLOSE_BRACKET))
+    {
+        auto value = parseEquality();
+        values.push_back(std::move(value));
+        if (!match(KDL_T_CLOSE_BRACKET))
+        {
+            EXPECT_OR_RETURN(KDL_T_COMMA, "Expected comma", nullptr);
+        }
+    }
+ 
+    EXPECT_OR_RETURN(KDL_T_CLOSE_BRACKET, "Expected ']'", nullptr);
+
+    return array;
+}
+
+NodePtr<ASTIdentifier> Parser::parseIdentifier()
+{
+    auto id = previous();
+    auto identifier = MakeNode<ASTIdentifier>(id);
+    identifier->name = id->value;
+    return identifier;
 }
 
 NodePtr<ASTNode> Parser::parseUnary()
@@ -302,8 +389,7 @@ NodePtr<ASTNode> Parser::parseComparison()
 NodePtr<ASTNode> Parser::parseEquality()
 {
     auto lhs = parseComparison();
-
-    while (matchMany(KDL_T_EQUALS, KDL_T_NE))
+    while (matchMany(KDL_T_EQUALS, KDL_T_NE, KDL_T_IN))
     {
         TokenPtr op = previous();
         auto rhs = parseComparison();
