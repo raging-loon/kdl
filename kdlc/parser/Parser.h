@@ -100,6 +100,9 @@ private:
     /// 
     NodePtr<ASTNode> parseTerm();
 
+    NodePtr<ASTNode> parseComparison();
+
+    NodePtr<ASTNode> parseEquality();
 
     template <std::same_as<token_t>... Tokens>
     inline bool matchMany(Tokens&&... tokens)

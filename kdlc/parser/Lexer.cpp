@@ -118,6 +118,11 @@ void Lexer::scanToken()
         case '$': addToken(KDL_T_VARIABLE); break;
         case '*': addToken(KDL_T_ASTERISK); break;
         case '.': addToken(KDL_T_DOT); break;
+
+        case '+': addToken(KDL_T_PLUS); break;
+        case '/': addToken(KDL_T_DIV); break;
+        case '-': addToken(KDL_T_MINUS); break;
+
         case ' ':
         case '\t':
         case '\r':

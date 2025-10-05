@@ -28,7 +28,7 @@ public:
 
 private:
 
-    std::string indentation();
+    void indentation();
 
     size_t m_indentLevel{ 0 };
     

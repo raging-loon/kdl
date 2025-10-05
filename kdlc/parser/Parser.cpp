@@ -160,7 +160,7 @@ NodePtr<ASTIdentifier> Parser::parseEvtSource()
 
     evtSrcNode->name = src->value;
 
-    return nullptr;
+    return evtSrcNode;
 }
 
 NodePtr<ASTBlock> Parser::parsePredicate()
@@ -194,7 +194,7 @@ NodePtr<ASTDecl> Parser::parseDecl()
 
     decl->name = name->value;
 
-    decl->value = parseUnary();
+    decl->value = parseEquality();
 
     EXPECT_TOKEN(KDL_T_SEMI_COLON, "Expected semicolon");
     return decl;
@@ -221,11 +221,11 @@ NodePtr<ASTNode> Parser::parseUnary()
 {
     if (matchMany(KDL_T_NOT, KDL_T_LOGICAL_NOT))
     {
-        token_t op = peek()->token;
+        TokenPtr op = previous();
         auto rhs = parseUnary();
         
-        auto unaryExpr = MakeNode<ASTUnaryOperation>(peek());
-        unaryExpr->operation = op;
+        auto unaryExpr = MakeNode<ASTUnaryOperation>(op);
+        unaryExpr->operation = op->token;
         unaryExpr->operand = std::move(rhs);
 
         return unaryExpr;
@@ -236,8 +236,88 @@ NodePtr<ASTNode> Parser::parseUnary()
 
 NodePtr<ASTNode> Parser::parseFactor()
 {
-    auto node = parseUnary();
-    return node;
+    auto lhs = parseUnary();
+
+    while (matchMany(KDL_T_ASTERISK, KDL_T_DIV))
+    {
+        TokenPtr op = previous();
+        
+        auto rhs = parseUnary();
+
+        auto expr = MakeNode<ASTBinaryOperation>(op);
+
+        expr->operation = op->token;
+        expr->lhs = std::move(lhs);
+        expr->rhs = std::move(rhs);
+
+        lhs = std::move(expr);
+    }
+
+    return lhs;
+}
+
+NodePtr<ASTNode> Parser::parseTerm()
+{
+    auto lhs = parseFactor();
+
+    while (matchMany(KDL_T_PLUS, KDL_T_MINUS))
+    {
+        TokenPtr op = previous();
+
+        auto rhs = parseFactor();
+
+        auto expr = MakeNode<ASTBinaryOperation>(op);
+
+        expr->operation = op->token;
+        expr->lhs = std::move(lhs);
+        expr->rhs = std::move(rhs);
+
+        lhs = std::move(expr);
+    }
+
+    return lhs;
+}
+
+NodePtr<ASTNode> Parser::parseComparison()
+{
+    auto lhs = parseTerm();
+
+    while (matchMany(KDL_T_GT, KDL_T_GEQ, KDL_T_LT, KDL_T_LEQ))
+    {
+        TokenPtr op = previous();
+        auto rhs = parseTerm();
+
+        auto expr = MakeNode<ASTBinaryOperation>(op);
+
+        expr->operation = op->token;
+        expr->lhs = std::move(lhs);
+        expr->rhs = std::move(rhs);
+
+        lhs = std::move(expr);
+    }
+
+    return lhs;
+}
+
+NodePtr<ASTNode> Parser::parseEquality()
+{
+    auto lhs = parseComparison();
+
+    while (matchMany(KDL_T_EQUALS, KDL_T_NE))
+    {
+        TokenPtr op = previous();
+        auto rhs = parseComparison();
+
+        auto expr = MakeNode<ASTBinaryOperation>(op);
+
+        expr->operation = op->token;
+        expr->lhs = std::move(lhs);
+        expr->rhs = std::move(rhs);
+
+        lhs = std::move(expr);
+    }
+
+    return lhs;
 }
 
 

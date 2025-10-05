@@ -10,8 +10,10 @@ int main(int argc, char** argv)
 rule OfficeMacro {
 	evt_source: process;
 	predicate:
-        $test = 1;
+        $test = "windows";
         $test_bool = not 1;
+        $test_bool = 1 + 1 * 2 / 1;
+        $test2 = 1 == 1;
 }
 
 

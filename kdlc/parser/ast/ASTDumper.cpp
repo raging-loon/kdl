@@ -5,6 +5,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include "parser/Token.h"
+
 namespace kdl
 {
 
@@ -26,47 +28,121 @@ void ASTDumper::visit(const ASTProgram& node)
     {
         child->accept(*this);
     }
+    m_indentLevel -= 1;
 }
 void ASTDumper::visit(const ASTIdentifier& node)
 {
-    printf("In identifier\n");
-
+    std::cout << "IDENTIFIER: " << node.name << '\n';
 }
 void ASTDumper::visit(const ASTLiteral& node)
 {
+    indentation();
+    //<<    "LITERAL -> ";
+    switch (node.type)
+    {
+        case ASTLiteral::BOOLEAN:
+            std::cout << "BOOLEAN";
+            break;
+        case ASTLiteral::STRING:
+            std::cout << "STRING";
+            break;
+        case ASTLiteral::INTEGER:
+            std::cout << "INTEGER";
+            break;
+        default:
+            std::cout << "UNKNOWN";
+            break;
+    }
+
+    std::cout << " LITERAL -> ";
+
+    std::cout << std::get<0>(node.value) << '\n';
+
 }
+
 void ASTDumper::visit(const ASTBinaryOperation& node)
 {
+    indentation();
+    std::cout << "BINARY_OP: " << GetTokenName(node.operation) << '\n';
+
+    m_indentLevel++;
+
+    node.lhs->accept(*this);
+    node.rhs->accept(*this);
+
+
+    m_indentLevel--;
 }
+
 void ASTDumper::visit(const ASTUnaryOperation& node)
 {
+    indentation();
+    std::cout << "UNARY_OP: " << GetTokenName(node.operation) << '\n';
+    m_indentLevel++;
+
+    node.operand->accept(*this);
+
+    m_indentLevel--;
 }
+
 void ASTDumper::visit(const ASTStmt& node)
 {
 }
 void ASTDumper::visit(const ASTDecl& node)
 {
+    indentation();
+    std::cout  << "DECL: " << node.name << '\n';
+    m_indentLevel++;
+    node.value->accept(*this);
+    m_indentLevel--;
 }
+
 void ASTDumper::visit(const ASTBlock& node)
 {
+    m_indentLevel++;
+    indentation();
+    std::cout << "BLOCK: \n";
+    m_indentLevel++;
+    for (const auto& stmt : node.statements)
+    {
+        stmt->accept(*this);
+    }
+    m_indentLevel--;
+
 }
+
 void ASTDumper::visit(const ASTRule& node)
 {
-    std::cout << indentation() << "RULE " << node.name << '\n';
+    std::cout << "RULE " << node.name << '\n';
 
     m_indentLevel += 1;
 
     if (node.evtSource)
     {
-        std::cout << indentation() << "EVT_SOURCE: ";
+        indentation();
+        std::cout  << "EVT_SOURCE -> ";
         node.evtSource->accept(*this);
     }
 
+    if (node.predicate)
+    {
+        indentation();
+        std::cout << "PREDICATE\n";
+        m_indentLevel += 1;
+        node.predicate->accept(*this);
+        m_indentLevel -= 1;
+    }
+
+    m_indentLevel--;
+
 }
 
-std::string ASTDumper::indentation()
+void ASTDumper::indentation()
 {
-    return { "\t", m_indentLevel};
+    for (int i = 0; i < m_indentLevel * 2; i++)
+    {
+        std::cout.put(' ');
+    }
 }
 
 }
