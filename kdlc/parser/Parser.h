@@ -61,6 +61,8 @@ private:
     /// 
     NodePtr<ASTBlock> parsePredicate();
 
+    NodePtr<ASTBinaryOperation> parseCondition();
+
     ///
     /// @brief
     ///     Parse a variable declaration

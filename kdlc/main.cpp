@@ -28,7 +28,8 @@ rule LSASSRead
     predicate:
         $c1 = dest_process.name == 'lsass.exe';
         $c2 = source_process.name not in ["wininit.exe", "task_mgr.exe"];
-
+    condition:
+        $c1 and $c2
 }   
 )kdl";
     kdl::FileID id= SRC_MGR.addRawSource(test);

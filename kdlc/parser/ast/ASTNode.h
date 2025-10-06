@@ -175,6 +175,7 @@ struct ASTRule : ASTNode
 
     NodePtr<ASTNode> evtSource;
     NodePtr<ASTBlock> predicate;
+    NodePtr<ASTBinaryOperation> condition;
 };
 
 struct ASTFieldAccess : ASTNode

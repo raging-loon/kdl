@@ -148,6 +148,12 @@ NodePtr<ASTRule> Parser::parseRuleDecl()
                 assert(rule->predicate == nullptr);
                 rule->predicate = parsePredicate();
                 break;
+
+            case KDL_T_CONDITION:
+                assert(rule->condition == nullptr);
+                advance();
+                rule->condition = parseCondition();
+                break;
         }
     }
     
@@ -186,6 +192,15 @@ NodePtr<ASTBlock> Parser::parsePredicate()
 
 
     return block;
+}
+
+NodePtr<ASTBinaryOperation> Parser::parseCondition()
+{
+    EXPECT_OR_RETURN(KDL_T_COLON, "Expected ':'", nullptr);
+
+    //auto cTreeRoot = MakeNode<ASTBinaryOperation>()
+
+    return nullptr;
 }
 
 NodePtr<ASTDecl> Parser::parseDecl()
