@@ -31,7 +31,7 @@ m_error{ false }
 
 bool Parser::parse()
 {
-    while (!isAtEnd() && !m_error)
+    while (!match(KDL_T_EOS) && !isAtEnd() && !m_error)
     {
         if (match(KDL_T_RULE))
         {
@@ -101,6 +101,13 @@ const TokenPtr Parser::consumeValue(token_t tok, const std::string_view& error)
     advance();
     return token;
 }
+const TokenPtr Parser::next()
+{
+    if (m_cursor + 1 >= m_tokens.size())
+        return nullptr;
+
+    return (TokenPtr)&m_tokens[m_cursor + 1];
+}
 
 bool Parser::match(token_t t)
 {
@@ -125,9 +132,10 @@ NodePtr<ASTRule> Parser::parseRuleDecl()
 
     rule->name = name->value;
 
-    while (!match(KDL_T_CLOSE_BRACE) && !isAtEnd())
+    while (!match(KDL_T_CLOSE_BRACE))
     {
         auto* cur = peek();
+
 
         switch (cur->token)
         {
@@ -141,11 +149,9 @@ NodePtr<ASTRule> Parser::parseRuleDecl()
                 rule->predicate = parsePredicate();
                 break;
         }
-
-        advance();
-
     }
-
+    
+    consume(KDL_T_CLOSE_BRACE, "Expected '}}'");
 
     return rule;
 }
@@ -159,7 +165,7 @@ NodePtr<ASTIdentifier> Parser::parseEvtSource()
     auto evtSrcNode = std::make_unique<ASTIdentifier>(src);
 
     evtSrcNode->name = src->value;
-
+    advance();
     return evtSrcNode;
 }
 
@@ -306,7 +312,7 @@ NodePtr<ASTIdentifier> Parser::parseIdentifier()
 
 NodePtr<ASTNode> Parser::parseUnary()
 {
-    if (matchMany(KDL_T_NOT, KDL_T_LOGICAL_NOT))
+    if (matchMany(KDL_T_LOGICAL_NOT, KDL_T_NOT))
     {
         TokenPtr op = previous();
         auto rhs = parseUnary();
@@ -347,15 +353,20 @@ NodePtr<ASTNode> Parser::parseTerm()
 {
     auto lhs = parseFactor();
 
-    while (matchMany(KDL_T_PLUS, KDL_T_MINUS))
+    while (matchMany(KDL_T_PLUS, KDL_T_MINUS, KDL_T_NOT))
     {
         TokenPtr op = previous();
-
+        token_t operation = op->token;
+        if (op->token == KDL_T_NOT && peek()->token == KDL_T_IN)
+        {
+            advance();
+            operation = KDL_T_NOT_IN;
+        }
         auto rhs = parseFactor();
 
         auto expr = MakeNode<ASTBinaryOperation>(op);
 
-        expr->operation = op->token;
+        expr->operation = operation;
         expr->lhs = std::move(lhs);
         expr->rhs = std::move(rhs);
 
@@ -411,7 +422,10 @@ void Parser::errorAtCurrent(
     const std::string_view& errorMsg
 )
 {
-    const Token& t = m_tokens.at(m_cursor);
+    int tokLoc = m_cursor;
+    if (isAtEnd())
+        tokLoc = m_tokens.size() - 1;
+    const Token& t = m_tokens.at(tokLoc);
 
     ReportInfo ri{};
 

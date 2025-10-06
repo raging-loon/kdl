@@ -57,7 +57,7 @@ int Lexer::scan()
         
         scanToken();
     }
-
+    addToken(KDL_T_EOS);
     return m_tokens.size();
 }
 

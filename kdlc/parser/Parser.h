@@ -130,6 +130,12 @@ private:
 
     ///
     /// @brief
+    ///     Peek at the *next* token
+    /// 
+    const TokenPtr next();
+
+    ///
+    /// @brief
     ///     Get the previous token
     /// 
     const TokenPtr previous();
