@@ -1,3 +1,0 @@
-SET_SOURCE_FILES(INTERFACE_SOURCES
-    Reporting.cpp
-)
