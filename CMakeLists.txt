@@ -35,5 +35,6 @@ function(set_source_files varname)
 endfunction()
 
 
-add_subdirectory(test_vm)
+
 add_subdirectory(kdlc)
+

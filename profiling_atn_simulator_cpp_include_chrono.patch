@@ -1,0 +1,13 @@
+diff --git a/runtime/Cpp/runtime/src/atn/ProfilingATNSimulator.cpp b/runtime/Cpp/runtime/src/atn/ProfilingATNSimulator.cpp
+index 9fd86d67d..6fb57741d 100755
+--- a/runtime/Cpp/runtime/src/atn/ProfilingATNSimulator.cpp
++++ b/runtime/Cpp/runtime/src/atn/ProfilingATNSimulator.cpp
+@@ -10,7 +10,7 @@
+ #include "support/CPPUtils.h"
+ 
+ #include "atn/ProfilingATNSimulator.h"
+-
++#include <chrono>
+ using namespace antlr4;
+ using namespace antlr4::atn;
+ using namespace antlr4::dfa;

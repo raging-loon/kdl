@@ -30,3 +30,4 @@ Debug
 tests/**
 !tests/**/*.kdl
 *.json
+dist
