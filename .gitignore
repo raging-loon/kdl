@@ -31,3 +31,4 @@ tests/**
 !tests/**/*.kdl
 *.json
 dist
+kdlc/generated

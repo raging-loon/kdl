@@ -34,7 +34,5 @@ function(set_source_files varname)
     set(${varname} ${adjusted_filelist} CACHE INTERNAL "" FORCE)
 endfunction()
 
-
-
 add_subdirectory(kdlc)
 

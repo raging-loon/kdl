@@ -2,6 +2,7 @@
 project(kdlc)
 set(CXX_STANDARD 20 REQUIRED)
 
+add_compile_definitions(ANTLR4CPP_STATIC)
 include(FetchContent)
 FetchContent_Declare(
     antlr4_runtime
@@ -10,27 +11,55 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(antlr4_runtime)
-
-message(${antlr4_runtime_SOURCE_DIR})
-message("${CMAKE_SOURCE_DIR}/profiling_atn_simulator_cpp_include_chrono.patch")
-if (NOT EXISTS "${antlr4_runtime_SOURCE_DIR}/.patched")
-
-    execute_process(  
-        COMMAND git.exe apply "${CMAKE_SOURCE_DIR}/profiling_atn_simulator_cpp_include_chrono.patch"
-        WORKING_DIRECTORY "${antlr4_runtime_SOURCE_DIR}"
-
-    )
-
-    file(WRITE  "${antlr4_runtime_SOURCE_DIR}/.patched" "patch applied")
-    message("patched file")
+if (win32)
+    if (NOT EXISTS "${antlr4_runtime_SOURCE_DIR}/.patched")
+    
+        execute_process(  
+            COMMAND git apply "${CMAKE_SOURCE_DIR}/profiling_atn_simulator_cpp_include_chrono.patch"
+            WORKING_DIRECTORY "${antlr4_runtime_SOURCE_DIR}"
+    
+        )
+    
+        file(WRITE  "${antlr4_runtime_SOURCE_DIR}/.patched" "patch applied")
+        message("patched file")
+    endif()
 endif()
 
 add_subdirectory(${antlr4_runtime_SOURCE_DIR}/runtime/Cpp antlr4_runtime_build)
 
-add_executable(kdlc
-    main.cpp
+set(ANTLR4CPP_JAR_LOCATION "${CMAKE_SOURCE_DIR}/thirdparty/antlr/antlr-4.13.2-complete.jar")
+set(GRAMMAR "${CMAKE_CURRENT_SOURCE_DIR}/grammar/KDLGrammar.g4")
+set(GENERATE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/generated")
+
+add_custom_command(
+    OUTPUT
+        "${GENERATE_DIR}/KDLGrammarLexer.cpp"
+    COMMAND 
+        ${CMAKE_COMMAND} -E make_directory ${GENERATE_DIR}
+    COMMAND 
+        java -jar ${ANTLR4CPP_JAR_LOCATION} -o ${GENERATE_DIR} -Dlanguage=Cpp ${GRAMMAR} -package kdl_gen  
+
+    DEPENDS
+        ${GRAMMAR}
+    VERBATIM
+)
+message(${GRAMMAR})
+add_custom_target(
+    antlr4_generate
+    DEPENDS
+        "${GENERATE_DIR}/KDLGrammarLexer.cpp"
 )
 
+file(GLOB GENERATED_SRCS "${GENERATE_DIR}/*.cpp" )
+add_executable(kdlc
+    main.cpp
+    ${GENERATED_SRCS}
+)
+add_dependencies(kdlc antlr4_generate)
+target_include_directories(kdlc
+PRIVATE
+    ${antlr4_runtime_SOURCE_DIR}/runtime/Cpp/runtime/src
+)
 
 target_link_libraries(kdlc
 PRIVATE
