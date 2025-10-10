@@ -32,3 +32,4 @@ tests/**
 *.json
 dist
 kdlc/generated
+.antlr

@@ -37,21 +37,25 @@ statement
     ;
 
 assignment
-    : var ASSIGN expr SEMI_COLON
+    : IDENTIFIER ASSIGN expr SEMI_COLON
     ;
 
 expr
-    : expr AND expr
-    | expr OR expr
-    | expr IN expr
-    | expr NOT IN expr
+    : expr binaryOp expr
     | primary
+    ;
+
+binaryOp
+    : IN
+    | NOT IN
+    | ('<' | '<=' | '>' | '>=' | '==' | '!=')
+    | AND
+    | OR
     ;
 
 primary:
     | literal
     | array_literal
-    | var
     | IDENTIFIER
     | field_access
     | OPEN_PAREN primary CLOSE_PAREN
@@ -62,19 +66,9 @@ field_access
     ;
 array_literal
     : OPEN_BRACKET
-        (valid_array_types (',' valid_array_types)*)?    
+        ((literal | IDENTIFIER) (',' (literal | IDENTIFIER))*)?    
       CLOSE_BRACKET
 
-    ;
-
-valid_array_types
-    : literal 
-    | var 
-    | IDENTIFIER
-    ;
-
-var
-    : VAR IDENTIFIER
     ;
 
 literal

@@ -13,6 +13,12 @@ IN              : 'in';
 NOT             : 'not';
 ACTION          : 'action';
 
+LT              : '<';
+LE              : '<=';
+GT              : '>';
+GE              : '>=';
+EQUAL           : '==';
+NE              : '!=';
 OPEN_PAREN      : '(';
 CLOSE_PAREN     : ')';
 OPEN_BRACE      : '{';

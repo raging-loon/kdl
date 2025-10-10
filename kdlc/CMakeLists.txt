@@ -30,14 +30,15 @@ add_subdirectory(${antlr4_runtime_SOURCE_DIR}/runtime/Cpp antlr4_runtime_build)
 set(ANTLR4CPP_JAR_LOCATION "${CMAKE_SOURCE_DIR}/thirdparty/antlr/antlr-4.13.2-complete.jar")
 set(GRAMMAR "${CMAKE_CURRENT_SOURCE_DIR}/grammar/KDLGrammar.g4")
 set(GENERATE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/generated")
+set(COMMAND_OUTPUT "${GENERATE_DIR}/KDLGrammarLexer.cpp" "${GENERATE_DIR}/KDLGrammarVisitor.cpp")
 
 add_custom_command(
     OUTPUT
-        "${GENERATE_DIR}/KDLGrammarLexer.cpp"
+        ${COMMAND_OUTPUT}
     COMMAND 
         ${CMAKE_COMMAND} -E make_directory ${GENERATE_DIR}
     COMMAND 
-        java -jar ${ANTLR4CPP_JAR_LOCATION} -o ${GENERATE_DIR} -Dlanguage=Cpp ${GRAMMAR} -package kdl_gen  
+        java -jar ${ANTLR4CPP_JAR_LOCATION} -o ${GENERATE_DIR} -Dlanguage=Cpp ${GRAMMAR} -package kdl_gen -visitor
 
     DEPENDS
         ${GRAMMAR}
@@ -47,18 +48,23 @@ message(${GRAMMAR})
 add_custom_target(
     antlr4_generate
     DEPENDS
-        "${GENERATE_DIR}/KDLGrammarLexer.cpp"
+        ${COMMAND_OUTPUT}
 )
 
 file(GLOB GENERATED_SRCS "${GENERATE_DIR}/*.cpp" )
+
+add_subdirectory(ast)
+
 add_executable(kdlc
     main.cpp
+    ${AST_SRCS}
     ${GENERATED_SRCS}
 )
 add_dependencies(kdlc antlr4_generate)
 target_include_directories(kdlc
 PRIVATE
     ${antlr4_runtime_SOURCE_DIR}/runtime/Cpp/runtime/src
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(kdlc
