@@ -72,6 +72,17 @@ std::any ASTBuilder::visitRule_decl(kdl_gen::KDLGrammarParser::Rule_declContext*
         }
     }
 
+    if (ctx->condition_section())
+    {
+        auto node = visitCondition_section(ctx->condition_section());
+        newRule->condition = NodeCast<>(node);
+    }
+
+    if (ctx->action_section())
+    {
+        auto node = visitAction_section(ctx->action_section());
+        newRule->action = NodeCast<ASTArrayLiteral>(node);
+    }
     return newRule;
 
 }
@@ -161,6 +172,29 @@ std::any ASTBuilder::visitLiteral(kdl_gen::KDLGrammarParser::LiteralContext* ctx
     std::cout << literal->value << '\n';
 
     return NodePtr<ASTNode>(literal);
+}
+
+std::any ASTBuilder::visitCondition_section(kdl_gen::KDLGrammarParser::Condition_sectionContext* ctx)
+{
+    auto expr = visitExpr(ctx->expr());
+
+    return NodeCast<>(expr);
+}
+
+std::any ASTBuilder::visitAction_section(kdl_gen::KDLGrammarParser::Action_sectionContext* ctx)
+{
+    auto array = MakeNode<ASTArrayLiteral>();
+    std::cout << "Found action section: ";
+    for (const auto& id : ctx->IDENTIFIER())
+    {
+        auto identifier = MakeNode<ASTIdentifier>();
+        identifier->name = id->toString();
+        std::cout << identifier->name << ',';
+        array->values.push_back(identifier);
+    }
+
+    std::cout << '\n';
+    return array;
 }
 
 Operation ASTBuilder::getOperation(kdl_gen::KDLGrammarParser::BinaryOpContext* ctx)

@@ -25,12 +25,16 @@ private:
     std::any visitExpr(kdl_gen::KDLGrammarParser::ExprContext* ctx) override;
 
     std::any visitField_access(kdl_gen::KDLGrammarParser::Field_accessContext* ctx) override;
+
     std::any visitPrimary(kdl_gen::KDLGrammarParser::PrimaryContext* ctx) override;
 
     std::any visitArray_literal(kdl_gen::KDLGrammarParser::Array_literalContext* ctx) override;
     
     std::any visitLiteral(kdl_gen::KDLGrammarParser::LiteralContext* ctx) override;
 
+
+    std::any visitCondition_section(kdl_gen::KDLGrammarParser::Condition_sectionContext* ctx) override;
+    std::any visitAction_section(kdl_gen::KDLGrammarParser::Action_sectionContext* ctx) override;
 
     Operation getOperation(kdl_gen::KDLGrammarParser::BinaryOpContext* ctx);
     ASTLiteral::Type getLiteralType(kdl_gen::KDLGrammarParser::LiteralContext* ctx);

@@ -38,9 +38,9 @@ rule scheduled_task_persistance {
 		c2 = task.name != "Microsoft\\Windows\\Defrag\\ScheduledDefrag";		
     
     condition:
-        c1 and c2
+        c1
 
-	action: remove_task;
+	action: remove_task, kill_process;
 }
 )kdl";
 
