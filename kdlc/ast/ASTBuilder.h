@@ -16,6 +16,7 @@ class ASTBuilder : public kdl_gen::KDLGrammarBaseVisitor
 public:
     ASTBuilder();
 
+    auto getASTRoot() { return m_root; }
     std::any visitStartRule(kdl_gen::KDLGrammarParser::StartRuleContext* ctx) override;
 private:
 

@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "ast/ASTBuilder.h"
-
+#include "ast/ASTDumper.h"
 using namespace antlr4;
 int main()
 {
@@ -56,6 +56,7 @@ rule scheduled_task_persistance {
     
     tree::ParseTree* tree = parser.startRule();
     builder.visit(tree);
+    kdl::ASTDumper dumper{};
+    dumper.dump(builder.getASTRoot());
 
-    std::cout << '\n' << tree->toStringTree(&parser, true) << '\n';
 }

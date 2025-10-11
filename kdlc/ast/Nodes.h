@@ -7,6 +7,7 @@
 #include <string>
 #include <type_traits>
 
+#include "ASTVisitor.h"
 
 namespace kdl {
 
@@ -54,14 +55,16 @@ constexpr NodePtr<T> MakeNode(Args&&... args)
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
 
-#define NEW_NODE_TYPE(type) \
-    inline NodeType getType() const override { return type ; }
-
+#define NEW_NODE_TYPE(type)                                         \
+    using ASTNode::ASTNode;                                         \
+    inline NodeType getType() const override { return type; }       \
+    void accept(ASTVisitor& v) const override { v.visit(*this); }
+    
 struct ASTNode
 {
     virtual ~ASTNode() = default;
     virtual inline NodeType getType() const { return NodeType::UNTYPED; }
-
+    virtual void accept(ASTVisitor& v) const { v.visit(*this); }
 };
 
 ///
@@ -93,7 +96,6 @@ struct ASTLiteral : ASTNode
         STRING,
         INTEGER,
         BOOLEAN,
-        ARRAY,
         INVALID
     };
 
