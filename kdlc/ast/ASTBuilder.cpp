@@ -128,6 +128,7 @@ std::any ASTBuilder::visitPrimary(kdl_gen::KDLGrammarParser::PrimaryContext* ctx
 
     if (ctx->IDENTIFIER())
     {
+        ctx->IDENTIFIER()->getSymbol();
         auto id = MakeNode<ASTIdentifier>();
         id->name = ctx->IDENTIFIER()->toString();
         return NodePtr<ASTNode>(id);

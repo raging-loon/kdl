@@ -6,6 +6,8 @@
 
 #include "ast/ASTBuilder.h"
 #include "ast/ASTDumper.h"
+
+#include "context/CompilerContext.h"
 using namespace antlr4;
 int main()
 {
@@ -43,6 +45,9 @@ rule scheduled_task_persistance {
 	action: remove_task, kill_process;
 }
 )kdl";
+
+    kdl::FileID id = SRC_MGR.addRawSource(test);
+    
 
     ANTLRInputStream input(test);
 
