@@ -21,6 +21,15 @@ SourceLocation::SourceLocation(const antlr4::tree::TerminalNode* node)
     locationEnd = symbol->getStopIndex();
 }
 
+SourceLocation::SourceLocation(const antlr4::Token* token)
+{
+    assert(token);
+    lineNumber = token->getLine();
+    lineOffset = token->getCharPositionInLine();
+    locationStart = token->getStartIndex();
+    locationEnd = token->getStopIndex();
+}
+
 SourceManager::SourceManager()
     : m_fileMap{}
 {

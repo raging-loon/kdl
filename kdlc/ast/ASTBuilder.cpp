@@ -16,7 +16,6 @@ constexpr auto NodeCast(const std::any& operand)
 
 ASTBuilder::ASTBuilder()
 {
-    m_root = MakeNode<ASTProgram>();
 }
 
 std::any ASTBuilder::visitStartRule(KDLGrammarParser::StartRuleContext* ctx)
@@ -28,6 +27,7 @@ std::any ASTBuilder::visitStartRule(KDLGrammarParser::StartRuleContext* ctx)
 std::any ASTBuilder::visitTop_decls(KDLGrammarParser::Top_declsContext* ctx)
 {
     // parse rules 
+    m_root = MakeNode<ASTProgram>(ctx->getStart());
 
     for (const auto& i : ctx->rule_decl())
     {
@@ -39,25 +39,25 @@ std::any ASTBuilder::visitTop_decls(KDLGrammarParser::Top_declsContext* ctx)
 
 std::any ASTBuilder::visitRule_decl(kdl_gen::KDLGrammarParser::Rule_declContext* ctx)
 {
-    auto newRule = MakeNode<ASTRule>();
+    auto newRule = MakeNode<ASTRule>(ctx->IDENTIFIER());
 
     newRule->name = ctx->IDENTIFIER()->toString();
     // get event source 
     if (ctx->event_source())
     {
-        newRule->evtSource = MakeNode<ASTIdentifier>();
+        newRule->evtSource = MakeNode<ASTIdentifier>(ctx->event_source()->IDENTIFIER());
         newRule->evtSource->name = ctx->event_source()->IDENTIFIER()->toString();
     }
     // get predicate
     if (ctx->predicate_section())
     {
-        newRule->predicate = MakeNode<ASTBlock>();
+        newRule->predicate = MakeNode<ASTBlock>(ctx->predicate_section()->PREDICATE());
         auto statements = ctx->predicate_section()->statement();
         for (const auto& stmt : statements)
         {
             auto* assignment = stmt->assignment();
 
-            NodePtr<ASTDecl> decl = MakeNode<ASTDecl>();
+            NodePtr<ASTDecl> decl = MakeNode<ASTDecl>(assignment->IDENTIFIER());
             decl->name = assignment->IDENTIFIER()->toString();
             auto expr = assignment->expr();
             auto node = visitExpr(expr);
@@ -88,7 +88,7 @@ std::any ASTBuilder::visitExpr(kdl_gen::KDLGrammarParser::ExprContext* ctx)
     {
         Operation op = getOperation(ctx->binaryOp());
 
-        auto binOp = MakeNode<ASTBinaryOperation>();
+        auto binOp = MakeNode<ASTBinaryOperation>(ctx->getStart());
 
         binOp->operation = op;
 
@@ -105,7 +105,7 @@ std::any ASTBuilder::visitExpr(kdl_gen::KDLGrammarParser::ExprContext* ctx)
 std::any ASTBuilder::visitField_access(kdl_gen::KDLGrammarParser::Field_accessContext* ctx)
 {
 
-    auto base = MakeNode<ASTFieldAccess>();
+    auto base = MakeNode<ASTFieldAccess>(ctx->IDENTIFIER(0));
     auto* head = &base;
 
     size_t numIdentifiers = ctx->IDENTIFIER().size();
@@ -113,7 +113,7 @@ std::any ASTBuilder::visitField_access(kdl_gen::KDLGrammarParser::Field_accessCo
     for (size_t i = 0; i < numIdentifiers - 1; i++)
     {
         (*head)->fieldName = ctx->IDENTIFIER(i)->toString();
-        auto newField = MakeNode<ASTFieldAccess>();
+        auto newField = MakeNode<ASTFieldAccess>(ctx->IDENTIFIER(i));
         (*head)->target = newField;
         head = &((*head)->target);
     }
@@ -128,8 +128,7 @@ std::any ASTBuilder::visitPrimary(kdl_gen::KDLGrammarParser::PrimaryContext* ctx
 
     if (ctx->IDENTIFIER())
     {
-        ctx->IDENTIFIER()->getSymbol();
-        auto id = MakeNode<ASTIdentifier>();
+        auto id = MakeNode<ASTIdentifier>(ctx->IDENTIFIER());
         id->name = ctx->IDENTIFIER()->toString();
         return NodePtr<ASTNode>(id);
     }
@@ -138,7 +137,7 @@ std::any ASTBuilder::visitPrimary(kdl_gen::KDLGrammarParser::PrimaryContext* ctx
 
 std::any ASTBuilder::visitArray_literal(kdl_gen::KDLGrammarParser::Array_literalContext* ctx)
 {
-    auto values = MakeNode<ASTArrayLiteral>();
+    auto values = MakeNode<ASTArrayLiteral>(ctx->OPEN_BRACKET());
 
     for (const auto& literal : ctx->literal())
     {
@@ -150,7 +149,7 @@ std::any ASTBuilder::visitArray_literal(kdl_gen::KDLGrammarParser::Array_literal
 
 std::any ASTBuilder::visitLiteral(kdl_gen::KDLGrammarParser::LiteralContext* ctx)
 {
-    auto literal = MakeNode<ASTLiteral>();
+    auto literal = MakeNode<ASTLiteral>(ctx->getStart());
     
     if (ctx->STRING())
     {
@@ -176,10 +175,10 @@ std::any ASTBuilder::visitCondition_section(kdl_gen::KDLGrammarParser::Condition
 
 std::any ASTBuilder::visitAction_section(kdl_gen::KDLGrammarParser::Action_sectionContext* ctx)
 {
-    auto array = MakeNode<ASTArrayLiteral>();
+    auto array = MakeNode<ASTArrayLiteral>(ctx->ACTION());
     for (const auto& id : ctx->IDENTIFIER())
     {
-        auto identifier = MakeNode<ASTIdentifier>();
+        auto identifier = MakeNode<ASTIdentifier>(id);
         identifier->name = id->toString();
         array->values.push_back(identifier);
     }

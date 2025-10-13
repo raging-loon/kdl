@@ -24,7 +24,8 @@ struct SourceLocation
     size_t locationEnd;
 
     SourceLocation(const antlr4::tree::TerminalNode* node);
-
+    SourceLocation(const antlr4::Token* token);
+    SourceLocation() {}
 };
 
 

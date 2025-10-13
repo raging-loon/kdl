@@ -55,12 +55,14 @@ file(GLOB GENERATED_SRCS "${GENERATE_DIR}/*.cpp" )
 
 add_subdirectory(ast)
 add_subdirectory(context)
+add_subdirectory(interface)
 
 add_executable(kdlc
     main.cpp
     ${AST_SRCS}
     ${CTX_SOURCES}
     ${GENERATED_SRCS}
+    ${INTERFACE_SRCS}
 )
 add_dependencies(kdlc antlr4_generate)
 target_include_directories(kdlc

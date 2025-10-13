@@ -8,6 +8,7 @@
 #include <type_traits>
 
 #include "ASTVisitor.h"
+#include "context/SourceManager.h"
 
 namespace kdl {
 
@@ -65,6 +66,15 @@ struct ASTNode
     virtual ~ASTNode() = default;
     virtual inline NodeType getType() const { return NodeType::UNTYPED; }
     virtual void accept(ASTVisitor& v) const { v.visit(*this); }
+
+    ASTNode(const antlr4::tree::TerminalNode* node)
+        : srcLoc{ node } {}
+
+    ASTNode(const antlr4::Token* token)
+        : srcLoc{ token } {
+    }
+
+    SourceLocation srcLoc;
 };
 
 ///
