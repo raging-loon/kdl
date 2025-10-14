@@ -23,8 +23,8 @@ rule OfficeMacro {
             "powershell.exe", "pwsh.exe", "cmd.exe", "cscript.exe", "wscript.exe"
         ];
 
-        c1 = process.parent.name in ms_products;
-        c2 = process.name in cmd_processors;
+        c1 = "powershell.exe" in ms_products;
+        c2 = "winword.exe" in cmd_processors;
     
     condition:
         c1 and c2
@@ -32,18 +32,7 @@ rule OfficeMacro {
     action:
         kill_process;
 }
-rule scheduled_task_persistance {
-	evt_source: sched_task_create;
-	
-	predicate:
-		c1 = process.parent.name not in ["taskschd.msc", "svchost.exe"];
-		c2 = task.name != "Microsoft\\Windows\\Defrag\\ScheduledDefrag";		
-    
-    condition:
-        c1
 
-	action: remove_task, kill_process;
-}
 )kdl";
 
     kdl::FileID id = SRC_MGR.addRawSource(test);

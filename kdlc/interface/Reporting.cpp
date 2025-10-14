@@ -33,7 +33,7 @@ void Report::PrintErrorMessage(
     const auto* fi = SRC_MGR.getSourceFile(r.fileID);
     const auto& srcLoc = r.location;
     std::printf(
-        "%s: %s:%d:%d\n",
+        "%s: %s:%zd:%zd\n",
         message.c_str(),
         fi->filename.c_str(),
         srcLoc.lineNumber,

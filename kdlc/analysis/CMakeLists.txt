@@ -1,0 +1,3 @@
+SET_SOURCE_FILES(ANALYSIS_SOURCES
+    SemanticAnalyzer.cpp
+)
