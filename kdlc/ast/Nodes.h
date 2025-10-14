@@ -86,7 +86,7 @@ struct ASTProgram : ASTNode
 {
     NEW_NODE_TYPE(NodeType::PROGRAM);
 
-    std::vector<NodePtr<ASTNode>> topDecls;
+    std::vector<NodePtr<ASTRule>> topDecls;
 
 
 };

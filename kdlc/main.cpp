@@ -8,6 +8,7 @@
 #include "ast/ASTDumper.h"
 
 #include "context/CompilerContext.h"
+#include "intermediate/SymbolExtractor.h"
 using namespace antlr4;
 int main()
 {
@@ -52,5 +53,7 @@ rule OfficeMacro {
     builder.visit(tree);
     kdl::ASTDumper dumper{};
     dumper.dump(builder.getASTRoot());
+    kdl::SymbolExtractor sym{};
 
+    auto rules = sym.extractRules(builder.getASTRoot());
 }
