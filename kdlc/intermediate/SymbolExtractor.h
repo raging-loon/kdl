@@ -18,13 +18,9 @@ public:
     ///
     /// @brief
     ///     Extract rules from the program root
-    ///     Then for each rule, extract the symbols declared
     /// 
     std::vector<Rule> extractRules(NodePtr<ASTProgram> programRoot);
 private:
-
-
-    void extractSymbols(Rule& rule, NodePtr<ASTRule> root);
 };
 
 } // kdl

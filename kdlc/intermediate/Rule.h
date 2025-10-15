@@ -6,15 +6,14 @@
 namespace kdl
 {
 
-class SymbolExtractor;
-
+class SemanticAnalyzer;
 ///
 /// @brief
 ///     IR of a Rule
 /// 
 class Rule
 {
-    friend class SymbolExtractor;
+    friend class SemanticAnalyzer;
 public:
 
     Rule();

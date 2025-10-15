@@ -4,13 +4,7 @@
 namespace kdl
 {
 
-enum class Type
-{
-    UNTYPED,
-    INTEGER,
-    STRING,
-    ARRAY
-};
+
 
 } // kdl
 

@@ -4,6 +4,7 @@
 #include <string>
 
 #include "TypedNodes.h"
+#include "TypeSystem.h"
 #include "context/SourceManager.h"
 namespace kdl
 {
@@ -11,7 +12,7 @@ namespace kdl
 struct Symbol
 {
     SourceLocation srcLoc;
-    Type type{ Type::UNTYPED };
+    BaseType type{ BaseType::UNTYPED };
 };
 
 
