@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include "TypedNodes.h"
 #include "TypeSystem.h"
 #include "context/SourceManager.h"
 namespace kdl

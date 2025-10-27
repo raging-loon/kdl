@@ -31,7 +31,7 @@ enum Trait : int
 
 using TypeTrait = int;
 
-std::unordered_map<BaseType, TypeTrait> s_baseTypeTraits = {
+static std::unordered_map<BaseType, TypeTrait> s_baseTypeTraits = {
     { BaseType::STRING,     Trait::ANY_COMP | Trait::EQUALS | Trait::SEARCH },
     { BaseType::INT,        Trait::ANY_COMP }
 };

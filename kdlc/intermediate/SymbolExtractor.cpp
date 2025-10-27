@@ -12,6 +12,7 @@ std::vector<Rule> SymbolExtractor::extractRules(NodePtr<ASTProgram> programRoot)
         Rule cur{ decl };
 
         std::cout << "Found rule: " << decl->name << '\n';
+        rules.push_back(cur);
     }
 
     return rules;

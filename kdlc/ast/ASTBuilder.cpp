@@ -157,8 +157,8 @@ std::any ASTBuilder::visitLiteral(kdl_gen::KDLGrammarParser::LiteralContext* ctx
         value = value.substr(1, value.size() - 2);
         literal->value = value;
     }
-    else 
-        literal->value = ctx->toString();
+    else if (ctx->INTEGER())
+        literal->value = ctx->INTEGER()->toString();
 
     literal->type = getLiteralType(ctx);
 
